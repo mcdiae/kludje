@@ -1,4 +1,0 @@
-kludje
-======
-
-Java lambda library

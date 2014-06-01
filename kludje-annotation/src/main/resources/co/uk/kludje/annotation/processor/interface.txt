@@ -1,0 +1,18 @@
+/*Generated file; do not edit*/
+package ${pack};
+
+@java.lang.FunctionalInterface
+@javax.annotation.Generated("${generator}")
+public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
+
+      ${parentSigGenerics} default ${parentSig} {
+        try {
+          ${invocation};
+        } catch (Throwable throwable) {
+          co.uk.kludje.Exceptions.throwChecked(throwable);
+          throw new AssertionError();
+        }
+      }
+
+      ${functionSignature} throws Throwable;
+}

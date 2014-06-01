@@ -1,11 +1,30 @@
 allprojects {
   apply plugin: 'java'
+
+  task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+  }
+
+  task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+  }
+
   compileJava {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
   }
   group = 'co.uk.kludje'
   version = '1.0-SNAPSHOT'
+
+  artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+  }
+
+
 }
 
 subprojects {
@@ -29,3 +48,5 @@ project(':kludje-core') {
     compile project(':kludje-annotation')
   }
 }
+
+

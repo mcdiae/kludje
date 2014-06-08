@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
-public class FunctionalInterfaceProcessor extends AbstractProcessor {
+public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   private static final String NAME = "FIP: ";
   private static final Generator INTERFACE = InterfaceGenerator.load();
 
@@ -145,7 +145,7 @@ public class FunctionalInterfaceProcessor extends AbstractProcessor {
 
     Map<String, String> map = new HashMap<>();
     map.put("pack", pack.getQualifiedName().toString());
-    map.put("generator", FunctionalInterfaceProcessor.class.getName());
+    map.put("generator", UncheckedFunctionalInterfaceProcessor.class.getName());
     map.put("simpleName", simpleName);
     map.put("parent", type.getQualifiedName().toString());
     map.put("generics", inferTypeGenerics(type, true));

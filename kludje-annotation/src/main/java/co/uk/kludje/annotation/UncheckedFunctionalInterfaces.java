@@ -18,6 +18,9 @@ package co.uk.kludje.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * Container for multiple {@link co.uk.kludje.annotation.UncheckedFunctionalInterface} instances.
+ */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.PACKAGE})

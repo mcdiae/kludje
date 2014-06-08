@@ -18,10 +18,19 @@ package co.uk.kludje.annotation;
 
 import java.lang.annotation.*;
 
+/**
+ * Annotation for generating functional interfaces that handle checked exceptions.
+ */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
 @Target({ElementType.PACKAGE})
 @Repeatable(UncheckedFunctionalInterfaces.class)
 public @interface UncheckedFunctionalInterface {
+
+  /**
+   * Values must be a type that is a functional interface.
+   *
+   * @return the value type
+   */
   Class<?> value();
 }

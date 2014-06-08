@@ -24,7 +24,7 @@ public final class Exceptions {
   }
 
   /**
-   * <p>Throws any type of @{link java.lang.Throwable} as an unchecked type.</p>
+   * <p>Throws any type of {@link java.lang.Throwable} as an unchecked type.</p>
    * Usage:
    * <pre>
    *   void foo(Closeable c) {
@@ -50,16 +50,26 @@ public final class Exceptions {
     throw (T) t;
   }
 
-  public static interface Throws {
-    public <T extends Throwable> Throws expected() throws T;
-  }
+  /**
+   * A utility type for declaring exceptions.
+   *
+   * @see Exceptions#expected()
+   */
+  public static final class ExceptionDeclarer {
+    private ExceptionDeclarer() {}
 
-  private static class ThrowsImpl implements Throws {
-    private static final Throws INSTANCE = new ThrowsImpl();
+    private static final ExceptionDeclarer INSTANCE = new ExceptionDeclarer();
 
-    @Override
-    public <T extends Throwable> Throws expected() throws T {
-      return INSTANCE;
+    /**
+     * This method does nothing but return itself.
+     * It's purpose is to ensure the compiler accepts that T must be handled.
+     *
+     * @param <T> the type of exception expected
+     * @return itself
+     * @throws T the exception
+     */
+    public <T extends Throwable> ExceptionDeclarer expected() throws T {
+      return this;
     }
   }
 
@@ -78,7 +88,7 @@ public final class Exceptions {
    *            .&lt;IOException&gt;expected()
    *            .&lt;MethodNotFoundException&gt;expected();
    *
-   *            bar();
+   *        bar();
    *
    *      } catch(IOException|MethodNotFoundException e) {
    *        // handle error
@@ -90,7 +100,7 @@ public final class Exceptions {
    * @return a fluent instance
    * @throws T the exception
    */
-  public static <T extends Throwable> Throws expected() throws T {
-    return ThrowsImpl.INSTANCE;
+  public static <T extends Throwable> ExceptionDeclarer expected() throws T {
+    return ExceptionDeclarer.INSTANCE;
   }
 }

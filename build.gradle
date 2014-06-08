@@ -1,13 +1,21 @@
 allprojects {
   apply plugin: 'java'
+  apply plugin: 'maven'
+  apply plugin: 'signing'
 
-  task javadocJar(type: Jar, dependsOn: javadoc) {
+  task allDocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    source(fileTree(dir: 'build/classes/main', exclude: '**/*.class'))
+  }
+
+  task javadocJar(type: Jar, dependsOn: allDocs) {
     classifier = 'javadoc'
     from 'build/docs/javadoc'
   }
 
   task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
+    from fileTree(dir: 'build/classes/main', exclude: '**/*.class')
     classifier = 'sources'
   }
 
@@ -23,8 +31,6 @@ allprojects {
     archives javadocJar
     archives sourcesJar
   }
-
-
 }
 
 subprojects {
@@ -50,3 +56,4 @@ project(':kludje-core') {
 }
 
 
+sourceSets.each { println it.name }

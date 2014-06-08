@@ -24,8 +24,7 @@ public final class Exceptions {
   }
 
   /**
-   * Throws any type of @{link java.lang.Throwable} as an unchecked type.
-   * <p>
+   * <p>Throws any type of @{link java.lang.Throwable} as an unchecked type.</p>
    * Usage:
    * <pre>
    *   void foo(Closeable c) {
@@ -65,11 +64,11 @@ public final class Exceptions {
   }
 
   /**
-   * Declares that the scope expects a checked exception.
-   * Use this method to catch a checked exception that is not detected by the compiler.
+   * <p>Declares that the scope expects a checked exception.
+   * Use this method to catch a checked exception that is not detected by the compiler.</p>
    * <p>
    * Usage:
-   * <p>
+   * </p>
    * <pre>
    *   void bar();
    *

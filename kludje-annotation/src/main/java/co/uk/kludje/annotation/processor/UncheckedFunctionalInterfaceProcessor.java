@@ -38,6 +38,12 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Annotation processor for {@link co.uk.kludje.annotation.UncheckedFunctionalInterface}.
+ * Generated types will be placed into the annotated package.
+ *
+ * @see co.uk.kludje.annotation.UncheckedFunctionalInterface
+ */
 public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   private static final String NAME = "FIP: ";
   private static final Generator INTERFACE = InterfaceGenerator.load();
@@ -113,15 +119,6 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
 
   private void validateUfi(TypeElement te) {
     ensure(this.processingEnv.getElementUtils().isFunctionalInterface(te), "assert is functional interface", te.getQualifiedName().toString());
-    /*ensure(te.getKind() == ElementKind.INTERFACE, "assert is interface", te.getQualifiedName().toString());
-    List<Element> methods = te.getEnclosedElements()
-        .stream()
-        .filter(e -> e.getKind() == ElementKind.METHOD)
-        .map(e -> (ExecutableElement) e)
-        .filter(e -> !e.getModifiers().contains(Modifier.DEFAULT))
-        .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
-        .collect(Collectors.toList());
-    ensure(methods.size() == 1, "assert non-default method count == 1", te.getQualifiedName().toString() + ": " + methods);*/
   }
 
   private void writeUfi(PackageElement pack, TypeElement type) throws IOException {
@@ -139,10 +136,6 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   }
 
   private Map<String, String> params(PackageElement pack, TypeElement type, String simpleName, ExecutableElement method) {
-
-    //info(methodSignature(method, "$"));
-    //info(invocation(method));
-
     Map<String, String> map = new HashMap<>();
     map.put("pack", pack.getQualifiedName().toString());
     map.put("generator", UncheckedFunctionalInterfaceProcessor.class.getName());

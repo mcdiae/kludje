@@ -51,29 +51,6 @@ public final class Exceptions {
   }
 
   /**
-   * A utility type for declaring exceptions.
-   *
-   * @see Exceptions#expected()
-   */
-  public static final class ExceptionDeclarer {
-    private ExceptionDeclarer() {}
-
-    private static final ExceptionDeclarer INSTANCE = new ExceptionDeclarer();
-
-    /**
-     * This method does nothing but return itself.
-     * It's purpose is to ensure the compiler accepts that T must be handled.
-     *
-     * @param <T> the type of exception expected
-     * @return itself
-     * @throws T the exception
-     */
-    public <T extends Throwable> ExceptionDeclarer expected() throws T {
-      return this;
-    }
-  }
-
-  /**
    * <p>Declares that the scope expects a checked exception.
    * Use this method to catch a checked exception that is not detected by the compiler.</p>
    * <p>
@@ -102,5 +79,29 @@ public final class Exceptions {
    */
   public static <T extends Throwable> ExceptionDeclarer expected() throws T {
     return ExceptionDeclarer.INSTANCE;
+  }
+
+  /**
+   * A utility type for declaring exceptions.
+   *
+   * @see Exceptions#expected()
+   */
+  public static final class ExceptionDeclarer {
+    private static final ExceptionDeclarer INSTANCE = new ExceptionDeclarer();
+
+    private ExceptionDeclarer() {
+    }
+
+    /**
+     * This method does nothing but return itself.
+     * It's purpose is to ensure the compiler accepts that T must be handled.
+     *
+     * @param <T> the type of exception expected
+     * @return itself
+     * @throws T the exception
+     */
+    public <T extends Throwable> ExceptionDeclarer expected() throws T {
+      return this;
+    }
   }
 }

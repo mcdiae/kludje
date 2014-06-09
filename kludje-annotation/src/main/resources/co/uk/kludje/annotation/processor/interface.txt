@@ -3,24 +3,16 @@ package ${pack};
 
 /**
  * A functional interface for handling checked exceptions.
- * This type defines a two methods:
- * <ul>
- * <li>X: A default implementation of the parent's functional method {@code ${parentSig}}.</li>
- * <li>Y: A functional method {@code ${functionSignature}} that can throw any checked exception.</li>
- * </ul>
- * Rules:
- * <ul>
- * <li>Y invokes X.</li>
- * <li>Implementations must implement Y.</li>
- * <li>Implementations should not implement X.</li>
- * <li>Any exception thrown by Y is thrown by X even if it is a checked exception.</li>
- * <li>This type should not be used in method signatures - use ${parent} instead.</li>
- * </ul>
+ * See parent type for intent.
  */
 @java.lang.FunctionalInterface
 @javax.annotation.Generated("${generator}")
 public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
 
+      /**
+       * Invokes {@code ${functionSignature}}.
+       * Throws anything thrown by {@code ${functionSignature}}.
+       */
       ${parentSigGenerics} default ${parentSig} {
         try {
           ${invocation};
@@ -31,4 +23,14 @@ public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
       }
 
       ${functionSignature} throws Throwable;
+
+      /**
+       * Convenience method as an alternative to casting.
+       *
+       * @param t the unchecked type
+       * @return t
+       */
+      public static ${generics} ${parent}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t) {
+        return t;
+      }
 }

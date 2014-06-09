@@ -37,6 +37,10 @@ final class Exceptions {
     throw (T) t;
   }
 
+  public static <T extends Throwable> Throws expected() throws T {
+    return ThrowsImpl.INSTANCE;
+  }
+
   public static interface Throws {
     public <T extends Throwable> Throws expected() throws T;
   }
@@ -48,9 +52,5 @@ final class Exceptions {
     public <T extends Throwable> Throws expected() throws T {
       return INSTANCE;
     }
-  }
-
-  public static <T extends Throwable> Throws expected() throws T {
-    return ThrowsImpl.INSTANCE;
   }
 }

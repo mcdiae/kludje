@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 /**
- * Checked exception handling functional interfaces in @{code java.util.function}.
+ * Checked exception handling functional interfaces in {@code java.util.function}.
  */
 @UncheckedFunctionalInterface(BiConsumer.class)
 @UncheckedFunctionalInterface(BiFunction.class)

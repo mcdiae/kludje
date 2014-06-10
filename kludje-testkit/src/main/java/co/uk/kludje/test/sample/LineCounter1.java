@@ -18,12 +18,12 @@ public class LineCounter1 implements LineCounter {
   public Map<Path, Long> countLines(Collection<? extends Path> paths) throws IOException {
     Map<Path, Long> result = new HashMap<>();
     for (Path path : paths) {
-      result.put(path, lineCount(path));
+      result.put(path, linesIn(path));
     }
     return result;
   }
 
-  private long lineCount(Path path) throws IOException {
+  private long linesIn(Path path) throws IOException {
     try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
       long lines = 0L;
       while (reader.readLine() != null) {

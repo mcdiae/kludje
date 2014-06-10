@@ -2,6 +2,7 @@ package co.uk.kludje.test.sample;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +20,7 @@ public class LineCounter2 implements LineCounter {
     try {
       return paths.stream()
           .collect(Collectors.toMap(p -> p, this::lineCount));
-    } catch (RuntimeIOException e) {
+    } catch (UncheckedIOException e) {
       throw (IOException) e.getCause();
     }
   }
@@ -28,13 +29,7 @@ public class LineCounter2 implements LineCounter {
     try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
       return reader.lines().count();
     } catch (IOException e) {
-      throw new RuntimeIOException(e);
-    }
-  }
-
-  private static class RuntimeIOException extends RuntimeException {
-    RuntimeIOException(IOException e) {
-      super(e);
+      throw new UncheckedIOException(e);
     }
   }
 }

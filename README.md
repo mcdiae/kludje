@@ -75,7 +75,7 @@ public class LineCounter1 implements LineCounter {
 }
 ```
 
-Let's use a parallel streaming approach to utilize the available processors:
+Let's refactor to a parallel streaming implementation:
 
 ```java
 import java.io.*;

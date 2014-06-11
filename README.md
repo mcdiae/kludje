@@ -111,7 +111,7 @@ public class LineCounter2 implements LineCounter {
 
 The above code is unsatisfactory. In order to obey the interface contract _IOException_ must be wrapped and unwrapped using _UncheckedIOException_.
 
-This problem can be solved using a cast to KλudJe's _UFunction_ to transparently pass the exception to the calling method:
+This problem can be mitigated using a cast to KλudJe's _UFunction_ to transparently pass the exception to the calling method:
 
 ```java
 import uk.kludje.fn.function.UFunction;
@@ -140,6 +140,34 @@ public class LineCounter3 implements LineCounter {
 }
 ```
 
+Alternatively, a method can be used for type inference:
+
+```java
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.*;
+import java.util.stream.Stream;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toConcurrentMap;
+import static uk.kludje.fn.function.UFunction.asUFunction;
+
+/** Line counter - stream approach with checked exception handling. */
+public class LineCounter4 implements LineCounter {
+
+  @Override
+  public Map<Path, Long> countLines(Collection<? extends Path> paths) throws IOException {
+    return paths.stream()
+        .parallel()
+        .collect(toConcurrentMap(p -> p, asUFunction(this::linesIn)));
+  }
+
+  private long linesIn(Path path) throws IOException {
+    try (Stream<String> lines = Files.lines(path, UTF_8)) {
+      return lines.count();
+    }
+  }
+}
+```
 
 
 Build Environment

@@ -2,12 +2,13 @@ package uk.kludje.test.sample;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Line counter - imperative approach.
@@ -24,7 +25,7 @@ public class LineCounter1 implements LineCounter {
   }
 
   private long linesIn(Path path) throws IOException {
-    try (BufferedReader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+    try (BufferedReader reader = Files.newBufferedReader(path, UTF_8)) {
       long lines = 0L;
       while (reader.readLine() != null) {
         lines++;

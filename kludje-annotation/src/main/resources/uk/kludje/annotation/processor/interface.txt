@@ -1,0 +1,36 @@
+/*Generated file; do not edit*/
+package ${pack};
+
+/**
+ * A functional interface for handling checked exceptions.
+ * See parent type for intent.
+ */
+@java.lang.FunctionalInterface
+@javax.annotation.Generated("${generator}")
+public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
+
+      /**
+       * Invokes {@code ${functionSignature}}.
+       * Throws anything thrown by {@code ${functionSignature}}.
+       */
+      ${parentSigGenerics} default ${parentSig} {
+        try {
+          ${invocation};
+        } catch (Throwable throwable) {
+          uk.kludje.Exceptions.throwChecked(throwable);
+          throw new AssertionError();
+        }
+      }
+
+      ${functionSignature} throws Throwable;
+
+      /**
+       * Convenience method as an alternative to casting.
+       *
+       * @param t the unchecked type
+       * @return t
+       */
+      public static ${generics} ${parent}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t) {
+        return t;
+      }
+}

@@ -23,7 +23,7 @@ allprojects {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
   }
-  group = 'co.uk.kludje'
+  group = 'uk.kludje'
   version = '0.1-SNAPSHOT'
 
   artifacts {

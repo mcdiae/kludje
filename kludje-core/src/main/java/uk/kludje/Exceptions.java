@@ -39,9 +39,7 @@ public final class Exceptions {
    * @param t the (non-null) type to throw
    */
   public static void throwChecked(Throwable t) {
-    if (t == null) {
-      throw new AssertionError("null");
-    }
+    Asserts.notNull(t, "throwable");
     Exceptions.<RuntimeException>throwIt(t);
   }
 

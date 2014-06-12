@@ -27,6 +27,11 @@ You can consume the library from the [Central Repository](http://search.maven.or
 </dependency>
 ```
 
+Stability
+=========
+
+Code is unstable; poorly tested.
+
 
 Usage
 =====

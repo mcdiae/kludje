@@ -31,6 +31,48 @@ allprojects {
     archives javadocJar
     archives sourcesJar
   }
+
+  signing {
+    sign configurations.archives
+  }
+
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+        repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+          authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
+
+        pom.project {
+          packaging 'jar'
+          url 'https://github.com/mcdiae/kludje'
+
+          scm {
+            url 'git@github.com:mcdiae/kludje.git'
+            connection 'git@github.com:mcdiae/kludje.git'
+            developerConnection 'git@github.com:mcdiae/kludje.git'
+          }
+
+          licenses {
+            license {
+              name 'The Apache Software License, Version 2.0'
+              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+              distribution 'repo'
+            }
+          }
+
+          developers {
+            developer {
+              id 'mcdiae'
+              name 'McDowell'
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 subprojects {
@@ -56,5 +98,14 @@ project(':kludje-core') {
   }
 }
 
-
-sourceSets.each { println it.name }
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      pom.project {
+        name 'kludje'
+        packaging 'pom'
+        description 'Java 8 lambda API'
+      }
+    }
+  }
+}

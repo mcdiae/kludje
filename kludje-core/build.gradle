@@ -1,0 +1,11 @@
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      pom.project {
+        name 'kludje-core'
+        packaging 'jar'
+        description 'Java 8 lambda API core'
+      }
+    }
+  }
+}

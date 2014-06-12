@@ -24,7 +24,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.1-SNAPSHOT'
+  version = '0.1'
 
   artifacts {
     archives jar
@@ -40,8 +40,8 @@ allprojects {
     repositories {
       mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+//https://oss.sonatype.org/content/repositories/snapshots
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
 

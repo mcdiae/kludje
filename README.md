@@ -14,10 +14,18 @@ License
 [Apache 2.0](https://github.com/mcdiae/kludje/blob/master/LICENSE)
 
 
-Runtime
-=======
+Download
+========
 
-TODO
+You can consume the library from the [Central Repository](http://search.maven.org/) using the following dependency:
+
+```xml
+<dependency>
+  <groupId>uk.kludje</groupId>
+  <artifactId>kludje-core</artifactId>
+  <version>0.1</version>
+</dependency>
+```
 
 
 Usage

@@ -16,6 +16,8 @@ limitations under the License.
 
 package uk.kludje;
 
+import java.util.Objects;
+
 /**
  * Methods for translating checked exceptions to unchecked exceptions and back.
  */
@@ -39,7 +41,7 @@ public final class Exceptions {
    * @param t the (non-null) type to throw
    */
   public static void throwChecked(Throwable t) {
-    Asserts.notNull(t, "throwable");
+    Objects.requireNonNull(t, "throwable");
     Exceptions.<RuntimeException>throwIt(t);
   }
 

@@ -1,8 +1,8 @@
 package uk.kludje.test;
 
-import uk.kludje.Exceptions;
 import org.junit.Assert;
 import org.junit.Test;
+import uk.kludje.Exceptions;
 
 import java.io.IOException;
 

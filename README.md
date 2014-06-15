@@ -30,7 +30,7 @@ You can consume the library from the [Central Repository](http://search.maven.or
 Stability
 =========
 
-Code is unstable; poorly tested.
+Limited testing; breaking changes possible in future versions.
 
 
 Usage

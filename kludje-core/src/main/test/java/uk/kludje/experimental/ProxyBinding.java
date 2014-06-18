@@ -11,12 +11,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import static uk.kludje.experimental.InvocationHandlers.*;
 
 public final class ProxyBinding {
   private static final InvocationHandler HANDLER = (proxy, method, args)
       -> method.isDefault()
-      ? InvocationHandlers.defaultMethodHandler()
-      : InvocationHandlers.defaultValueHandler();
+      ? defaultMethodHandler()
+      : defaultValueHandler();
   private static final ThreadLocal<Function<Object[], Object>> BINDING = new ThreadLocal<>();
   private static final ThreadLocal<Object> PROXY = new ThreadLocal<>();
 
@@ -25,7 +26,8 @@ public final class ProxyBinding {
 
   public static <P> P proxy(Interface<P> anyInterface, InvocationHandler defaultHandler) {
     Class<?>[] type = {anyInterface.type(), Binding.class};
-    P proxy = (P) Proxy.newProxyInstance(loader(), type, new ProxyHandler(defaultHandler));
+    InvocationHandler handler = new ProxyHandler(defaultHandler);
+    P proxy = (P) Proxy.newProxyInstance(loader(), type, handler);
     return proxy;
   }
 
@@ -58,11 +60,10 @@ public final class ProxyBinding {
           try {
             return sam.invoke(action, args);
           } catch (IllegalAccessException e) {
-            Exceptions.throwChecked(e);
+            throw Exceptions.throwChecked(e);
           } catch (InvocationTargetException e) {
-            Exceptions.throwChecked(e);
+            throw Exceptions.throwChecked(e);
           }
-          throw new AssertionError();
         });
 
         try {

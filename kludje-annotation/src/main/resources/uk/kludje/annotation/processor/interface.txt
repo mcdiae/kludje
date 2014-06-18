@@ -17,8 +17,7 @@ public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
         try {
           ${invocation};
         } catch (Throwable throwable) {
-          uk.kludje.Exceptions.throwChecked(throwable);
-          throw new AssertionError();
+          throw uk.kludje.Exceptions.throwChecked(throwable);
         }
       }
 

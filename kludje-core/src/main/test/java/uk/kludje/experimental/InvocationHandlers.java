@@ -1,7 +1,10 @@
 package uk.kludje.experimental;
 
+import uk.kludje.Exceptions;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.UndeclaredThrowableException;
 
 public final class InvocationHandlers {
   private InvocationHandlers() {

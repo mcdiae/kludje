@@ -5,6 +5,7 @@ import org.junit.Test;
 import uk.kludje.Exceptions;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static uk.kludje.experimental.ProxyBinding.binder;
@@ -26,10 +27,10 @@ public class ProxyBindingTest {
     Assert.assertEquals(TEST, result.get());
   }
 
-  @Test(expected = IOException.class)
+  @Test(expected = UncheckedIOException.class)
   public void testExceptions() {
     Runnable action = () -> {
-      Exceptions.throwChecked(new IOException());
+      throw new UncheckedIOException(new IOException());
     };
 
     Runnable r = binder(Runnable.class, Runnable.class).bind(proxy(Runnable.class)::run, action::run);

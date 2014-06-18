@@ -40,9 +40,10 @@ public final class Exceptions {
    *
    * @param t the (non-null) type to throw
    */
-  public static void throwChecked(Throwable t) {
+  public static UncheckedMarker throwChecked(Throwable t) {
     Objects.requireNonNull(t, "throwable");
     Exceptions.<RuntimeException>throwIt(t);
+    return UncheckedMarker.INSTANCE;
   }
 
   @SuppressWarnings("unchecked")
@@ -103,5 +104,11 @@ public final class Exceptions {
     public <T extends Throwable> ExceptionDeclarer expected() throws T {
       return this;
     }
+  }
+
+  public static final class UncheckedMarker extends Error {
+    private static final UncheckedMarker INSTANCE = new UncheckedMarker();
+
+    private UncheckedMarker() {}
   }
 }

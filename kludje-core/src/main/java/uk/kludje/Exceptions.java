@@ -33,7 +33,7 @@ public final class Exceptions {
    *     try {
    *       c.close();
    *     } catch(IOException e) {
-   *       Exceptions.throwChecked(e);
+   *       throw Exceptions.throwChecked(e);
    *     }
    *   }
    * </pre>
@@ -58,7 +58,7 @@ public final class Exceptions {
    * Usage:
    * </p>
    * <pre>
-   *   void bar();
+   *   abstract void bar();
    *
    *   void foo() {
    *      try {
@@ -106,6 +106,14 @@ public final class Exceptions {
     }
   }
 
+  /**
+   * This error type cannot be thrown; it exists to allow
+   * callers of
+   * {@link uk.kludje.Exceptions#throwChecked(Throwable)}
+   * to express intent with the {@code throw} keyword.
+   *
+   * @see Exceptions#throwChecked(Throwable)
+   */
   public static final class UncheckedMarker extends Error {
     private static final UncheckedMarker INSTANCE = new UncheckedMarker();
 

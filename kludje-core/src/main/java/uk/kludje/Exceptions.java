@@ -39,6 +39,7 @@ public final class Exceptions {
    * </pre>
    *
    * @param t the (non-null) type to throw
+   * @returns an unchecked throwable type for syntax reasons
    */
   public static UncheckedMarker throwChecked(Throwable t) {
     Objects.requireNonNull(t, "throwable");

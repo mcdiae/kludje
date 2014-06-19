@@ -12,7 +12,9 @@ class MethodSpec {
   private static final List<MethodSpec> OBJECT = Arrays.asList(
       new MethodSpec("toString"),
       new MethodSpec("equals", "java.lang.Object"),
-      new MethodSpec("hashCode")
+      new MethodSpec("hashCode"),
+      new MethodSpec("finalize"),
+      new MethodSpec("clone")
   );
 
   private final String name;

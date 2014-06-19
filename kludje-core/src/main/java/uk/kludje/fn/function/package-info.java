@@ -16,6 +16,8 @@ limitations under the License.
 
 /**
  * Checked exception handling functional interfaces in {@code java.util.function}.
+ * Note: {@link java.util.function.BinaryOperator} and {@link java.util.function.UnaryOperator}
+ * are currently missing due to weaknesses in the code generator.
  */
 @UncheckedFunctionalInterface(BiConsumer.class)
 @UncheckedFunctionalInterface(BiFunction.class)

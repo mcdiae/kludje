@@ -129,6 +129,7 @@ public final class ProxyBinding {
   public static interface MethodBinder<P, F> {
     public P bind(F proxyRef, F action);
   }
+
   private static interface Binding {
     void set$action(Supplier<Object> o);
   }

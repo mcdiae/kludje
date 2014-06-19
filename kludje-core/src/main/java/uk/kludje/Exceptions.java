@@ -118,6 +118,7 @@ public final class Exceptions {
   public static final class UncheckedMarker extends Error {
     private static final UncheckedMarker INSTANCE = new UncheckedMarker();
 
-    private UncheckedMarker() {}
+    private UncheckedMarker() {
+    }
   }
 }

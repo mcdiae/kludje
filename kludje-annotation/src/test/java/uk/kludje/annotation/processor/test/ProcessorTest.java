@@ -1,7 +1,7 @@
 package uk.kludje.annotation.processor.test;
 
-import uk.kludje.annotation.processor.UncheckedFunctionalInterfaceProcessor;
 import org.junit.Test;
+import uk.kludje.annotation.processor.UncheckedFunctionalInterfaceProcessor;
 
 public class ProcessorTest {
 

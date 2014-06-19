@@ -1,5 +1,6 @@
 package uk.kludje.test.sample.test;
 
+import com.google.common.jimfs.Jimfs;
 import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +14,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-
-import com.google.common.jimfs.Jimfs;
 
 @RunWith(Parameterized.class)
 public class LineCounterTest {
@@ -44,7 +43,7 @@ public class LineCounterTest {
 
   private Map<Path, Long> makeFiles() throws IOException {
     Map<Path, Long> paths = new HashMap<>();
-    for(long i =0; i<100000; i+= 1000) {
+    for (long i = 0; i < 100000; i += 1000) {
       Path p = fs.getPath("foo" + i);
       paths.put(p, i);
       write(p, "hello", i);

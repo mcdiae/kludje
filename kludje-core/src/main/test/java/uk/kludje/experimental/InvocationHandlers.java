@@ -48,13 +48,13 @@ public final class InvocationHandlers {
 
   public static InvocationHandler objectMethodsHandler() {
     return (proxy, method, args) -> {
-      if(Methods.isEquals(method)) {
+      if (Methods.isEquals(method)) {
         return proxy == args[0];
       }
-      if(Methods.isHashCode(method)) {
+      if (Methods.isHashCode(method)) {
         return Integer.MIN_VALUE;
       }
-      if(Methods.isToString(method)) {
+      if (Methods.isToString(method)) {
         return "Proxy[" + proxy.getClass() + "]";
       }
       throw new IllegalArgumentException(method.toString());

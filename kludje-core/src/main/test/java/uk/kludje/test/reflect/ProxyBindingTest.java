@@ -2,7 +2,6 @@ package uk.kludje.test.reflect;
 
 import junit.framework.Assert;
 import org.junit.Test;
-import uk.kludje.Exceptions;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

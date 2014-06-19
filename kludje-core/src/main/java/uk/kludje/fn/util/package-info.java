@@ -1,4 +1,4 @@
-//@UncheckedFunctionalInterface(Comparator.class)
+@UncheckedFunctionalInterface(Comparator.class)
 package uk.kludje.fn.util;
 
 import uk.kludje.annotation.UncheckedFunctionalInterface;

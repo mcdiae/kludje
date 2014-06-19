@@ -259,7 +259,8 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
 
   private Stream<ExecutableElement> abstractMethods(TypeElement type) {
     return methods(type)
-        .filter(e -> !e.getModifiers().contains(Modifier.DEFAULT));
+        .filter(e -> !e.getModifiers().contains(Modifier.DEFAULT))
+        .filter(e -> !MethodSpec.isObjectMethod(processingEnv, e));
   }
 
   @Override

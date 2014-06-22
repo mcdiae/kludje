@@ -18,7 +18,6 @@ limitations under the License.
  * Checked exception handling functional interfaces in {@code java.lang}.
  */
 @UncheckedFunctionalInterface(Runnable.class)
-@UncheckedFunctionalInterface(Readable.class)
 @UncheckedFunctionalInterface(Iterable.class) package uk.kludje.fn.lang;
 
 import uk.kludje.annotation.UncheckedFunctionalInterface;

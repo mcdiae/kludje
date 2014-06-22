@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-@UncheckedFunctionalInterface(Closeable.class) package uk.kludje.fn.io;
+package uk.kludje.fn.nary;
 
-import uk.kludje.annotation.UncheckedFunctionalInterface;
-
-import java.io.Closeable;
+@FunctionalInterface
+public interface HexaFunction<A, B, C, D, E, R> {
+  R apply(A a, B b, C c, D d, E e);
+}

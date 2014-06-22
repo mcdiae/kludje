@@ -42,7 +42,8 @@ allprojects {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
         //TODO: gradle + release profiles
-        //https://oss.sonatype.org/service/local/staging/deploy/maven2
+        //snapshots: https://oss.sonatype.org/content/repositories/snapshots
+        //releases: https://oss.sonatype.org/service/local/staging/deploy/maven2
         repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }

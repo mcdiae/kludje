@@ -10,8 +10,7 @@ public interface UFunction<T, R> extends Function<T, R> {
     try {
       return applyChecked(t);
     } catch (Throwable e) {
-      Exceptions.throwChecked(e);
-      return null;
+      throw Exceptions.throwChecked(e);
     }
   }
 

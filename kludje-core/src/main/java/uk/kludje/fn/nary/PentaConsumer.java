@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-@UncheckedFunctionalInterface(Comparator.class) package uk.kludje.fn.util;
+package uk.kludje.fn.nary;
 
-import uk.kludje.annotation.UncheckedFunctionalInterface;
-
-import java.util.Comparator;
+@FunctionalInterface
+public interface PentaConsumer<A, B, C, D, E> {
+  void apply(A a, B b, C c, D d, E e);
+}

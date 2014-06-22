@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-@UncheckedFunctionalInterface(Comparator.class) package uk.kludje.fn.util;
+package uk.kludje.fn.nary;
 
-import uk.kludje.annotation.UncheckedFunctionalInterface;
-
-import java.util.Comparator;
+public interface Resource extends AutoCloseable {
+  @Override
+  public void close();
+}

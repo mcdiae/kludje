@@ -6,6 +6,7 @@ allprojects {
   task allDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     source(fileTree(dir: 'build/classes/main', exclude: '**/*.class'))
+    classpath = sourceSets.main.output + sourceSets.main.compileClasspath
   }
 
   task javadocJar(type: Jar, dependsOn: allDocs) {

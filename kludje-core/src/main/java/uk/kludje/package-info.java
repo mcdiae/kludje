@@ -14,9 +14,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.fn.nary;
 
-public interface Resource extends AutoCloseable {
-  @Override
-  public void close();
-}
+package uk.kludje;

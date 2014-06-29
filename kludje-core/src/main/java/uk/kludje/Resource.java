@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-/**
- * Checked exception handling functional interfaces in {@code java.lang}.
- */
-@UncheckedFunctionalInterface(Runnable.class)
-@UncheckedFunctionalInterface(Iterable.class)
-@UncheckedFunctionalInterface(Resource.class) package uk.kludje.fn.lang;
+package uk.kludje;
 
-import uk.kludje.Resource;
-import uk.kludje.annotation.UncheckedFunctionalInterface;
+/**
+ * An {@link java.lang.AutoCloseable} type without a throws declaration.
+ *
+ * For use in try-with-resources blocks.
+ */
+public interface Resource extends AutoCloseable {
+  @Override
+  public void close();
+}

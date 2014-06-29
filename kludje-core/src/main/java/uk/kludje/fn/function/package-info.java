@@ -21,7 +21,7 @@ limitations under the License.
  */
 @UncheckedFunctionalInterface(BiConsumer.class)
 @UncheckedFunctionalInterface(BiFunction.class)
-//@UncheckedFunctionalInterface(BinaryOperator.class)
+@UncheckedFunctionalInterface(BinaryOperator.class)
 @UncheckedFunctionalInterface(BiPredicate.class)
 @UncheckedFunctionalInterface(BooleanSupplier.class)
 @UncheckedFunctionalInterface(Consumer.class)
@@ -61,8 +61,7 @@ limitations under the License.
 @UncheckedFunctionalInterface(ToIntFunction.class)
 @UncheckedFunctionalInterface(ToLongBiFunction.class)
 @UncheckedFunctionalInterface(ToLongFunction.class)
-//@UncheckedFunctionalInterface(UnaryOperator.class)
-    package uk.kludje.fn.function;
+@UncheckedFunctionalInterface(UnaryOperator.class) package uk.kludje.fn.function;
 
 import uk.kludje.annotation.UncheckedFunctionalInterface;
 

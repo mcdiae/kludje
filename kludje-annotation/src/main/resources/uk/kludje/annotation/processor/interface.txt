@@ -29,7 +29,7 @@ public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
        * @param t the unchecked type
        * @return t
        */
-      public static ${generics} ${parent}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t) {
+      public static ${generics} ${simpleName}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t) {
         return t;
       }
 }

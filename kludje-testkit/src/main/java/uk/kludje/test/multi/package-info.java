@@ -18,11 +18,7 @@ limitations under the License.
 @UncheckedFunctionalInterface(SimpleGenerified.class)
 @UncheckedFunctionalInterface(ComplexGenerified.class)
 @UncheckedFunctionalInterface(ParameterizedMethod.class)
-//@UncheckedFunctionalInterface(Subtype.class)
-    package uk.kludje.test.multi;
+@UncheckedFunctionalInterface(Inherit.Sub.class) package uk.kludje.test.multi;
 
 import uk.kludje.annotation.UncheckedFunctionalInterface;
-import uk.kludje.test.ComplexGenerified;
-import uk.kludje.test.ParameterizedMethod;
-import uk.kludje.test.Simple;
-import uk.kludje.test.SimpleGenerified;
+import uk.kludje.test.*;

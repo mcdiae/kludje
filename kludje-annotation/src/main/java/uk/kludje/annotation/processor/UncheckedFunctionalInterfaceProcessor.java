@@ -23,6 +23,8 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.*;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -143,32 +145,45 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
     map.put("parent", type.getQualifiedName().toString());
     map.put("generics", inferTypeGenerics(type, true));
     map.put("parentGenerics", inferTypeGenerics(type, false));
-    map.put("parentSig", methodSignature(method, ""));
+    map.put("parentSig", methodSignature(type, method, ""));
     map.put("parentSigGenerics", "");
-    map.put("functionSignature", methodSignature(method, "$"));
+    map.put("functionSignature", methodSignature(type, method, "$"));
     map.put("invocation", invocation(method));
     return map;
   }
 
-  private String methodSignature(ExecutableElement method, String prefix) {
+  private String methodSignature(TypeElement type, ExecutableElement method, String prefix) {
+    ExecutableType gens = resolveGenerics(type, method);
+
     String result = "";
     if (!method.getTypeParameters().isEmpty()) {
       result += "<" + method.getTypeParameters() + "> ";
     }
-    result += method.getReturnType() + " "
+    result += gens.getReturnType() + " "
         + prefix
         + method.getSimpleName() + "(";
-    if (!method.getParameters().isEmpty()) {
+    List<? extends VariableElement> elements = method.getParameters();
+    if (!elements.isEmpty()) {
       StringBuilder buf = new StringBuilder();
-      for (VariableElement element : method.getParameters()) {
+      List<? extends TypeMirror> typeMirrors = gens.getParameterTypes();
+      for (int i = 0; i < elements.size(); i++) {
+        VariableElement param = elements.get(i);
+        TypeMirror paramType = typeMirrors.get(i);
         buf.append(buf.length() == 0 ? "" : ", ")
-            .append(element.asType())
+            .append(paramType)
             .append(" ")
-            .append(element);
+            .append(param);
       }
       result += buf.toString();
     }
     return result + ")";
+  }
+
+  private ExecutableType resolveGenerics(TypeElement type, ExecutableElement method) {
+    DeclaredType declaredType = (DeclaredType) type.asType();
+    TypeMirror mirror = processingEnv.getTypeUtils()
+        .asMemberOf(declaredType, method);
+    return (ExecutableType) mirror;
   }
 
   private String invocation(ExecutableElement method) {

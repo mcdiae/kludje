@@ -74,7 +74,6 @@ limitations under the License.
 @UncheckedFunctionalInterface(TetraFunction.class)
 @UncheckedFunctionalInterface(PentaFunction.class)
 @UncheckedFunctionalInterface(HexaFunction.class)
-@UncheckedFunctionalInterface(SeptaFunction.class)
-package uk.kludje.fn.nary;
+@UncheckedFunctionalInterface(SeptaFunction.class) package uk.kludje.fn.nary;
 
 import uk.kludje.annotation.UncheckedFunctionalInterface;

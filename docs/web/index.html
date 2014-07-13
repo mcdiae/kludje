@@ -87,7 +87,7 @@
 
 <pre data-src="artefacts/sample/LineCounter4.java" class="prettyprint lange-java">loading...</pre>
 
-<h3 id="arbitrary-interfaces">Checked Exception Handling With Arbitrary Interfaces</h3>
+<h3 id="arbitrary-interfaces">Checked Exception Handling With Arbitrary Functional Interfaces</h3>
 
 <p>The previous example assumes the use of the standard <code>Function</code> interface.
 However, arbitrary interfaces can be provided using method references.
@@ -97,7 +97,14 @@ KλudJe provides a few n-ary interface types to add exception handling to cover 
 
 <pre data-src="artefacts/sample/ArbitraryInterfaces.java" class="prettyprint lange-java">loading...</pre>
 
-<p></p>
+<p>Explanation:</p>
+
+<ul>
+    <li>The <code>call</code> method takes a functional interface and the method <code>Foo.exec</code> declares no exceptions</li>
+    <li>We want to bind a <code>ArbitraryInterfaces.download</code> method reference to <code>ArbitraryInterfaces.call</code></li>
+    <li>We can use <code>asUTriFunction(this::download)</code> to create an arbitrary functional interface instance that rethrows any declared exception</li>
+    <li>We can apply the <code>UTriFunction.apply</code> method reference to <code>call</code></li>
+</ul>
 
 <h2 id="here-be-dragons">Here Be Dragons</h2>
 

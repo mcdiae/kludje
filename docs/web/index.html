@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KλudJe Java lambda API for checked exception handling</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="index.css" />
+</head>
+<body>
+<noscript>JavaScript is disabled! Some of this page won't work.</noscript>
+
+<h1 id="kludje">KλudJe</h1>
+
+<h2 id="about">About</h2>
+
+<blockquote>
+<strong>kludge</strong> <em>n. Slang</em>
+<p>A system, especially a computer system, that is constituted of poorly matched elements or of elements originally intended for other applications.</p>
+</blockquote>
+
+<p>KλudJe is a Java lambda API.</p>
+
+<h2 id="download">Download</h2>
+
+<p>Binaries are published to the <a href="http://search.maven.org/#search|ga|1|a%3A%22kludje-core%22">Central Repository</a>.</p>
+
+<p>Maven dependecy:</p>
+
+<pre class="prettyprint lang-html">
+    &lt;dependency>
+        &lt;groupId>uk.kludje&lt;/groupId>
+        &lt;artifactId>kludje-core&lt;/artifactId>
+        &lt;version>0.1&lt;/version>
+    &lt;/dependency>
+</pre>
+
+<p>Sources are available via the <a href="https://github.com/mcdiae/kludje">KλudJe project page</a>.</p>
+
+<h2 id="api">API</h2>
+
+<p>Javadoc:</p>
+
+<ul>
+    <li><a href="artefacts/api/0.1/index.html">KλudJe 0.1</a></li>
+</ul>
+
+<h2 id="examples">Examples</h2>
+
+<h3 id="checked-exception-propagation">Checked Exception Propagation</h3>
+
+<p>This code demonstrates how to throw and catch the checked <code>IOException</code> without using
+    a <code>throws</code> declaration in a method:</p>
+
+<pre data-src="artefacts/sample/ExceptionPropagator.java" class="prettyprint lange-java">loading...</pre>
+
+<p>The next example demonstrates how this is useful.</p>
+
+<h3 id="line-count-example">Line Count Example</h3>
+
+<p>Consider this interface contract that takes a collection of files and returns the number of lines in them:</p>
+
+<pre data-src="artefacts/sample/LineCounter.java" class="prettyprint lange-java">loading...</pre>
+
+<p>Here is a traditional imperative implementation:</p>
+
+<pre data-src="artefacts/sample/LineCounter1.java" class="prettyprint lange-java">loading...</pre>
+
+<p>Let's refactor to a parallel streaming implementation:</p>
+
+<pre data-src="artefacts/sample/LineCounter2.java" class="prettyprint lange-java">loading...</pre>
+
+<p>The above code is unsatisfactory. In order to obey the interface contract <code>IOException</code> must be wrapped and unwrapped using <code>UncheckedIOException</code>.</p>
+
+<p>This problem can be mitigated using a cast to KλudJe's <code>UFunction</code> to transparently pass the exception to the calling method:</p>
+
+<pre data-src="artefacts/sample/LineCounter3.java" class="prettyprint lange-java">loading...</pre>
+
+<p>Alternatively, the <code>asUFunction</code> method can be used for type inference:</p>
+
+<pre data-src="artefacts/sample/LineCounter4.java" class="prettyprint lange-java">loading...</pre>
+
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="index.js"></script>
+
+</body>
+</html>

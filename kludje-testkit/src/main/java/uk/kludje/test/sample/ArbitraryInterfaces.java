@@ -13,6 +13,7 @@ public class ArbitraryInterfaces {
     call(asUTriFunction(this::download)::apply);
   }
 
+  /**This method doesn't work but it might throw an exception*/
   private boolean download(File target, URI source, Object ignored) throws IOException {
     try (InputStream in = source.toURL().openStream()) {
       return true;

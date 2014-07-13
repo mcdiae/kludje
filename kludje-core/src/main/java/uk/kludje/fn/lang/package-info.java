@@ -19,7 +19,7 @@ limitations under the License.
  */
 @UncheckedFunctionalInterface(Runnable.class)
 @UncheckedFunctionalInterface(Iterable.class)
-@UncheckedFunctionalInterface(Resource.class) package uk.kludje.fn.lang;
+@UncheckedFunctionalInterface(CloseableResource.class) package uk.kludje.fn.lang;
 
-import uk.kludje.Resource;
+import uk.kludje.CloseableResource;
 import uk.kludje.annotation.UncheckedFunctionalInterface;

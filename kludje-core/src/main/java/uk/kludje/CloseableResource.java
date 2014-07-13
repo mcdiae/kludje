@@ -21,7 +21,8 @@ package uk.kludje;
  *
  * For use in try-with-resources blocks.
  */
-public interface Resource extends AutoCloseable {
+@FunctionalInterface
+public interface CloseableResource extends AutoCloseable {
   @Override
   public void close();
 }

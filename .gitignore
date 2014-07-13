@@ -17,3 +17,5 @@ gradle/*
 gradlew*
 build
 .gradle
+
+docs/web/artefacts/

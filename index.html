@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>KλudJe Java lambda API for checked exception handling</title>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="index.css" />
+    <title>KludJe Java lambda API for checked exception handling</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A Java 8 lambda API for mitigating checked exception handling problems">
+    <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 <body>
 <noscript>JavaScript is disabled! Some of this page won't work.</noscript>
+
 
 <h1 id="kludje">KλudJe</h1>
 
@@ -17,7 +19,9 @@
 <p>A system, especially a computer system, that is constituted of poorly matched elements or of elements originally intended for other applications.</p>
 </blockquote>
 
-<p>KλudJe is a Java lambda API.</p>
+<p>KλudJe is a Java lambda API for use with Java 8. If you aren't familiar with them already see the <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Java lambda expression tutorial</a>.</p>
+
+<p>KλudJe is published under the <a href="https://github.com/mcdiae/kludje/blob/master/LICENSE">Apache 2.0 license</a>.</p>
 
 <h2 id="download">Download</h2>
 
@@ -29,7 +33,7 @@
     &lt;dependency>
         &lt;groupId>uk.kludje&lt;/groupId>
         &lt;artifactId>kludje-core&lt;/artifactId>
-        &lt;version>0.1&lt;/version>
+        &lt;version>0.2&lt;/version>
     &lt;/dependency>
 </pre>
 
@@ -40,7 +44,8 @@
 <p>Javadoc:</p>
 
 <ul>
-    <li><a href="artefacts/api/0.1/index.html">KλudJe 0.1</a></li>
+    <li><a href="artefacts/api/0.2/index.html">KλudJe 0.2 API</a></li>
+    <li><a href="artefacts/api/0.1/index.html">KλudJe 0.1 API</a></li>
 </ul>
 
 <h2 id="examples">Examples</h2>
@@ -70,13 +75,47 @@
 
 <p>The above code is unsatisfactory. In order to obey the interface contract <code>IOException</code> must be wrapped and unwrapped using <code>UncheckedIOException</code>.</p>
 
-<p>This problem can be mitigated using a cast to KλudJe's <code>UFunction</code> to transparently pass the exception to the calling method:</p>
+<p>This problem can be addressed using a cast to KλudJe's <code>UFunction</code> to transparently pass the exception to the calling method:</p>
 
 <pre data-src="artefacts/sample/LineCounter3.java" class="prettyprint lange-java">loading...</pre>
 
-<p>Alternatively, the <code>asUFunction</code> method can be used for type inference:</p>
+<p><code>UFunction</code> extends <code>java.util.function.Function</code>.
+    KλudJe provides types that extend many of the standard Java functional interfaces in the same way.
+    See the <a href="#api">API</a> for more details.</p>
+
+<p>The static <code>UFunction.asUFunction</code> method can be used for type inference to avoid having to specify the generic types:</p>
 
 <pre data-src="artefacts/sample/LineCounter4.java" class="prettyprint lange-java">loading...</pre>
+
+<h3 id="arbitrary-interfaces">Checked Exception Handling With Arbitrary Functional Interfaces</h3>
+
+<p>The previous example assumes the use of the standard <code>Function</code> interface.
+However, arbitrary interfaces can be provided using method references.
+KλudJe provides a few n-ary interface types to add exception handling to cover cases where the standard API doesn't.</p>
+
+<p>An example of using a method handle that throws a checked exception with an arbitrary 3-argument functional interface:</p>
+
+<pre data-src="artefacts/sample/ArbitraryInterfaces.java" class="prettyprint lange-java">loading...</pre>
+
+<p>Explanation:</p>
+
+<ul>
+    <li>The <code>call</code> method takes a functional interface and the method <code>Foo.exec</code> declares no exceptions</li>
+    <li>We want to bind a <code>ArbitraryInterfaces.download</code> method reference to <code>ArbitraryInterfaces.call</code></li>
+    <li>We can use <code>asUTriFunction(this::download)</code> to create an arbitrary functional interface instance that rethrows any declared exception</li>
+    <li>We can apply the <code>UTriFunction.apply</code> method reference to <code>call</code></li>
+</ul>
+
+<h2 id="here-be-dragons">Here Be Dragons</h2>
+
+<p>When using this API there are a few things to be aware of.</p>
+
+<p>When using <code>Exceptions.throwChecked</code> or code that uses it (e.g. <code>UFunction</code>) you cannot rely on
+   the compiler to flag uncaught checked exceptions. This will defy the expectations of many Java developers.
+   It is recommended to document usage and intent.</p>
+
+<p>The n-ary types provided can be used with functional interfaces/method references that use primitives.
+Autoboxing concerns are left to the developer.</p>
 
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="index.js"></script>

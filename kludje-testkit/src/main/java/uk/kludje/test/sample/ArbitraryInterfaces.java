@@ -9,7 +9,7 @@ import static uk.kludje.fn.nary.UTriFunction.asUTriFunction;
 
 public class ArbitraryInterfaces {
 
-  public void invoke() {
+  public void invoke() throws IOException {
     call(asUTriFunction(this::download)::apply);
   }
 

@@ -3,9 +3,20 @@
     var prettify, counter = 0;
 
     $("[id]").each(function (idx, element) {
-        var anchor = $("<a>&#167;</a>").attr("href", "#" + element.id)[0];
-        $(element).append(anchor);
+        var anchor, el, li;
+        el = $(element);
+
+        anchor = $("<a />").text(el.text())
+            .attr("href", "#" + element.id);
+        li = $("<li />").append(anchor);
+        $("ul").append(li)
+
+        anchor = $("<a>&#167;</a>").attr("href", "#" + element.id)
+            .attr("title", el.text())[0];
+        el.append(anchor);
     });
+
+    $("a").attr("target", "_top");
 
     prettify = function () {
         if(counter === 0) {
@@ -14,6 +25,7 @@
     };
 
     $("[data-src]").each(function (idx, element) {
+        $(element).text("loading " + $(element).attr("data-src") + "...");
         counter++;
         $.ajax({
               dataType: "text",

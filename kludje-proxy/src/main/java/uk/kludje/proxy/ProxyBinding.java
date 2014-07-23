@@ -1,4 +1,4 @@
-package uk.kludje.experimental;
+package uk.kludje.proxy;
 
 import uk.kludje.Exceptions;
 
@@ -12,8 +12,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static uk.kludje.experimental.InvocationHandlers.defaultMethodHandler;
-import static uk.kludje.experimental.InvocationHandlers.defaultValueHandler;
+import static uk.kludje.proxy.InvocationHandlers.defaultMethodHandler;
+import static uk.kludje.proxy.InvocationHandlers.defaultValueHandler;
 
 public final class ProxyBinding {
   private static final InvocationHandler HANDLER = (proxy, method, args)

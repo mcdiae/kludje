@@ -1,4 +1,4 @@
-package uk.kludje.experimental;
+package uk.kludje.proxy;
 
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationHandler;

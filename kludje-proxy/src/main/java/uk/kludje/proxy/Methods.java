@@ -1,4 +1,4 @@
-package uk.kludje.experimental;
+package uk.kludje.proxy;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

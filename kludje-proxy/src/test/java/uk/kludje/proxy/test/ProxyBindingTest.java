@@ -1,4 +1,4 @@
-package uk.kludje.test.reflect;
+package uk.kludje.proxy.test;
 
 import junit.framework.Assert;
 import org.junit.Ignore;
@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static uk.kludje.experimental.ProxyBinding.binder;
-import static uk.kludje.experimental.ProxyBinding.proxy;
+import static uk.kludje.proxy.ProxyBinding.binder;
+import static uk.kludje.proxy.ProxyBinding.proxy;
 
 @Ignore
 public class ProxyBindingTest {

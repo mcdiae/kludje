@@ -23,6 +23,11 @@ package uk.kludje;
  */
 @FunctionalInterface
 public interface CloseableResource extends AutoCloseable {
+
+  /**
+   * Overrides the parent method which throws {@link java.lang.Exception}.
+   * Combined with {@link #expected()} this type can declare that it throws any type.
+   */
   @Override
   public void close();
 

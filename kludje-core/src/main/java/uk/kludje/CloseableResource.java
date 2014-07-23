@@ -25,4 +25,15 @@ package uk.kludje;
 public interface CloseableResource extends AutoCloseable {
   @Override
   public void close();
+
+  /**
+   * Fluent method for allowing an instance to declare it throws any {@code Throwable}.
+   *
+   * @param <T> the type of exception to expect
+   * @return this
+   * @see Exceptions#expected()
+   */
+  default <T extends Throwable> CloseableResource expected() throws T {
+    return this;
+  }
 }

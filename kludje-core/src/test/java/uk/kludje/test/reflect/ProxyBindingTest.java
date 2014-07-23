@@ -1,6 +1,7 @@
 package uk.kludje.test.reflect;
 
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static uk.kludje.experimental.ProxyBinding.binder;
 import static uk.kludje.experimental.ProxyBinding.proxy;
 
+@Ignore
 public class ProxyBindingTest {
 
   private static final String TEST = "Hello, World!";

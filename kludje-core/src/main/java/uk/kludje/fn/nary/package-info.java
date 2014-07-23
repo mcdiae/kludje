@@ -19,7 +19,7 @@ limitations under the License.
  *
  * <table summary="n-ary functional interfaces">
  *   <tr>
- *     <th>Arguments</th>
+ *     <th>Arity</th>
  *     <th>Function</th>
  *     <th>Consumer</th>
  *   </tr>

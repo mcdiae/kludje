@@ -9,7 +9,7 @@
         anchor = $("<a />").text(el.text())
             .attr("href", "#" + element.id);
         li = $("<li />").append(anchor);
-        $("ul").append(li)
+        $("ul[data-tag='menu']").append(li);
 
         anchor = $("<a>&#167;</a>").attr("href", "#" + element.id)
             .attr("title", el.text())[0];

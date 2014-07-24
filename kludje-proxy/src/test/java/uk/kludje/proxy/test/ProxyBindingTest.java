@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static uk.kludje.proxy.ProxyBinding.binder;
 import static uk.kludje.proxy.ProxyBinding.proxy;
 
-@Ignore
 public class ProxyBindingTest {
 
   private static final String TEST = "Hello, World!";
@@ -44,6 +43,7 @@ public class ProxyBindingTest {
     Assert.assertEquals(TEST, result.get());
   }
 
+  @Ignore
   @Test(expected = UncheckedIOException.class)
   public void testExceptions() {
     Runnable action = () -> {

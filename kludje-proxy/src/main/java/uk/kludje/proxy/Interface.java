@@ -19,6 +19,7 @@ package uk.kludje.proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -73,12 +74,20 @@ public abstract class Interface<T> {
   }
 
   private Class<T> fromImpl() {
-    Object typeArguments = ((ParameterizedType) getClass()
-        .getGenericSuperclass()).getActualTypeArguments()[0];
-    if (!(typeArguments instanceof Class<?>)) {
-      throw new IllegalImplementationError("expected class type argument; got " + typeArguments);
+    Type thisType = getClass().getGenericSuperclass();
+    if(!(thisType instanceof ParameterizedType)) {
+      throw new IllegalImplementationError("expected " + thisType + " to be parameterized");
     }
-    Class<T> type = (Class<T>) typeArguments;
+    Object typeArguments = ((ParameterizedType) thisType).getActualTypeArguments()[0];
+    Class<T> type;
+    if(typeArguments instanceof Class<?>) {
+      type = (Class<T>) typeArguments;
+    } else if(typeArguments instanceof  ParameterizedType) {
+      ParameterizedType parameterizedType = (ParameterizedType) typeArguments;
+      type = (Class<T>) parameterizedType.getRawType();
+    } else {
+      throw new IllegalImplementationError("unable to resolve generic type for " + this);
+    }
     if (!type.isInterface()) {
       throw new IllegalImplementationError("expected interface; got " + type);
     }
@@ -125,8 +134,11 @@ public abstract class Interface<T> {
         .collect(Collectors.toList());
   }
 
-  private static class IllegalImplementationError extends Error {
-    public IllegalImplementationError(String msg) {
+  /**
+   * Indicates that the type has not been subtyped correctly.
+   */
+  public static class IllegalImplementationError extends Error {
+    private IllegalImplementationError(String msg) {
       super(msg);
     }
   }

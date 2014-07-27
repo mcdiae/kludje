@@ -93,6 +93,7 @@ project(':kludje-testkit') {
   dependencies {
     compile project(':kludje-annotation')
     compile project(':kludje-core')
+    compile project(':kludje-proxy')
   }
 }
 

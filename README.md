@@ -32,3 +32,7 @@ To build:
   gradle build
 ```
 
+Release Notes
+=============
+
+version 0.3: breaking API changes in nary package (consumer methods "apply" changed to "accept")

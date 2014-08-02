@@ -18,5 +18,5 @@ package uk.kludje.fn.nary;
 
 @FunctionalInterface
 public interface TriConsumer<A, B, C> {
-  void apply(A a, B b, C c);
+  void accept(A a, B b, C c);
 }

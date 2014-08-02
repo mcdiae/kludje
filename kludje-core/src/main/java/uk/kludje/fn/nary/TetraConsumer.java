@@ -18,5 +18,5 @@ package uk.kludje.fn.nary;
 
 @FunctionalInterface
 public interface TetraConsumer<A, B, C, D> {
-  void apply(A a, B b, C c, D d);
+  void accept(A a, B b, C c, D d);
 }

@@ -18,5 +18,5 @@ package uk.kludje.fn.nary;
 
 @FunctionalInterface
 public interface PentaConsumer<A, B, C, D, E> {
-  void apply(A a, B b, C c, D d, E e);
+  void accept(A a, B b, C c, D d, E e);
 }

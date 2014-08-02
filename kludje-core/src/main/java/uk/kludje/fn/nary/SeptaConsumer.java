@@ -18,5 +18,5 @@ package uk.kludje.fn.nary;
 
 @FunctionalInterface
 public interface SeptaConsumer<A, B, C, D, E, F> {
-  void apply(A a, B b, C c, D d, E e, F f);
+  void accept(A a, B b, C c, D d, E e, F f);
 }

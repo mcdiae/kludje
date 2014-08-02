@@ -137,8 +137,8 @@ public abstract class Interface<T> {
   /**
    * Indicates that the type has not been subtyped correctly.
    */
-  public static class IllegalImplementationError extends Error {
-    private IllegalImplementationError(String msg) {
+  private static class IllegalImplementationError extends Error {
+    public IllegalImplementationError(String msg) {
       super(msg);
     }
   }

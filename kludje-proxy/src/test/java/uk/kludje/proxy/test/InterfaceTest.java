@@ -43,14 +43,14 @@ public class InterfaceTest {
     Assert.assertEquals(List.class, iface);
   }
 
-  @Test(expected = Interface.IllegalImplementationError.class)
+  @Test(expected = Error.class)
   public void testRaw() {
     @SuppressWarnings({"unchecked", "unused"})
     Object raw = new Interface() {
     }.type();
   }
 
-  @Test(expected = Interface.IllegalImplementationError.class)
+  @Test(expected = Error.class)
   public void testNotInterface() {
     @SuppressWarnings("unused")
     Object raw = new Interface<String>() {

@@ -31,6 +31,16 @@ import java.util.function.Supplier;
 import static uk.kludje.proxy.InvocationHandlers.defaultMethodHandler;
 import static uk.kludje.proxy.InvocationHandlers.defaultValueHandler;
 
+/**
+ * Utility type for creating interface proxies with methods bound to functional interfaces.
+ * Example:
+ * <pre>
+ *   AutoCloseable ac = () -&gt; System.out.println("Close!");
+ *   ResultSet rc = proxy(ResultSet.class);
+ *   binder(ResultSet.class, AutoCloseable.class).bind(rc::close, ac::close);
+ *   rc.close();
+ * </pre>
+ */
 public final class ProxyBinding {
   private static final InvocationHandler HANDLER = (proxy, method, args)
       -> method.isDefault()
@@ -42,25 +52,57 @@ public final class ProxyBinding {
   private ProxyBinding() {
   }
 
-  public static <P> P proxy(Interface<P> anyInterface, InvocationHandler defaultHandler) {
-    Class<?>[] type = {anyInterface.type(), Binding.class};
+  /**
+   * Creates a proxy instance fo a given type.
+   * Methods can be bound to functional interfaces using a {@link uk.kludje.proxy.ProxyBinding.MethodBinder}.
+   *
+   * @param anyInterface an interface
+   * @param defaultHandler default behaviour for interface methods
+   * @param <P> the interface type
+   * @return a new instance
+   */
+  public static <P> P proxy(Class<P> anyInterface, InvocationHandler defaultHandler) {
+    Objects.requireNonNull(defaultHandler, "defaultHandler");
+    Assert.ensure(anyInterface.isInterface(), "anyInterface.isInterface()");
+
+    Class<?>[] type = {anyInterface, Binding.class};
     InvocationHandler handler = new ProxyHandler(defaultHandler);
     P proxy = (P) Proxy.newProxyInstance(loader(), type, handler);
     return proxy;
   }
 
-  public static <P> P proxy(Interface<P> anyInterface) {
-    return proxy(anyInterface, HANDLER);
-  }
-
+  /**
+   * As {@link #proxy(Class, java.lang.reflect.InvocationHandler)} but with a
+   * predefined no-op {@link java.lang.reflect.InvocationHandler}.
+   */
   public static <P> P proxy(Class<P> anyInterface) {
     return proxy(Interface.type(anyInterface));
   }
 
-  public static <P> P proxy(Class<P> anyInterface, InvocationHandler defaultHandler) {
-    return proxy(Interface.type(anyInterface), defaultHandler);
+  /**
+   * @see #proxy(Class, java.lang.reflect.InvocationHandler)
+   */
+  public static <P> P proxy(Interface<P> anyInterface, InvocationHandler defaultHandler) {
+    return proxy(anyInterface.type(), defaultHandler);
   }
 
+  /**
+   * @see #proxy(Class)
+   */
+  public static <P> P proxy(Interface<P> anyInterface) {
+    return proxy(anyInterface, HANDLER);
+  }
+
+  /**
+   * Creates a method binder for the given types.
+   * {@link MethodBinder} instances returned by this method are thread safe and immutable.
+   *
+   * @param proxyType the proxy type
+   * @param functionalInterface a functional interface type
+   * @param <P> the type of the proxy
+   * @param <F> the type of the interface
+   * @return a new instance
+   */
   public static <P, F> MethodBinder<P, F> binder(Interface<P> proxyType, Interface<F> functionalInterface) {
     Objects.requireNonNull(proxyType, "proxyType");
     Objects.requireNonNull(functionalInterface, "functionalInterface");

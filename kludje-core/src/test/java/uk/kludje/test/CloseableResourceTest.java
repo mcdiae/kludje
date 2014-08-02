@@ -27,14 +27,14 @@ public class CloseableResourceTest {
 
   @Test
   public void compileTest() {
-    try(CloseableResource res = this::noop) {
+    try (CloseableResource res = this::noop) {
     }
   }
 
   @Test
   public void exceptionTest() {
     AtomicBoolean gotit = new AtomicBoolean();
-    try(CloseableResource res = throwCre().<CRE>expected()) {
+    try (CloseableResource res = throwCre().<CRE>expected()) {
     } catch (CRE e) {
       gotit.set(true);
     }
@@ -45,7 +45,8 @@ public class CloseableResourceTest {
     return () -> Exceptions.throwChecked(new CRE());
   }
 
-  private void noop() {}
+  private void noop() {
+  }
 
   private static class CRE extends Exception {
   }

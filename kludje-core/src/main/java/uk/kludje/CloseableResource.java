@@ -18,7 +18,7 @@ package uk.kludje;
 
 /**
  * An {@link java.lang.AutoCloseable} type without a throws declaration.
- *
+ * <p>
  * For use in try-with-resources blocks.
  */
 @FunctionalInterface

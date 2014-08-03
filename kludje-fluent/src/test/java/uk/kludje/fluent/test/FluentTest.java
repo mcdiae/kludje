@@ -54,6 +54,6 @@ public class FluentTest {
         .map(Collections::unmodifiableMap)
         .get();
 
-    Assert.assertEquals(2, map.size());
+    Assert.assertEquals(3, map.size());
   }
 }

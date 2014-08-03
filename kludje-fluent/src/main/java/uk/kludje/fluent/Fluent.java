@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * Makes any type fluent.
  *
- * @param <T>
+ * @param <T> the type of the underlying value
  */
 public final class Fluent<T> {
   private T t;

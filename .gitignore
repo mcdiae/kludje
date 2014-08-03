@@ -19,3 +19,5 @@ build
 .gradle
 
 docs/web/artefacts/
+
+*/target/**

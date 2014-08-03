@@ -1,12 +1,19 @@
 package uk.kludje.fluent;
 
+import uk.kludje.fn.nary.TriConsumer;
+import uk.kludje.fn.nary.TriFunction;
+
 import java.util.Objects;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-import uk.kludje.fn.function.UConsumer;
-import uk.kludje.fn.function.UFunction;
-import uk.kludje.fn.function.UBiFunction;
-import uk.kludje.fn.nary.UTriFunction;
-
+/**
+ * Makes any type fluent.
+ *
+ * @param <T>
+ */
 public final class Fluent<T> {
   private T t;
 
@@ -14,18 +21,23 @@ public final class Fluent<T> {
     this.t = t;
   }
 
-  public Fluent<T> run(UConsumer<? super T> method) {
+  public static <T> Fluent<T> fluent(T t) {
+    Objects.requireNonNull(t);
+    return new Fluent<>(t);
+  }
+
+  public Fluent<T> f(Consumer<? super T> method) {
     method.accept(t);
     return this;
   }
 
-  public <A, R> Fluent<T> uni(UBiFunction<? super T, A, R> method, A a) {
-    method.apply(t, a);
+  public <A> Fluent<T> f(BiConsumer<? super T, A> method, A a) {
+    method.accept(t, a);
     return this;
   }
 
-  public <A, B, R> Fluent<T> bi(UTriFunction<? super T, A, B, R> method, A a, B b) {
-    method.apply(t, a, b);
+  public <A, B> Fluent<T> f(TriConsumer<? super T, A, B> method, A a, B b) {
+    method.accept(t, a, b);
     return this;
   }
 
@@ -33,8 +45,15 @@ public final class Fluent<T> {
     return t;
   }
 
-  public static <T> Fluent<T> fluent(T t) {
-    Objects.requireNonNull(t);
-    return new Fluent<>(t);
+  public <M> Fluent<M> map(Function<T, M> mapper) {
+    return new Fluent<>(mapper.apply(t));
+  }
+
+  public <M, A> Fluent<M> map(BiFunction<T, A, M> mapper, A a) {
+    return new Fluent<>(mapper.apply(t, a));
+  }
+
+  public <M, A, B> Fluent<M> map(TriFunction<T, A, B, M> mapper, A a, B b) {
+    return new Fluent<>(mapper.apply(t, a, b));
   }
 }

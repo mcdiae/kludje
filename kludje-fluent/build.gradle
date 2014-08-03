@@ -1,0 +1,11 @@
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      pom.project {
+        name 'kludje-fluent'
+        packaging 'jar'
+        description 'Java 8 lambda fluent API'
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@ import java.util.function.Function;
  *   List&lt;String&gt; list = new ArrayList&lt;&gt;();
  *   FluentConsumer.fluent(list::add)
  *                 .apply("one")
- *                 .apply("two")
+ *                 .apply("apply")
  *                 .apply("three");
  * </pre>
  *

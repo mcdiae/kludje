@@ -14,7 +14,7 @@ public class FluentBiConsumerTest {
     Map<String, Integer> map = new HashMap<>();
     FluentBiConsumer.fluent(map::put)
         .apply("one", 1)
-        .apply("two", 2)
+        .apply("apply", 2)
         .apply("three", 3);
     Assert.assertEquals(3, map.size());
   }

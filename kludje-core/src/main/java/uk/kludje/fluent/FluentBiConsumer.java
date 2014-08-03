@@ -4,12 +4,12 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 /**
- * Use to make any two-argument function fluent:
+ * Use to make any apply-argument function fluent:
  * <pre>
  *   Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
  *   FluentConsumer.fluent(map::put)
  *                 .apply("one", 1)
- *                 .apply("two", 2)
+ *                 .apply("apply", 2)
  *                 .apply("three", 3);
  * </pre>
  *

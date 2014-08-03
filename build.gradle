@@ -109,6 +109,12 @@ project(':kludje-proxy') {
   }
 }
 
+project(':kludje-fluent') {
+  dependencies {
+    compile project(':kludje-core')
+  }
+}
+
 uploadArchives {
   repositories {
     mavenDeployer {

@@ -10,34 +10,34 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * Makes any type fluent.
+ * Type for mutating an object using method references.
  *
  * @param <T> the type of the underlying value
  */
-public final class Fluent<T> {
+public final class Mutator<T> {
   private T t;
 
-  private Fluent(T t) {
+  private Mutator(T t) {
     this.t = t;
   }
 
   /**
-   * Creates a new fluent instance.
+   * Creates a new mutate instance.
    *
    * @param t   the non-null type to adapt
    * @param <T> the adapted type
    * @return a new instance
    */
-  public static <T> Fluent<T> fluent(T t) {
+  public static <T> Mutator<T> mutate(T t) {
     Objects.requireNonNull(t);
-    return new Fluent<>(t);
+    return new Mutator<>(t);
   }
 
   /**
    * Passes the underlying value to a consumer.
    * Usage:
    * <pre>
-   *   AtomicInteger two = fluent(new AtomicInteger())
+   *   AtomicInteger two = mutate(new AtomicInteger())
    *   .f(AtomicInteger::incrementAndGet)
    *   .f(AtomicInteger::incrementAndGet)
    *   .get();
@@ -46,7 +46,7 @@ public final class Fluent<T> {
    * @param consumer typically a method reference for T
    * @return this
    */
-  public Fluent<T> f(Consumer<? super T> consumer) {
+  public Mutator<T> f(Consumer<? super T> consumer) {
     consumer.accept(t);
     return this;
   }
@@ -55,7 +55,7 @@ public final class Fluent<T> {
    * Passes the underlying value to a consumer, with an argument.
    * Usage:
    * <pre>
-   * List&lt;String&gt; list = fluent(new ArrayList&lt;String&gt;())
+   * List&lt;String&gt; list = mutate(new ArrayList&lt;String&gt;())
    *                           .f(List::add, "a")
    *                           .f(List::add, "b")
    *                           .f(List::add, "c")
@@ -69,7 +69,7 @@ public final class Fluent<T> {
    * @param <A> argument type
    * @return this
    */
-  public <A> Fluent<T> f(BiConsumer<? super T, A> consumer, A a) {
+  public <A> Mutator<T> f(BiConsumer<? super T, A> consumer, A a) {
     consumer.accept(t, a);
     return this;
   }
@@ -78,7 +78,7 @@ public final class Fluent<T> {
    * Passes the underlying value to a consumer, with two arguments.
    * Usage:
    * <pre>
-   *   Map&lt;String, String&gt; map = fluent(new HashMap&lt;String, String&gt;())
+   *   Map&lt;String, String&gt; map = mutate(new HashMap&lt;String, String&gt;())
    *                                  .f(Map::put, "a", "A")
    *                                  .f(Map::put, "b", "B")
    *                                  .f(Map::put, "c", "C")
@@ -93,7 +93,7 @@ public final class Fluent<T> {
    * @param <B> type of b
    * @return this
    */
-  public <A, B> Fluent<T> f(TriConsumer<? super T, A, B> consumer, A a, B b) {
+  public <A, B> Mutator<T> f(TriConsumer<? super T, A, B> consumer, A a, B b) {
     consumer.accept(t, a, b);
     return this;
   }
@@ -122,16 +122,16 @@ public final class Fluent<T> {
     return t;
   }
 
-  public <M> Fluent<M> map(Function<T, M> mapper) {
-    return new Fluent<M>(mapper.apply(t));
+  public <M> Mutator<M> map(Function<T, M> mapper) {
+    return new Mutator<M>(mapper.apply(t));
   }
 
-  public <M, A> Fluent<M> map(BiFunction<T, A, M> mapper, A a) {
-    return new Fluent<M>(mapper.apply(t, a));
+  public <M, A> Mutator<M> map(BiFunction<T, A, M> mapper, A a) {
+    return new Mutator<M>(mapper.apply(t, a));
   }
 
-  public <M, A, B> Fluent<M> map(TriFunction<T, A, B, M> mapper, A a, B b) {
-    return new Fluent<M>(mapper.apply(t, a, b));
+  public <M, A, B> Mutator<M> map(TriFunction<T, A, B, M> mapper, A a, B b) {
+    return new Mutator<M>(mapper.apply(t, a, b));
   }
 
   /**
@@ -145,13 +145,13 @@ public final class Fluent<T> {
   }
 
   public static abstract class FluentMethod<T> {
-    private final Fluent<T> parent;
+    private final Mutator<T> parent;
 
-    private FluentMethod(Fluent<T> parent) {
+    private FluentMethod(Mutator<T> parent) {
       this.parent = parent;
     }
 
-    public Fluent<T> unbind() {
+    public Mutator<T> unbind() {
       return parent;
     }
 
@@ -163,7 +163,7 @@ public final class Fluent<T> {
   public static class Nullary<T> extends FluentMethod<T> {
     private final Consumer<? super T> consumer;
 
-    private Nullary(Fluent<T> parent, Consumer<? super T> consumer) {
+    private Nullary(Mutator<T> parent, Consumer<? super T> consumer) {
       super(parent);
       this.consumer = consumer;
     }
@@ -177,7 +177,7 @@ public final class Fluent<T> {
   public static class Unary<T, A> extends FluentMethod<T> {
     private final BiConsumer<? super T, A> consumer;
 
-    private Unary(Fluent<T> parent, BiConsumer<? super T, A> consumer) {
+    private Unary(Mutator<T> parent, BiConsumer<? super T, A> consumer) {
       super(parent);
       this.consumer = consumer;
     }
@@ -191,7 +191,7 @@ public final class Fluent<T> {
   public static class Binary<T, A, B> extends FluentMethod<T> {
     private final TriConsumer<? super T, A, B> consumer;
 
-    private Binary(Fluent<T> parent, TriConsumer<? super T, A, B> consumer) {
+    private Binary(Mutator<T> parent, TriConsumer<? super T, A, B> consumer) {
       super(parent);
       this.consumer = consumer;
     }

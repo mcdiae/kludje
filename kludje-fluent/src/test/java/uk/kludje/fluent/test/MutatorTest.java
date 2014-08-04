@@ -2,21 +2,20 @@ package uk.kludje.fluent.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.fn.function.UConsumer;
+import static uk.kludje.fn.function.UConsumer.asUConsumer;
 
-import static uk.kludje.fluent.Fluent.fluent;
+import static uk.kludje.fluent.Mutator.mutate;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class FluentTest {
+public class MutatorTest {
 
   @Test
   public void testInvoke() {
-    AtomicInteger i = fluent(new AtomicInteger())
+    AtomicInteger i = mutate(new AtomicInteger())
         .f(AtomicInteger::incrementAndGet)
         .f(AtomicInteger::incrementAndGet)
         .get();
@@ -25,7 +24,7 @@ public class FluentTest {
 
   @Test
   public void testBindInvoke() {
-    AtomicInteger i = fluent(new AtomicInteger())
+    AtomicInteger i = mutate(new AtomicInteger())
         .nullary(AtomicInteger::incrementAndGet)
         .invoke()
         .invoke()
@@ -36,8 +35,8 @@ public class FluentTest {
 
   @Test(expected=IOException.class)
   public void testExceptions() {
-    Consumer<FluentTest> ti = (UConsumer<FluentTest>) FluentTest::throwIt;
-    fluent(this).f(ti);
+    Consumer<MutatorTest> ti = asUConsumer(MutatorTest::throwIt);
+    mutate(this).f(ti);
   }
 
   private void throwIt() throws IOException {
@@ -46,7 +45,7 @@ public class FluentTest {
 
   @Test
   public void testListPopulation() {
-    List<String> list = fluent(new ArrayList<String>())
+    List<String> list = mutate(new ArrayList<String>())
         .f(List::add, "a")
         .f(List::add, "b")
         .f(List::add, "c")
@@ -59,8 +58,8 @@ public class FluentTest {
 
   @Test
   public void testListPopulationBind() {
-    List<String> list = fluent(new ArrayList<String>())
-        .unary((BiConsumer<List<String>, String>) List::add)
+    List<String> list = mutate(new ArrayList<String>())
+        .<String>unary(List::add)
         .invoke("a")
         .invoke("b")
         .invoke("c")
@@ -76,11 +75,23 @@ public class FluentTest {
 
   @Test
   public void testMapPopulation() {
-    Map<String, String> map = fluent(new HashMap<String, String>())
+    Map<String, String> map = mutate(new HashMap<String, String>())
         .f(Map::put, "a", "A")
         .f(Map::put, "b", "B")
         .f(Map::put, "c", "C")
         .map(Collections::unmodifiableMap)
+        .get();
+
+    Assert.assertEquals(3, map.size());
+  }
+
+  @Test
+  public void testMapPopulationBind() {
+    Map<String, String> map = mutate(new HashMap<String, String>())
+        .<String, String>binary(Map::put)
+        .invoke("a", "A")
+        .invoke("b", "B")
+        .invoke("c", "C")
         .get();
 
     Assert.assertEquals(3, map.size());

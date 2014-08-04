@@ -98,6 +98,21 @@ public final class Fluent<T> {
     return this;
   }
 
+  public Nullary<T> nullary(Consumer<? super T> consumer) {
+    Objects.requireNonNull(consumer);
+    return new Nullary(this, consumer);
+  }
+
+  public <A> Unary<T, A> unary(BiConsumer<? super T, A> consumer) {
+    Objects.requireNonNull(consumer);
+    return new Unary(this, consumer);
+  }
+
+  public <A,B> Binary<T, A, B> binary(TriConsumer<? super T, A, B> consumer) {
+    Objects.requireNonNull(consumer);
+    return new Binary(this, consumer);
+  }
+
   /**
    * Unwraps the value.
    *
@@ -108,15 +123,15 @@ public final class Fluent<T> {
   }
 
   public <M> Fluent<M> map(Function<T, M> mapper) {
-    return new Fluent<>(mapper.apply(t));
+    return new Fluent<M>(mapper.apply(t));
   }
 
   public <M, A> Fluent<M> map(BiFunction<T, A, M> mapper, A a) {
-    return new Fluent<>(mapper.apply(t, a));
+    return new Fluent<M>(mapper.apply(t, a));
   }
 
   public <M, A, B> Fluent<M> map(TriFunction<T, A, B, M> mapper, A a, B b) {
-    return new Fluent<>(mapper.apply(t, a, b));
+    return new Fluent<M>(mapper.apply(t, a, b));
   }
 
   /**
@@ -127,5 +142,63 @@ public final class Fluent<T> {
   @Override
   public String toString() {
     return "Fluent{" + t + "}";
+  }
+
+  public static abstract class FluentMethod<T> {
+    private final Fluent<T> parent;
+
+    private FluentMethod(Fluent<T> parent) {
+      this.parent = parent;
+    }
+
+    public Fluent<T> unbind() {
+      return parent;
+    }
+
+    public T get() {
+      return parent.t;
+    }
+  }
+
+  public static class Nullary<T> extends FluentMethod<T> {
+    private final Consumer<? super T> consumer;
+
+    private Nullary(Fluent<T> parent, Consumer<? super T> consumer) {
+      super(parent);
+      this.consumer = consumer;
+    }
+
+    public Nullary<T> invoke() {
+      consumer.accept(get());
+      return this;
+    }
+  }
+
+  public static class Unary<T, A> extends FluentMethod<T> {
+    private final BiConsumer<? super T, A> consumer;
+
+    private Unary(Fluent<T> parent, BiConsumer<? super T, A> consumer) {
+      super(parent);
+      this.consumer = consumer;
+    }
+
+    public Unary<T, A> invoke(A a) {
+      consumer.accept(get(), a);
+      return this;
+    }
+  }
+
+  public static class Binary<T, A, B> extends FluentMethod<T> {
+    private final TriConsumer<? super T, A, B> consumer;
+
+    private Binary(Fluent<T> parent, TriConsumer<? super T, A, B> consumer) {
+      super(parent);
+      this.consumer = consumer;
+    }
+
+    public Binary<T, A, B> invoke(A a, B b) {
+      consumer.accept(get(), a, b);
+      return this;
+    }
   }
 }

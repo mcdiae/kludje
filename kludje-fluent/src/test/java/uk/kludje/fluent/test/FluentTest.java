@@ -9,6 +9,7 @@ import static uk.kludje.fluent.Fluent.fluent;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class FluentTest {
@@ -18,6 +19,17 @@ public class FluentTest {
     AtomicInteger i = fluent(new AtomicInteger())
         .f(AtomicInteger::incrementAndGet)
         .f(AtomicInteger::incrementAndGet)
+        .get();
+    Assert.assertEquals(2, i.get());
+  }
+
+  @Test
+  public void testBindInvoke() {
+    AtomicInteger i = fluent(new AtomicInteger())
+        .nullary(AtomicInteger::incrementAndGet)
+        .invoke()
+        .invoke()
+        .unbind()
         .get();
     Assert.assertEquals(2, i.get());
   }
@@ -39,6 +51,23 @@ public class FluentTest {
         .f(List::add, "b")
         .f(List::add, "c")
         .f(List::remove, "b")
+        .map(Collections::unmodifiableList)
+        .get();
+
+    Assert.assertEquals(2, list.size());
+  }
+
+  @Test
+  public void testListPopulationBind() {
+    List<String> list = fluent(new ArrayList<String>())
+        .unary((BiConsumer<List<String>, String>) List::add)
+        .invoke("a")
+        .invoke("b")
+        .invoke("c")
+        .unbind()
+        .unary(List::remove)
+        .invoke("b")
+        .unbind()
         .map(Collections::unmodifiableList)
         .get();
 

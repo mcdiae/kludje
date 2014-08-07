@@ -1,5 +1,6 @@
 package uk.kludje.fluent;
 
+import uk.kludje.fn.nary.TetraConsumer;
 import uk.kludje.fn.nary.TriConsumer;
 import uk.kludje.fn.nary.TriFunction;
 
@@ -38,15 +39,15 @@ public final class Mutator<T> {
    * Usage:
    * <pre>
    *   AtomicInteger two = mutate(new AtomicInteger())
-   *   .f(AtomicInteger::incrementAndGet)
-   *   .f(AtomicInteger::incrementAndGet)
+   *   .nil(AtomicInteger::incrementAndGet)
+   *   .nil(AtomicInteger::incrementAndGet)
    *   .get();
    * </pre>
    *
    * @param consumer typically a method reference for T
    * @return this
    */
-  public Mutator<T> f(Consumer<? super T> consumer) {
+  public Mutator<T> nil(Consumer<? super T> consumer) {
     consumer.accept(t);
     return this;
   }
@@ -56,20 +57,20 @@ public final class Mutator<T> {
    * Usage:
    * <pre>
    * List&lt;String&gt; list = mutate(new ArrayList&lt;String&gt;())
-   *                           .f(List::add, "a")
-   *                           .f(List::add, "b")
-   *                           .f(List::add, "c")
-   *                           .f(List::remove, "b")
+   *                           .nil(List::add, "a")
+   *                           .nil(List::add, "b")
+   *                           .nil(List::add, "c")
+   *                           .nil(List::remove, "b")
    *                           .map(Collections::unmodifiableList)
    *                           .get();
    * </pre>
    *
    * @param consumer typically a method reference for T
-   * @param a an argument
-   * @param <A> argument type
+   * @param a        an argument
+   * @param <A>      argument type
    * @return this
    */
-  public <A> Mutator<T> f(BiConsumer<? super T, A> consumer, A a) {
+  public <A> Mutator<T> un(BiConsumer<? super T, A> consumer, A a) {
     consumer.accept(t, a);
     return this;
   }
@@ -79,22 +80,27 @@ public final class Mutator<T> {
    * Usage:
    * <pre>
    *   Map&lt;String, String&gt; map = mutate(new HashMap&lt;String, String&gt;())
-   *                                  .f(Map::put, "a", "A")
-   *                                  .f(Map::put, "b", "B")
-   *                                  .f(Map::put, "c", "C")
+   *                                  .nil(Map::put, "a", "A")
+   *                                  .nil(Map::put, "b", "B")
+   *                                  .nil(Map::put, "c", "C")
    *                                  .map(Collections::unmodifiableMap)
    *                                  .get();
    * </pre>
    *
    * @param consumer typically a method reference for T
-   * @param a first argument
-   * @param b second argument
-   * @param <A> type of a
-   * @param <B> type of b
+   * @param a        first argument
+   * @param b        second argument
+   * @param <A>      type of a
+   * @param <B>      type of b
    * @return this
    */
-  public <A, B> Mutator<T> f(TriConsumer<? super T, A, B> consumer, A a, B b) {
+  public <A, B> Mutator<T> bi(TriConsumer<? super T, A, B> consumer, A a, B b) {
     consumer.accept(t, a, b);
+    return this;
+  }
+
+  public <A, B, C> Mutator<T> tri(TetraConsumer<? super T, A, B, C> consumer, A a, B b, C c) {
+    consumer.accept(t, a, b, c);
     return this;
   }
 
@@ -108,9 +114,14 @@ public final class Mutator<T> {
     return new Unary(this, consumer);
   }
 
-  public <A,B> Binary<T, A, B> binary(TriConsumer<? super T, A, B> consumer) {
+  public <A, B> Binary<T, A, B> binary(TriConsumer<? super T, A, B> consumer) {
     Objects.requireNonNull(consumer);
     return new Binary(this, consumer);
+  }
+
+  public <A, B, C> Trinary<T, A, B, C> binary(TetraConsumer<? super T, A, B, C> consumer) {
+    Objects.requireNonNull(consumer);
+    return new Trinary(this, consumer);
   }
 
   /**
@@ -198,6 +209,20 @@ public final class Mutator<T> {
 
     public Binary<T, A, B> invoke(A a, B b) {
       consumer.accept(get(), a, b);
+      return this;
+    }
+  }
+
+  public static class Trinary<T, A, B, C> extends FluentMethod<T> {
+    private final TetraConsumer<? super T, A, B, C> consumer;
+
+    private Trinary(Mutator<T> parent, TetraConsumer<? super T, A, B, C> consumer) {
+      super(parent);
+      this.consumer = consumer;
+    }
+
+    public Trinary<T, A, B, C> invoke(A a, B b, C c) {
+      consumer.accept(get(), a, b, c);
       return this;
     }
   }

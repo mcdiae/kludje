@@ -2,22 +2,22 @@ package uk.kludje.fluent.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import static uk.kludje.fn.function.UConsumer.asUConsumer;
-
-import static uk.kludje.fluent.Mutator.mutate;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static uk.kludje.fluent.Mutator.mutate;
+import static uk.kludje.fn.function.UConsumer.asUConsumer;
+
 public class MutatorTest {
 
   @Test
   public void testInvoke() {
     AtomicInteger i = mutate(new AtomicInteger())
-        .f(AtomicInteger::incrementAndGet)
-        .f(AtomicInteger::incrementAndGet)
+        .nil(AtomicInteger::incrementAndGet)
+        .nil(AtomicInteger::incrementAndGet)
         .get();
     Assert.assertEquals(2, i.get());
   }
@@ -33,10 +33,10 @@ public class MutatorTest {
     Assert.assertEquals(2, i.get());
   }
 
-  @Test(expected=IOException.class)
+  @Test(expected = IOException.class)
   public void testExceptions() {
     Consumer<MutatorTest> ti = asUConsumer(MutatorTest::throwIt);
-    mutate(this).f(ti);
+    mutate(this).nil(ti);
   }
 
   private void throwIt() throws IOException {
@@ -46,10 +46,10 @@ public class MutatorTest {
   @Test
   public void testListPopulation() {
     List<String> list = mutate(new ArrayList<String>())
-        .f(List::add, "a")
-        .f(List::add, "b")
-        .f(List::add, "c")
-        .f(List::remove, "b")
+        .un(List::add, "a")
+        .un(List::add, "b")
+        .un(List::add, "c")
+        .un(List::remove, "b")
         .map(Collections::unmodifiableList)
         .get();
 
@@ -76,9 +76,9 @@ public class MutatorTest {
   @Test
   public void testMapPopulation() {
     Map<String, String> map = mutate(new HashMap<String, String>())
-        .f(Map::put, "a", "A")
-        .f(Map::put, "b", "B")
-        .f(Map::put, "c", "C")
+        .bi(Map::put, "a", "A")
+        .bi(Map::put, "b", "B")
+        .bi(Map::put, "c", "C")
         .map(Collections::unmodifiableMap)
         .get();
 

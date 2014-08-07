@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 /**
  * Provides common property-based object implementation methods.
  *
+ * TODO: arrays
+ *
  * @param <T>
  */
 public final class Meta<T> {
@@ -36,63 +38,72 @@ public final class Meta<T> {
     return type;
   }
 
-  public Meta<T> objects(Getter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> objects(Getter<T>... getters) {
     return update(getters,
         str()::objects,
         eq()::objects,
         hash()::objects);
   }
 
-  public Meta<T> booleans(BooleanGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> booleans(BooleanGetter<T>... getters) {
     return update(getters,
         str()::booleans,
         eq()::booleans,
         hash()::booleans);
   }
 
-  public Meta<T> chars(CharGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> chars(CharGetter<T>... getters) {
     return update(getters,
         str()::chars,
         eq()::chars,
         hash()::chars);
   }
 
-  public Meta<T> bytes(ByteGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> bytes(ByteGetter<T>... getters) {
     return update(getters,
         str()::bytes,
         eq()::bytes,
         hash()::bytes);
   }
 
-  public Meta<T> shorts(ShortGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> shorts(ShortGetter<T>... getters) {
     return update(getters,
         str()::shorts,
         eq()::shorts,
         hash()::shorts);
   }
 
-  public Meta<T> ints(IntGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> ints(IntGetter<T>... getters) {
     return update(getters,
         str()::ints,
         eq()::ints,
         hash()::ints);
   }
 
-  public Meta<T> longs(LongGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> longs(LongGetter<T>... getters) {
     return update(getters,
         str()::longs,
         eq()::longs,
         hash()::longs);
   }
 
-  public Meta<T> floats(FloatGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> floats(FloatGetter<T>... getters) {
     return update(getters,
         str()::floats,
         eq()::floats,
         hash()::floats);
   }
 
-  public Meta<T> doubles(DoubleGetter<T>... getters) {
+  @SafeVarargs
+  public final Meta<T> doubles(DoubleGetter<T>... getters) {
     return update(getters,
         str()::doubles,
         eq()::doubles,
@@ -197,7 +208,7 @@ public final class Meta<T> {
 
   @FunctionalInterface
   public static interface LongGetter<T> {
-    int get(T t);
+    long get(T t);
   }
 
   @FunctionalInterface

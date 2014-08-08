@@ -4,12 +4,38 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.Meta;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class MetaTest {
   @Test
   public void basicTest() {
     Assert.assertEquals(new MetaPojo(), new MetaPojo());
     Assert.assertEquals(new MetaPojo().hashCode(), new MetaPojo().hashCode());
     Assert.assertEquals(new MetaPojo().toString(), new MetaPojo().toString());
+  }
+
+  @Test
+  public void comboTest() {
+    Arrays.<Consumer<MetaPojo>>asList(
+        m -> m.a = true,
+        m -> m.b = 'a',
+        m -> m.c = -1,
+        m -> m.d = -2,
+        m -> m.e = 10,
+        m -> m.f = 5l,
+        m -> m.g = 1.0f,
+        m -> m.h = new Object(),
+        m -> m.i = "",
+        m -> m.j = 1.0
+    ).stream().forEach(c -> {
+      MetaPojo pojo = new MetaPojo();
+      c.accept(pojo);
+      Assert.assertFalse(pojo.equals(new MetaPojo()));
+      Assert.assertFalse(pojo.toString().equals(new MetaPojo().toString()));
+    });
   }
 
   private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)

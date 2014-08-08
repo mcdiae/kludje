@@ -138,6 +138,7 @@ public final class Meta<T> {
     if (!type.isInstance(any)) {
       return false;
     }
+    @SuppressWarnings("unchecked")
     T other = (T) any;
     return equals.stream()
         .allMatch(p -> p.test(t, other));
@@ -146,7 +147,7 @@ public final class Meta<T> {
   public int hashCode(T t) {
     int result = 0;
     for (ToIntFunction<T> fn : hashCode) {
-      result = (result * 13) + fn.applyAsInt(t);
+      result = (result * 31) + fn.applyAsInt(t);
     }
     return result;
   }

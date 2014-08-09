@@ -8,7 +8,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
- * <p>Provides common property-based object implementation methods.</p>
+ * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
  *
  * <p>Example that builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
  *
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  *
  * public class PersonPojo {
  *   private static final Meta&lt;PersonPojo&gt; META = meta(PersonPojo.class)
- * .                            longs($ -> $.id).objects($ -> $.name, $ -> $.dateOfBirth);
+ * .                            longs($ -&gt; $.id).objects($ -&gt; $.name, $ -&gt; $.dateOfBirth);
  *
  *   private final long id;
  *   private final String name;
@@ -53,7 +53,9 @@ import java.util.stream.Collectors;
  * }
  * </pre>
  *
- * @param <T>
+ * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.</p>
+ *
+ * @param <T> the accessed type
  */
 public final class Meta<T> {
   private final Class<T> type;
@@ -71,8 +73,16 @@ public final class Meta<T> {
     this.hashCode = hashCode;
   }
 
+  /**
+   *
+   *
+   * @param type the type to build meta-methods for
+   * @param <T> the type of class
+   * @return a new instance
+   */
   public static <T> Meta<T> meta(Class<T> type) {
-    return new Meta<T>(type, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+    Objects.requireNonNull(type);
+    return new Meta<>(type, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
   }
 
   public Class<T> getType() {
@@ -151,14 +161,14 @@ public final class Meta<T> {
         hash()::doubles);
   }
 
-  public <G> Meta<T> update(G[] getters,
+  private <G> Meta<T> update(G[] getters,
                             Function<G, BiConsumer<T, StringBuilder>> strTransform,
                             Function<G, BiPredicate<T, T>> eqTransform,
                             Function<G, ToIntFunction<T>> hashTransform) {
     List<BiConsumer<T, StringBuilder>> newToString = combine(toString, getters, strTransform);
     List<BiPredicate<T, T>> newEquals = combine(equals, getters, eqTransform);
     List<ToIntFunction<T>> newHashCode = combine(hashCode, getters, hashTransform);
-    return new Meta<T>(type, newToString, newEquals, newHashCode);
+    return new Meta<>(type, newToString, newEquals, newHashCode);
   }
 
   private <A, R> List<R> combine(List<R> existing, A[] src, Function<A, R> transform) {
@@ -171,6 +181,14 @@ public final class Meta<T> {
     return result;
   }
 
+  /**
+   * {@code any} is equal to {@code t} if it is of type {@code T}
+   * and all the properties defined by this type are equal.
+   *
+   * @param t a non-null instance of type T
+   * @param any any object, including null
+   * @return true if the arguments are equal
+   */
   public boolean equals(T t, Object any) {
     assert type.isInstance(t);
     if (any == t) {
@@ -185,7 +203,15 @@ public final class Meta<T> {
         .allMatch(p -> p.test(t, other));
   }
 
+  /**
+   * Creates a hash of all values defined by the properties provided to this instance.
+   * The hashing formula is not specified.
+   *
+   * @param t the non-null instance to create a hash for
+   * @return the hash
+   */
   public int hashCode(T t) {
+    assert type.isInstance(t);
     int result = 0;
     for (ToIntFunction<T> fn : hashCode) {
       result = (result * 31) + fn.applyAsInt(t);
@@ -193,7 +219,15 @@ public final class Meta<T> {
     return result;
   }
 
+  /**
+   * Creates a string form of the type for debugging purposes.
+   * The exact form is not specified.
+   *
+   * @param t the non-null instance to create a string form of
+   * @return debug string
+   */
   public String toString(T t) {
+    assert type.isInstance(t);
     StringBuilder buf = new StringBuilder();
     buf.append(type.getSimpleName());
     buf.append(" {");
@@ -207,15 +241,21 @@ public final class Meta<T> {
   }
 
   private ToStringTransformer<T> str() {
-    return (ToStringTransformer<T>) ToStringTransformer.INST;
+    @SuppressWarnings("unchecked")
+    ToStringTransformer<T> typed = (ToStringTransformer<T>) ToStringTransformer.INST;
+    return typed;
   }
 
   private EqualsTransformer<T> eq() {
-    return (EqualsTransformer<T>) EqualsTransformer.INST;
+    @SuppressWarnings("unchecked")
+    EqualsTransformer<T> typed = (EqualsTransformer<T>) EqualsTransformer.INST;
+    return typed;
   }
 
   private HashTransformer<T> hash() {
-    return (HashTransformer<T>) HashTransformer.INST;
+    @SuppressWarnings("unchecked")
+    HashTransformer<T> typed = (HashTransformer<T>) HashTransformer.INST;
+    return typed;
   }
 
   @FunctionalInterface

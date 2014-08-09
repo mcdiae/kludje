@@ -8,9 +8,50 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
- * Provides common property-based object implementation methods.
+ * <p>Provides common property-based object implementation methods.</p>
  *
- * TODO: arrays
+ * <p>Example that builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
+ *
+ * <pre>
+ * import uk.kludje.Meta;
+ * import java.time.LocalDate;
+ * import static uk.kludje.Meta.meta;
+ *
+ * public class PersonPojo {
+ *   private static final Meta&lt;PersonPojo&gt; META = meta(PersonPojo.class)
+ * .                            longs($ -> $.id).objects($ -> $.name, $ -> $.dateOfBirth);
+ *
+ *   private final long id;
+ *   private final String name;
+ *   private final LocalDate dateOfBirth;
+ *
+ *   public PersonPojo(long id, String name, LocalDate dateOfBirth) {
+ *     this.id = id;
+ *     this.name = name;
+ *     this.dateOfBirth = dateOfBirth;
+ *   }
+ *
+ *   public String getName() {
+ *     return name;
+ *   }
+ *
+ *   public LocalDate getDateOfBirth() {
+ *     return dateOfBirth;
+ *   }
+ *
+ *   public boolean equals(Object obj) {
+ *     return META.equals(this, obj);
+ *   }
+ *
+ *   public int hashCode() {
+ *     return META.hashCode(this);
+ *   }
+ *
+ *   public String toString() {
+ *     return META.toString(this);
+ *   }
+ * }
+ * </pre>
  *
  * @param <T>
  */

@@ -19,6 +19,7 @@
 package uk.kludje;
 
 import java.util.*;
+import static java.util.Collections.emptyList;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -77,35 +78,28 @@ import static java.util.Arrays.asList;
  * @param <T> the accessed type
  */
 public final class Meta<T> {
-  private final Class<T> type;
+  private static final Meta<?> INIT = new Meta<>(emptyList(), emptyList(), emptyList());
+
   private final List<BiConsumer<T, StringBuilder>> toString;
   private final List<BiPredicate<T, T>> equals;
   private final List<ToIntFunction<T>> hashCode;
 
-  private Meta(Class<T> type,
-               List<BiConsumer<T, StringBuilder>> toString,
+  private Meta(List<BiConsumer<T, StringBuilder>> toString,
                List<BiPredicate<T, T>> equals,
                List<ToIntFunction<T>> hashCode) {
-    this.type = type;
     this.toString = toString;
     this.equals = equals;
     this.hashCode = hashCode;
   }
 
   /**
-   *
-   *
-   * @param type the type to build meta-methods for
    * @param <T> the type of class
    * @return a new instance
    */
-  public static <T> Meta<T> meta(Class<T> type) {
-    Objects.requireNonNull(type);
-    return new Meta<>(type, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-  }
-
-  public Class<T> getType() {
-    return type;
+  public static <T> Meta<T> meta() {
+    @SuppressWarnings("unchecked")
+    Meta<T> safe = (Meta<T>) INIT;
+    return safe;
   }
 
   @SafeVarargs
@@ -116,10 +110,6 @@ public final class Meta<T> {
         str()::objects,
         eq()::objects,
         hash()::objects);
-  }
-
-  private <A> List<A> list(A[] arr) {
-    return asList(arr);
   }
 
   @SafeVarargs
@@ -209,7 +199,7 @@ public final class Meta<T> {
     List<BiConsumer<T, StringBuilder>> newToString = combine(toString, getters, strTransform);
     List<BiPredicate<T, T>> newEquals = combine(equals, getters, eqTransform);
     List<ToIntFunction<T>> newHashCode = combine(hashCode, getters, hashTransform);
-    return new Meta<>(type, newToString, newEquals, newHashCode);
+    return new Meta<>(newToString, newEquals, newHashCode);
   }
 
   private <A, R> List<R> combine(List<R> existing, List<A> src, Function<A, R> transform) {
@@ -231,12 +221,11 @@ public final class Meta<T> {
    * @return true if the arguments are equal
    */
   public boolean equals(T t, Object any) {
-    assert type.isInstance(t);
+    if (!t.getClass().isInstance(any)) {
+      return false;
+    }
     if (any == t) {
       return true;
-    }
-    if (!type.isInstance(any)) {
-      return false;
     }
     @SuppressWarnings("unchecked")
     T other = (T) any;
@@ -252,7 +241,6 @@ public final class Meta<T> {
    * @return the hash
    */
   public int hashCode(T t) {
-    assert type.isInstance(t);
     int result = 0;
     for (ToIntFunction<T> fn : hashCode) {
       result = (result * 31) + fn.applyAsInt(t);
@@ -268,9 +256,8 @@ public final class Meta<T> {
    * @return debug string
    */
   public String toString(T t) {
-    assert type.isInstance(t);
     StringBuilder buf = new StringBuilder();
-    buf.append(type.getSimpleName());
+    buf.append(t.getClass().getSimpleName());
     buf.append(" {");
     for (int i = 0; i < toString.size(); i++) {
       if (i > 0) {

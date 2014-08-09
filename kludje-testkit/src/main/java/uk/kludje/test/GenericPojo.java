@@ -19,17 +19,9 @@
 package uk.kludje.test;
 
 import uk.kludje.Meta;
-import uk.kludje.experimental.proxy.Interface;
-
-import java.util.function.Supplier;
-
-import static uk.kludje.Meta.meta;
 
 public class GenericPojo<T> {
-  private final static Interface<GenericPojo<?>> iface = new Interface<GenericPojo<?>>() {
-  };
-  private final static Class<GenericPojo<?>> TYPE = GenericPojo.class.
-  private static final Meta<GenericPojo<?>> META = meta(iface.type())
+  private static final Meta<GenericPojo<?>> META = Meta.<GenericPojo<?>>meta()
       .objects($ -> $.gen);
 
   private final T gen;

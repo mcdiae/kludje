@@ -106,22 +106,22 @@ public final class Mutator<T> {
 
   public Nullary<T> nullary(Consumer<? super T> consumer) {
     Objects.requireNonNull(consumer);
-    return new Nullary(this, consumer);
+    return new Nullary<>(this, consumer);
   }
 
   public <A> Unary<T, A> unary(BiConsumer<? super T, A> consumer) {
     Objects.requireNonNull(consumer);
-    return new Unary(this, consumer);
+    return new Unary<>(this, consumer);
   }
 
   public <A, B> Binary<T, A, B> binary(TriConsumer<? super T, A, B> consumer) {
     Objects.requireNonNull(consumer);
-    return new Binary(this, consumer);
+    return new Binary<>(this, consumer);
   }
 
   public <A, B, C> Trinary<T, A, B, C> binary(TetraConsumer<? super T, A, B, C> consumer) {
     Objects.requireNonNull(consumer);
-    return new Trinary(this, consumer);
+    return new Trinary<>(this, consumer);
   }
 
   /**

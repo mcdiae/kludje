@@ -67,6 +67,7 @@ public final class ProxyBinding {
 
     Class<?>[] type = {anyInterface, Binding.class};
     InvocationHandler handler = new ProxyHandler(defaultHandler);
+    @SuppressWarnings("unchecked")
     P proxy = (P) Proxy.newProxyInstance(loader(), type, handler);
     return proxy;
   }
@@ -134,6 +135,7 @@ public final class ProxyBinding {
           Exceptions.throwChecked(e);
         }
 
+        @SuppressWarnings("unchecked")
         P proxy = (P) PROXY.get();
 
         if (proxy == null) {

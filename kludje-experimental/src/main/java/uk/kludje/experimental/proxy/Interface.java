@@ -81,10 +81,14 @@ public abstract class Interface<T> {
     Object typeArguments = ((ParameterizedType) thisType).getActualTypeArguments()[0];
     Class<T> type;
     if(typeArguments instanceof Class<?>) {
-      type = (Class<T>) typeArguments;
+      @SuppressWarnings("unchecked")
+      Class<T> safe = (Class<T>) typeArguments;
+      type = safe;
     } else if(typeArguments instanceof  ParameterizedType) {
       ParameterizedType parameterizedType = (ParameterizedType) typeArguments;
-      type = (Class<T>) parameterizedType.getRawType();
+      @SuppressWarnings("unchecked")
+      Class<T> safe = (Class<T>) parameterizedType.getRawType();
+      type = safe;
     } else {
       throw new IllegalImplementationError("unable to resolve generic type for " + this);
     }
@@ -137,6 +141,7 @@ public abstract class Interface<T> {
   /**
    * Indicates that the type has not been subtyped correctly.
    */
+  @SuppressWarnings("serial")
   private static class IllegalImplementationError extends Error {
     public IllegalImplementationError(String msg) {
       super(msg);

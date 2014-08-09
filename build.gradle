@@ -3,6 +3,12 @@ allprojects {
   apply plugin: 'maven'
   apply plugin: 'signing'
 
+  gradle.projectsEvaluated {
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:all"
+    }
+  }
+
   task allDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     source(fileTree(dir: 'build/classes/main', exclude: '**/*.class'))

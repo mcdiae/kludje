@@ -6,6 +6,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import static java.util.Arrays.asList;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
@@ -91,15 +92,23 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> objects(Getter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<Getter<T>> list = asList(getters);
+    return update(list,
         str()::objects,
         eq()::objects,
         hash()::objects);
   }
 
+  private <A> List<A> list(A[] arr) {
+    return asList(arr);
+  }
+
   @SafeVarargs
   public final Meta<T> booleans(BooleanGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<BooleanGetter<T>> list = asList(getters);
+    return update(list,
         str()::booleans,
         eq()::booleans,
         hash()::booleans);
@@ -107,7 +116,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> chars(CharGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<CharGetter<T>> list = asList(getters);
+    return update(list,
         str()::chars,
         eq()::chars,
         hash()::chars);
@@ -115,7 +126,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> bytes(ByteGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<ByteGetter<T>> list = asList(getters);
+    return update(list,
         str()::bytes,
         eq()::bytes,
         hash()::bytes);
@@ -123,7 +136,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> shorts(ShortGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<ShortGetter<T>> list = asList(getters);
+    return update(list,
         str()::shorts,
         eq()::shorts,
         hash()::shorts);
@@ -131,7 +146,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> ints(IntGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<IntGetter<T>> list = asList(getters);
+    return update(list,
         str()::ints,
         eq()::ints,
         hash()::ints);
@@ -139,7 +156,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> longs(LongGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<LongGetter<T>> list = asList(getters);
+    return update(list,
         str()::longs,
         eq()::longs,
         hash()::longs);
@@ -147,7 +166,9 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> floats(FloatGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<FloatGetter<T>> list = asList(getters);
+    return update(list,
         str()::floats,
         eq()::floats,
         hash()::floats);
@@ -155,13 +176,15 @@ public final class Meta<T> {
 
   @SafeVarargs
   public final Meta<T> doubles(DoubleGetter<T>... getters) {
-    return update(getters,
+    @SuppressWarnings("varargs")
+    List<DoubleGetter<T>> list = asList(getters);
+    return update(list,
         str()::doubles,
         eq()::doubles,
         hash()::doubles);
   }
 
-  private <G> Meta<T> update(G[] getters,
+  private <G> Meta<T> update(List<G> getters,
                             Function<G, BiConsumer<T, StringBuilder>> strTransform,
                             Function<G, BiPredicate<T, T>> eqTransform,
                             Function<G, ToIntFunction<T>> hashTransform) {
@@ -171,9 +194,9 @@ public final class Meta<T> {
     return new Meta<>(type, newToString, newEquals, newHashCode);
   }
 
-  private <A, R> List<R> combine(List<R> existing, A[] src, Function<A, R> transform) {
+  private <A, R> List<R> combine(List<R> existing, List<A> src, Function<A, R> transform) {
     List<R> result = new ArrayList<>();
-    List<R> transformed = Arrays.asList(src).stream()
+    List<R> transformed = src.stream()
         .map(transform)
         .collect(Collectors.toList());
     result.addAll(existing);

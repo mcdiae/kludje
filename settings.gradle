@@ -1,5 +1,4 @@
 include 'kludje-annotation'
 include 'kludje-core'
 include 'kludje-testkit'
-include 'kludje-proxy'
-include 'kludje-fluent'
+include 'kludje-experimental'

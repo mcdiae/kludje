@@ -93,7 +93,7 @@ project(':kludje-testkit') {
   dependencies {
     compile project(':kludje-annotation')
     compile project(':kludje-core')
-    compile project(':kludje-proxy')
+    compile project(':kludje-experimental')
   }
 }
 
@@ -103,13 +103,7 @@ project(':kludje-core') {
   }
 }
 
-project(':kludje-proxy') {
-  dependencies {
-    compile project(':kludje-core')
-  }
-}
-
-project(':kludje-fluent') {
+project(':kludje-experimental') {
   dependencies {
     compile project(':kludje-core')
   }

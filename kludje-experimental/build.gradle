@@ -1,0 +1,11 @@
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      pom.project {
+        name 'kludje-experimental'
+        packaging 'jar'
+        description 'Java 8 lambda API experimental project'
+      }
+    }
+  }
+}

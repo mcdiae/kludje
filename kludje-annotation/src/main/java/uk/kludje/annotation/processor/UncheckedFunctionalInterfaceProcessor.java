@@ -101,7 +101,7 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
     if (ufis.isEmpty()) {
       return;
     }
-    info("Processing " + pack.getQualifiedName());
+    debug("Processing " + pack.getQualifiedName());
     for (AnnotationMirror ufi : ufis) {
       TypeElement type = type(ufi);
       validateUfi(type);
@@ -126,7 +126,7 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   private void writeUfi(PackageElement pack, TypeElement type) throws IOException {
     String simpleName = "U" + type.getSimpleName();
 
-    info("Generating " + pack.getQualifiedName() + "." + simpleName);
+    debug("Generating " + pack.getQualifiedName() + "." + simpleName);
 
     Map<String, String> params = params(pack, type, simpleName, findFunctionalMethod(type));
 
@@ -221,7 +221,7 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   private ExecutableElement findFunctionalMethod(TypeElement type) {
     List<ExecutableElement> methods = abstractMethods(type)
         .collect(Collectors.toList());
-    info(methods.toString());
+    debug(methods.toString());
     if (methods.size() != 1) {
       throw new IllegalStateException(methods.toString());
     }
@@ -240,14 +240,14 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
   private Stream<TypeElement> typeHierarch(TypeElement type) {
     Stream<TypeElement> stream = allSubTypes(type);
     List<TypeElement> list = stream.collect(Collectors.toList());
-    info("types: " + list.toString());
+    debug("types: " + list.toString());
     return list.stream();
   }
 
   private Stream<ExecutableElement> allMethods(TypeElement type) {
     return typeHierarch(type)
         .flatMap(t -> t.getEnclosedElements().stream().filter(x -> {
-          info(t + " " + x.getKind() + " " + x);
+          debug(t + " " + x.getKind() + " " + x);
           return true;
         }))
         .filter(t -> t.getKind() == ElementKind.METHOD)
@@ -264,7 +264,7 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
     Set<ExecutableElement> all = allMethods(type)
         .filter(e -> !e.getModifiers().contains(Modifier.STATIC))
         .collect(Collectors.toCollection(HashSet::new));
-    info("methods: " + all);
+    debug("methods: " + all);
     Predicate<ExecutableElement> overridden = filter(all, (m, t) ->
         m != t && processingEnv.getElementUtils().overrides(t, m, type));
     return all
@@ -302,9 +302,12 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
         .printMessage(Diagnostic.Kind.ERROR, t.toString());
   }
 
-  private void info(String str) {
-    processingEnv.getMessager()
-        .printMessage(Diagnostic.Kind.NOTE, NAME + str);
-  }
+  private static final boolean DEBUG = Boolean.getBoolean(UncheckedFunctionalInterfaceProcessor.class.getName() + ".DEBUG");
 
+  private void debug(String str) {
+    if(DEBUG) {
+      processingEnv.getMessager()
+          .printMessage(Diagnostic.Kind.NOTE, NAME + str);
+    }
+  }
 }

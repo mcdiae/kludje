@@ -31,6 +31,10 @@
               dataType: "text",
               url: $(element).attr("data-src"),
               success: function (data) {
+                if(/^\/\*/.test(data)) {
+                  data = data.slice(data.indexOf("*/") + 2).trim();
+                }
+
                 $(element).text(data);
                 counter--;
                 prettify();

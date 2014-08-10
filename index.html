@@ -1,4 +1,20 @@
 <!DOCTYPE html>
+<!--
+  ~ Copyright 2014 McDowell
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <html>
 <head>
     <title>KludJe Java 8 lambda API for checked exception handling</title>
@@ -9,7 +25,7 @@
 <body>
 <noscript>JavaScript is disabled. This page won't work.</noscript>
 
-<h1 id="kludje">KλudJe</h1>
+<h1>KλudJe</h1>
 
 <ul data-tag="menu"></ul>
 
@@ -34,11 +50,11 @@
     &lt;dependency>
         &lt;groupId>uk.kludje&lt;/groupId>
         &lt;artifactId>kludje-core&lt;/artifactId>
-        &lt;version>0.2&lt;/version>
+        &lt;version>0.3&lt;/version>
     &lt;/dependency>
 </pre>
 
-<p><a href="http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.2/kludje-core-0.2.jar">kludje-core-0.2.jar</a></p>
+<p><a href="http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.3/kludje-core-0.3.jar">kludje-core-0.3.jar</a></p>
 
 <p>Sources are available via the <a href="https://github.com/mcdiae/kludje">KλudJe project page</a>.</p>
 
@@ -47,11 +63,23 @@
 <p>Javadoc:</p>
 
 <ul>
+    <li><a href="artefacts/api/0.3/index.html">KλudJe 0.3 API</a></li>
     <li><a href="artefacts/api/0.2/index.html">KλudJe 0.2 API</a></li>
     <li><a href="artefacts/api/0.1/index.html">KλudJe 0.1 API</a></li>
 </ul>
 
 <h2 id="examples">Examples</h2>
+
+<h3 id="equals-hashcode-tostring">Simple equals, hashCode and toString</h3>
+
+<p>The <code>Meta</code> type can be used to define simple implementations of
+three basic Java methods:</p>
+
+<pre data-src="artefacts/sample/Product.java" class="prettyprint lange-java">loading...</pre>
+
+<p>Significant properties can be defined a single time.</p>
+
+<p>See the <a href="#api">API documentation</a> for more on usage and limitations.</p>
 
 <h3 id="checked-exception-propagation">Checked Exception Propagation</h3>
 

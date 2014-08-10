@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+
+
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
@@ -47,7 +49,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.3'
+  version = '0.4-SNAPSHOT'
 
   artifacts {
     archives jar
@@ -67,7 +69,7 @@ allprojects {
         //TODO: gradle + release profiles
         //snapshots: https://oss.sonatype.org/content/repositories/snapshots
         //releases: https://oss.sonatype.org/service/local/staging/deploy/maven2
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+        repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
 

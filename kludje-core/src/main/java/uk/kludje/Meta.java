@@ -445,12 +445,12 @@ class EqualsTransformer<T> implements GetterTransformer<T, BiPredicate<T, T>> {
 
   @Override
   public BiPredicate<T, T> floats(Meta.FloatGetter<T> g) {
-    return (t1, t2) -> g.getFloat(t1) == g.getFloat(t2);
+    return (t1, t2) -> Float.compare(g.getFloat(t1), g.getFloat(t2)) == 0;
   }
 
   @Override
   public BiPredicate<T, T> doubles(Meta.DoubleGetter<T> g) {
-    return (t1, t2) -> g.getDouble(t1) == g.getDouble(t2);
+    return (t1, t2) -> Double.compare(g.getDouble(t1), g.getDouble(t2)) == 0;
   }
 }
 

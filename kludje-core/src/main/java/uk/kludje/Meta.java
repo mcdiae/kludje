@@ -291,42 +291,42 @@ public final class Meta<T> {
 
   @FunctionalInterface
   public static interface BooleanGetter<T> {
-    boolean get(T t);
+    boolean getBoolean(T t);
   }
 
   @FunctionalInterface
   public static interface CharGetter<T> {
-    char get(T t);
+    char getChar(T t);
   }
 
   @FunctionalInterface
   public static interface ByteGetter<T> {
-    byte get(T t);
+    byte getByte(T t);
   }
 
   @FunctionalInterface
   public static interface ShortGetter<T> {
-    short get(T t);
+    short getShort(T t);
   }
 
   @FunctionalInterface
   public static interface IntGetter<T> {
-    int get(T t);
+    int getInt(T t);
   }
 
   @FunctionalInterface
   public static interface LongGetter<T> {
-    long get(T t);
+    long getLong(T t);
   }
 
   @FunctionalInterface
   public static interface FloatGetter<T> {
-    float get(T t);
+    float getFloat(T t);
   }
 
   @FunctionalInterface
   public static interface DoubleGetter<T> {
-    double get(T t);
+    double getDouble(T t);
   }
 }
 
@@ -363,42 +363,42 @@ class ToStringTransformer<T> implements GetterTransformer<T, BiConsumer<T, Strin
 
   @Override
   public BiConsumer<T, StringBuilder> booleans(Meta.BooleanGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getBoolean(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> chars(Meta.CharGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getChar(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> bytes(Meta.ByteGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getByte(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> shorts(Meta.ShortGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getShort(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> ints(Meta.IntGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getInt(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> longs(Meta.LongGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getLong(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> floats(Meta.FloatGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getFloat(t));
   }
 
   @Override
   public BiConsumer<T, StringBuilder> doubles(Meta.DoubleGetter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+    return (t, buf) -> buf.append(g.getDouble(t));
   }
 }
 
@@ -415,42 +415,42 @@ class EqualsTransformer<T> implements GetterTransformer<T, BiPredicate<T, T>> {
 
   @Override
   public BiPredicate<T, T> booleans(Meta.BooleanGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getBoolean(t1) == g.getBoolean(t2);
   }
 
   @Override
   public BiPredicate<T, T> chars(Meta.CharGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getChar(t1) == g.getChar(t2);
   }
 
   @Override
   public BiPredicate<T, T> bytes(Meta.ByteGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getByte(t1) == g.getByte(t2);
   }
 
   @Override
   public BiPredicate<T, T> shorts(Meta.ShortGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getShort(t1) == g.getShort(t2);
   }
 
   @Override
   public BiPredicate<T, T> ints(Meta.IntGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getInt(t1) == g.getInt(t2);
   }
 
   @Override
   public BiPredicate<T, T> longs(Meta.LongGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getLong(t1) == g.getLong(t2);
   }
 
   @Override
   public BiPredicate<T, T> floats(Meta.FloatGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getFloat(t1) == g.getFloat(t2);
   }
 
   @Override
   public BiPredicate<T, T> doubles(Meta.DoubleGetter<T> g) {
-    return (t1, t2) -> g.get(t1) == g.get(t2);
+    return (t1, t2) -> g.getDouble(t1) == g.getDouble(t2);
   }
 }
 
@@ -467,41 +467,41 @@ class HashTransformer<T> implements GetterTransformer<T, ToIntFunction<T>> {
 
   @Override
   public ToIntFunction<T> booleans(Meta.BooleanGetter<T> g) {
-    return t -> Boolean.hashCode(g.get(t));
+    return t -> Boolean.hashCode(g.getBoolean(t));
   }
 
   @Override
   public ToIntFunction<T> chars(Meta.CharGetter<T> g) {
-    return t -> Character.hashCode(g.get(t));
+    return t -> Character.hashCode(g.getChar(t));
   }
 
   @Override
   public ToIntFunction<T> bytes(Meta.ByteGetter<T> g) {
-    return t -> Byte.hashCode(g.get(t));
+    return t -> Byte.hashCode(g.getByte(t));
   }
 
   @Override
   public ToIntFunction<T> shorts(Meta.ShortGetter<T> g) {
-    return t -> Short.hashCode(g.get(t));
+    return t -> Short.hashCode(g.getShort(t));
   }
 
   @Override
   public ToIntFunction<T> ints(Meta.IntGetter<T> g) {
-    return t -> Integer.hashCode(g.get(t));
+    return t -> Integer.hashCode(g.getInt(t));
   }
 
   @Override
   public ToIntFunction<T> longs(Meta.LongGetter<T> g) {
-    return t -> Long.hashCode(g.get(t));
+    return t -> Long.hashCode(g.getLong(t));
   }
 
   @Override
   public ToIntFunction<T> floats(Meta.FloatGetter<T> g) {
-    return t -> Float.hashCode(g.get(t));
+    return t -> Float.hashCode(g.getFloat(t));
   }
 
   @Override
   public ToIntFunction<T> doubles(Meta.DoubleGetter<T> g) {
-    return t -> Double.hashCode(g.get(t));
+    return t -> Double.hashCode(g.getDouble(t));
   }
 }

@@ -17,3 +17,9 @@ cd web/artefacts/api/0.2
 wget http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.2/kludje-core-0.2-javadoc.jar -O docs.jar
 jar -xvf  docs.jar
 rm docs.jar
+
+mkdir -p web/artefacts/api/0.3
+cd web/artefacts/api/0.3
+wget http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.3/kludje-core-0.3-javadoc.jar -O docs.jar
+jar -xvf  docs.jar
+rm docs.jar

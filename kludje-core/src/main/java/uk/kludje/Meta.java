@@ -74,6 +74,8 @@ import static java.util.Arrays.asList;
  * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
  * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
  *
+ * <p>Instances of this type are immutable and thread safe.</p>
+ *
  * @param <T> the accessed type
  */
 public final class Meta<T> {
@@ -101,6 +103,16 @@ public final class Meta<T> {
     return safe;
   }
 
+  /**
+   * Use to specify properties of type object that should be considered by this type.
+   *
+   * Do not use this method for primitive properties - alternatives have been provided.
+   *
+   * This method does not mutate the instance; it returns a new one.
+   *
+   * @param getters a vararg array of non-null getters
+   * @return a new instance
+   */
   @SafeVarargs
   public final Meta<T> objects(Getter<T>... getters) {
     @SuppressWarnings("varargs")
@@ -285,8 +297,21 @@ public final class Meta<T> {
     return typed;
   }
 
+  /**
+   * A functional interface for reading a property value.
+   * Alternative types have been provided for primitives.
+   *
+   * @param <T> the type to read the property from
+   * @see Meta#objects(uk.kludje.Meta.Getter[])
+   */
   @FunctionalInterface
   public static interface Getter<T> {
+    /**
+     * Reads a property value from the argument.
+     *
+     * @param t the source of the property value
+     * @return the property value instance or null
+     */
     Object get(T t);
   }
 

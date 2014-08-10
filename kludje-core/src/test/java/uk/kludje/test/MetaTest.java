@@ -1,6 +1,5 @@
 /*
- *
- * Copyright $year McDowell
+ * Copyright 2014 McDowell
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * /
  */
 
 package uk.kludje.test;
@@ -56,7 +54,7 @@ public class MetaTest {
     });
   }
 
-  private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)
+  private static final Meta<MetaPojo> META = Meta.<MetaPojo>meta()
       .booleans($ -> $.a)
       .chars($ -> $.b)
       .bytes($ -> $.c)

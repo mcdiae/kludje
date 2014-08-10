@@ -71,7 +71,8 @@ import static java.util.Arrays.asList;
  * }
  * </pre>
  *
- * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.</p>
+ * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
+ * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
  *
  * @param <T> the accessed type
  */

@@ -240,8 +240,13 @@ public final class Meta<T> {
     }
     @SuppressWarnings("unchecked")
     T other = (T) any;
-    return equals.stream()
-        .allMatch(p -> p.test(t, other));
+    for(int i = 0, len = equals.size(); i < len; i++) {
+      BiPredicate<T, T> bp = equals.get(i);
+      if(!bp.test(t, other)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**

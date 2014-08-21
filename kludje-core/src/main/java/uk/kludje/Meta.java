@@ -258,7 +258,8 @@ public final class Meta<T> {
    */
   public int hashCode(T t) {
     int result = 0;
-    for (ToIntFunction<T> fn : hashCode) {
+    for (int i= 0, len = hashCode.size(); i < len; i++) {
+      ToIntFunction<T> fn = hashCode.get(i);
       result = (result * 31) + fn.applyAsInt(t);
     }
     return result;

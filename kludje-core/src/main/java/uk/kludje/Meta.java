@@ -232,11 +232,15 @@ public final class Meta<T> {
    * @return true if the arguments are equal
    */
   public boolean equals(T t, Object any) {
-    if (!t.getClass().isInstance(any)) {
+    Objects.requireNonNull(t);
+    if (any == null) {
       return false;
     }
     if (any == t) {
       return true;
+    }
+    if (!t.getClass().isInstance(any)) {
+      return false;
     }
     @SuppressWarnings("unchecked")
     T other = (T) any;

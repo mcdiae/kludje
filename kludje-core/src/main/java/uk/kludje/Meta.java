@@ -81,16 +81,17 @@ import static java.util.Arrays.asList;
 public final class Meta<T> {
   private static final Meta<?> INIT = new Meta<>(emptyList(), emptyList(), emptyList());
 
-  private final List<BiConsumer<T, StringBuilder>> toString;
-  private final List<BiPredicate<T, T>> equals;
-  private final List<ToIntFunction<T>> hashCode;
+  private final BiConsumer<T, StringBuilder>[] toString;
+  private final BiPredicate<T, T>[] equals;
+  private final ToIntFunction<T>[] hashCode;
 
+  @SuppressWarnings("unchecked")
   private Meta(List<BiConsumer<T, StringBuilder>> toString,
                List<BiPredicate<T, T>> equals,
                List<ToIntFunction<T>> hashCode) {
-    this.toString = toString;
-    this.equals = equals;
-    this.hashCode = hashCode;
+    this.toString = toString.toArray(new BiConsumer[toString.size()]);
+    this.equals = equals.toArray(new BiPredicate[equals.size()]);
+    this.hashCode = hashCode.toArray(new ToIntFunction[hashCode.size()]);
   }
 
   /**
@@ -213,13 +214,12 @@ public final class Meta<T> {
     return new Meta<>(newToString, newEquals, newHashCode);
   }
 
-  private <A, R> List<R> combine(List<R> existing, List<A> src, Function<A, R> transform) {
+  private <A, R> List<R> combine(R[] existing, List<A> src, Function<A, R> transform) {
     List<R> result = new ArrayList<>();
-    List<R> transformed = src.stream()
+    result.addAll(asList(existing));
+    src.stream()
         .map(transform)
-        .collect(Collectors.toList());
-    result.addAll(existing);
-    result.addAll(transformed);
+        .forEach(result::add);
     return result;
   }
 
@@ -244,8 +244,7 @@ public final class Meta<T> {
     }
     @SuppressWarnings("unchecked")
     T other = (T) any;
-    for(int i = 0, len = equals.size(); i < len; i++) {
-      BiPredicate<T, T> bp = equals.get(i);
+    for(BiPredicate<T, T> bp : equals) {
       if(!bp.test(t, other)) {
         return false;
       }
@@ -262,8 +261,7 @@ public final class Meta<T> {
    */
   public int hashCode(T t) {
     int result = 0;
-    for (int i= 0, len = hashCode.size(); i < len; i++) {
-      ToIntFunction<T> fn = hashCode.get(i);
+    for (ToIntFunction<T> fn : hashCode) {
       result = (result * 31) + fn.applyAsInt(t);
     }
     return result;
@@ -280,11 +278,11 @@ public final class Meta<T> {
     StringBuilder buf = new StringBuilder();
     buf.append(t.getClass().getSimpleName());
     buf.append(" {");
-    for (int i = 0; i < toString.size(); i++) {
-      if (i > 0) {
+    for (BiConsumer<T, StringBuilder> val : toString) {
+      if (buf.length() > 0) {
         buf.append(", ");
       }
-      toString.get(i).accept(t, buf);
+      val.accept(t, buf);
     }
     return buf.append("}").toString();
   }

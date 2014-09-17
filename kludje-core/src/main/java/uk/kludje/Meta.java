@@ -532,7 +532,10 @@ class HashTransformer<T> implements GetterTransformer<T, ToIntFunction<T>> {
 
   @Override
   public ToIntFunction<T> longs(Meta.LongGetter<T> g) {
-    return t -> Long.hashCode(g.getLong(t));
+    return t -> {
+      long l = g.getLong(t);
+      return (int) (l ^ (l >>> 32));
+    };
   }
 
   @Override

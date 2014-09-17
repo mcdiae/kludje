@@ -443,7 +443,11 @@ class EqualsTransformer<T> implements GetterTransformer<T, BiPredicate<T, T>> {
 
   @Override
   public BiPredicate<T, T> objects(Meta.Getter<T> g) {
-    return (t1, t2) -> Objects.equals(g.get(t1), g.get(t2));
+    return (t1, t2) -> {
+      Object o1 = g.get(t1);
+      Object o2 = g.get(t2);
+      return (o1 == null) ? (o2 == null) : o1.equals(o2);
+    };
   }
 
   @Override
@@ -495,32 +499,35 @@ class HashTransformer<T> implements GetterTransformer<T, ToIntFunction<T>> {
 
   @Override
   public ToIntFunction<T> objects(Meta.Getter<T> g) {
-    return t -> Objects.hashCode(g.get(t));
+    return t -> {
+      Object o = g.get(t);
+      return (o == null) ? 0 : o.hashCode();
+    };
   }
 
   @Override
   public ToIntFunction<T> booleans(Meta.BooleanGetter<T> g) {
-    return t -> Boolean.hashCode(g.getBoolean(t));
+    return t -> g.getBoolean(t) ? 1 : 0;
   }
 
   @Override
   public ToIntFunction<T> chars(Meta.CharGetter<T> g) {
-    return t -> Character.hashCode(g.getChar(t));
+    return t -> g.getChar(t);
   }
 
   @Override
   public ToIntFunction<T> bytes(Meta.ByteGetter<T> g) {
-    return t -> Byte.hashCode(g.getByte(t));
+    return t -> g.getByte(t);
   }
 
   @Override
   public ToIntFunction<T> shorts(Meta.ShortGetter<T> g) {
-    return t -> Short.hashCode(g.getShort(t));
+    return t -> g.getShort(t);
   }
 
   @Override
   public ToIntFunction<T> ints(Meta.IntGetter<T> g) {
-    return t -> Integer.hashCode(g.getInt(t));
+    return t -> g.getInt(t);
   }
 
   @Override

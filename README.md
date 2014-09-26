@@ -24,7 +24,7 @@ Build Environment
 Software:
 
  - [JDK 8](https://jdk8.java.net/)
- - [Gradle](http://www.gradle.org/) (1.12 used)
+ - [Gradle](http://www.gradle.org/) (2.1 used)
 
 To build:
 

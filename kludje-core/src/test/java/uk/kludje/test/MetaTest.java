@@ -65,7 +65,7 @@ public class MetaTest {
       .objects($ -> $.h, $ -> $.i)
       .doubles($ -> $.j);
 
-  class MetaPojo {
+  private static class MetaPojo {
     boolean a;
     char b;
     byte c;

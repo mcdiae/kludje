@@ -20,6 +20,8 @@
 
 
 
+
+
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
@@ -71,16 +73,17 @@ allprojects {
       mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        //TODO: gradle + release profiles
-        //snapshots: https://oss.sonatype.org/content/repositories/snapshots
-        //releases: https://oss.sonatype.org/service/local/staging/deploy/maven2
-        repository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+          authentication(userName: sonatypeUsername, password: sonatypePassword)
+        }
+
+        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
           authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
 
         pom.project {
           packaging 'jar'
-          url 'https://github.com/mcdiae/kludje'
+          url 'http://kludje.uk'
 
           scm {
             url 'git@github.com:mcdiae/kludje.git'

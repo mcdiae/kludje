@@ -25,3 +25,10 @@ wget http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.3/kl
 jar -xvf  docs.jar
 rm docs.jar
 cd ../../../..
+
+mkdir -p web/artefacts/api/0.4
+cd web/artefacts/api/0.4
+wget http://search.maven.org/remotecontent?filepath=uk/kludje/kludje-core/0.4/kludje-core-0.4-javadoc.jar -O docs.jar
+jar -xvf  docs.jar
+rm docs.jar
+cd ../../../..

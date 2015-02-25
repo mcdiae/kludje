@@ -42,4 +42,18 @@ public class ExceptionsTest {
     }
     Assert.assertTrue(gotIt);
   }
+
+  @Test
+  public void testCatch2() {
+    boolean gotIt = false;
+    try {
+      Exceptions.throwChecked(new ClassNotFoundException("expected"));
+      Exceptions
+          .<IOException>expected()
+          .<ClassNotFoundException>expected();
+    } catch (IOException | ClassNotFoundException e) {
+      gotIt = true;
+    }
+    Assert.assertTrue(gotIt);
+  }
 }

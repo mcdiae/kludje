@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.kludje.fn.nulls;
+package uk.kludje.fn;
 
 import uk.kludje.Exceptions;
 
@@ -22,9 +22,13 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * An extension of {@link java.util.function.Function} that returns null.
+ * A {@link java.util.function.Function} with null-safe checks.
+ *
  * For use with getter chains where one or more elements in the chain
  * can be null.
+ *
+ * Example usage:
+ * <pre>D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);</pre>
  *
  * Implement {@link #$apply(Object)}; invoke {@link #apply(Object)}.
  *
@@ -40,7 +44,7 @@ public interface Nullifier<T, R> extends Function<T, R> {
    * This method rethrows any exception thrown by {@link #$apply(Object)} as an unchecked exception.
    *
    * @param t the input which may be null
-   * @return the result
+   * @return the result which may be null
    * @see uk.kludje.Exceptions#throwChecked(Throwable)
    */
   @Override
@@ -54,7 +58,7 @@ public interface Nullifier<T, R> extends Function<T, R> {
 
   /**
    * Implement this method with a lambda expression/method reference.
-   * Consumers should invoke {@link #apply(Object)}.
+   * Consumers should invoke {@link #apply(Object)} and NOT call this method directly.
    *
    * @param t the argument
    * @return the result
@@ -68,37 +72,50 @@ public interface Nullifier<T, R> extends Function<T, R> {
     return (V v) -> apply(before.apply(v));
   }
 
-  default <V> Nullifier<V, R> checkCompose(Nullifier<? super V, ? extends T> before) {
-    Objects.requireNonNull(before);
-    return (V v) -> apply(before.apply(v));
-  }
-
   @Override
   default <V> Nullifier<T, V> andThen(Function<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (T t) -> after.apply(apply(t));
   }
 
-  default <V> Nullifier<T, V> andThenCheck(Nullifier<? super R, ? extends V> after) {
-    Objects.requireNonNull(after);
-    return (T t) -> after.apply(apply(t));
-  }
-
-  public static <A, B, Z> Nullifier<A, Z> check(Nullifier<A, B> f0, Nullifier<B, Z> f1) {
+  /**
+   * Creates a null-safe chain of function calls spanning two given functions.
+   *
+   * The functions may not be null, but the inputs and outputs may be.
+   *
+   * @param f0 the initial function; may not be null
+   * @param f1 a subsequent function; may not be null
+   * @param <A> the initial type
+   * @param <B> an intermediary type
+   * @param <Z> the resultant type
+   * @return a function that, given A, returns Z, or null if any element in the chain is null
+   */
+  public static <A, B, Z> Nullifier<A, Z> span(Nullifier<A, B> f0, Nullifier<B, Z> f1) {
     return f0.andThen(f1);
   }
 
-  public static <A, B, C, Z> Nullifier<A, Z> check(Nullifier<A, B> f0, Nullifier<B, C> f1, Nullifier<C, Z> f2) {
+  public static <A, B, C, Z> Nullifier<A, Z> span(Nullifier<A, B> f0, Nullifier<B, C> f1, Nullifier<C, Z> f2) {
     return f0.andThen(f1)
         .andThen(f2);
   }
 
-  public static <A, B, C, D, Z> Nullifier<A, Z> check(Nullifier<A, B> f0,
-                                                      Nullifier<B, C> f1,
-                                                      Nullifier<C, D> f2,
-                                                      Nullifier<D, Z> f3) {
+  public static <A, B, C, D, Z> Nullifier<A, Z> span(Nullifier<A, B> f0,
+                                                     Nullifier<B, C> f1,
+                                                     Nullifier<C, D> f2,
+                                                     Nullifier<D, Z> f3) {
     return f0.andThen(f1)
         .andThen(f2)
         .andThen(f3);
+  }
+
+  public static <A, B, C, D, E, Z> Nullifier<A, Z> span(Nullifier<A, B> f0,
+                                                        Nullifier<B, C> f1,
+                                                        Nullifier<C, D> f2,
+                                                        Nullifier<D, E> f3,
+                                                        Nullifier<E, Z> f4) {
+    return f0.andThen(f1)
+        .andThen(f2)
+        .andThen(f3)
+        .andThen(f4);
   }
 }

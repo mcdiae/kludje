@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.kludje.test.fn.nulls;
+package uk.kludje.test.fn;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.fn.nulls.Nullifier;
+import uk.kludje.fn.Nullifier;
 
 public class NullifierTest {
 
@@ -43,7 +43,7 @@ public class NullifierTest {
     a.b.c = new C();
     a.b.c.d = new D();
     // invoke
-    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
     Assert.assertEquals(a.b.c.d, d);
   }
@@ -53,7 +53,7 @@ public class NullifierTest {
     // setup
     A a = new A();
     // invoke
-    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
     Assert.assertNull(d);
   }
@@ -64,31 +64,65 @@ public class NullifierTest {
     A a = new A();
     a.b = new B();
     // invoke
-    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
     Assert.assertNull(d);
   }
 
-  class A {
+  @Test
+  public void test2Chain() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    C c = Nullifier.span(A::getB, B::getC).apply(a);
+    // verify
+    Assert.assertEquals(a.b.c, c);
+  }
+
+  @Test
+  public void test4Chain() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    // invoke
+    E e = Nullifier.span(A::getB, B::getC, C::getD, D::getE).apply(a);
+    // verify
+    Assert.assertEquals(a.b.c.d.e, e);
+  }
+
+  static class A {
     B b;
     B getB() {
       return b;
     }
   }
 
-  class B {
+  static class B {
     C c;
     C getC() {
       return c;
     }
   }
 
-  class C {
+  static class C {
     D d;
     D getD() {
       return d;
     }
   }
 
-  class D {}
+  static class D {
+    E e;
+    E getE() {
+      return e;
+    }
+  }
+
+  static class E {}
 }

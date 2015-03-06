@@ -34,4 +34,61 @@ public class NullifierTest {
     String nullStr = nullifier.apply(null);
     Assert.assertNull(nullStr);
   }
+
+  @Test
+  public void testChain() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    // verify
+    Assert.assertEquals(a.b.c.d, d);
+  }
+
+  @Test
+  public void testNullChain() {
+    // setup
+    A a = new A();
+    // invoke
+    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    // verify
+    Assert.assertNull(d);
+  }
+
+  @Test
+  public void testPartialChain() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    // invoke
+    D d = Nullifier.check(A::getB, B::getC, C::getD).apply(a);
+    // verify
+    Assert.assertNull(d);
+  }
+
+  class A {
+    B b;
+    B getB() {
+      return b;
+    }
+  }
+
+  class B {
+    C c;
+    C getC() {
+      return c;
+    }
+  }
+
+  class C {
+    D d;
+    D getD() {
+      return d;
+    }
+  }
+
+  class D {}
 }

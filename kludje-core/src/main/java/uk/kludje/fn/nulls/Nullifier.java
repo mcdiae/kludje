@@ -68,33 +68,36 @@ public interface Nullifier<T, R> extends Function<T, R> {
     return (V v) -> apply(before.apply(v));
   }
 
+  default <V> Nullifier<V, R> checkCompose(Nullifier<? super V, ? extends T> before) {
+    Objects.requireNonNull(before);
+    return (V v) -> apply(before.apply(v));
+  }
+
   @Override
   default <V> Nullifier<T, V> andThen(Function<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (T t) -> after.apply(apply(t));
   }
 
-  public static <A, Z> Nullifier<A, Z> check(Function<A, Z> f0) {
-    return f0::apply;
+  default <V> Nullifier<T, V> andThenCheck(Nullifier<? super R, ? extends V> after) {
+    Objects.requireNonNull(after);
+    return (T t) -> after.apply(apply(t));
   }
 
-  public static <A, B, Z> Nullifier<A, Z> check(Function<A, B> f0, Function<B, Z> f1) {
-    return check(f0::apply)
-        .andThen(f1);
+  public static <A, B, Z> Nullifier<A, Z> check(Nullifier<A, B> f0, Nullifier<B, Z> f1) {
+    return f0.andThen(f1);
   }
 
-  public static <A, B, C, Z> Nullifier<A, Z> check(Function<A, B> f0, Function<B, C> f1, Function<C, Z> f2) {
-    return check(f0::apply)
-        .andThen(f1)
+  public static <A, B, C, Z> Nullifier<A, Z> check(Nullifier<A, B> f0, Nullifier<B, C> f1, Nullifier<C, Z> f2) {
+    return f0.andThen(f1)
         .andThen(f2);
   }
 
-  public static <A, B, C, D, Z> Nullifier<A, Z> check(Function<A, B> f0,
-                                                        Function<B, C> f1,
-                                                        Function<C, D> f2,
-                                                        Function<D, Z> f3) {
-    return check(f0::apply)
-        .andThen(f1)
+  public static <A, B, C, D, Z> Nullifier<A, Z> check(Nullifier<A, B> f0,
+                                                      Nullifier<B, C> f1,
+                                                      Nullifier<C, D> f2,
+                                                      Nullifier<D, Z> f3) {
+    return f0.andThen(f1)
         .andThen(f2)
         .andThen(f3);
   }

@@ -20,7 +20,7 @@
 
     prettify = function () {
         if(counter === 0) {
-            $("head").append("<script src='http://google-code-prettify.googlecode.com/svn/loader/run_prettify.js'></script>");
+            $("head").append("<script src='//google-code-prettify.googlecode.com/svn/loader/run_prettify.js'></script>");
         }
     };
 

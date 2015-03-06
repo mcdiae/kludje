@@ -60,6 +60,7 @@ public class InterfaceTest {
   }
 
   @Test(expected = Error.class)
+  @SuppressWarnings("rawtypes")
   public void testRaw() {
     @SuppressWarnings({"unchecked"})
     class BadRawImplementation extends Interface {}

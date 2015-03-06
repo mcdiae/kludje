@@ -26,12 +26,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CloseableResourceTest {
 
   @Test
+  @SuppressWarnings("try")
   public void compileTest() {
     try (CloseableResource res = this::noop) {
     }
   }
 
   @Test
+  @SuppressWarnings("try")
   public void exceptionTest() {
     AtomicBoolean gotit = new AtomicBoolean();
     try (CloseableResource res = throwCre().<CRE>expected()) {
@@ -48,6 +50,7 @@ public class CloseableResourceTest {
   private void noop() {
   }
 
+  @SuppressWarnings("serial")
   private static class CRE extends Exception {
   }
 }

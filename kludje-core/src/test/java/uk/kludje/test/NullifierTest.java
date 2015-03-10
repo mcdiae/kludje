@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.kludje.test.fn;
+package uk.kludje.test;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.fn.Nullifier;
+import uk.kludje.Nullifier;
 
-@Deprecated
 public class NullifierTest {
 
   @Test
@@ -95,6 +94,17 @@ public class NullifierTest {
     E e = Nullifier.span(A::getB, B::getC, C::getD, D::getE).apply(a);
     // verify
     Assert.assertEquals(a.b.c.d.e, e);
+  }
+
+  @Test
+  public void testInheritanceCompilation() {
+    // setup
+    Nullifier<String, CharSequence> nullifier = Nullifier.span((CharSequence o) -> o.toString(),
+        (Object o) -> o.toString());
+    // invoke
+    CharSequence foo = nullifier.apply("foo");
+    // verify
+    Assert.assertEquals("foo", foo);
   }
 
   static class A {

@@ -39,9 +39,11 @@ public interface Nullifier<T, R> {
    * Creates a null-safe chain of calls spanning possibly null call sites.
    * <p>
    * The functions may not be null, but the inputs and outputs may be.
+   * <p>
+   * A number of overloaded methods are provided with varying argument counts.
    *
-   * @param f0  the initial function; may not be null
-   * @param f1  a subsequent function; may not be null
+   * @param f0  the initial function; MUST NOT be null
+   * @param f1  a subsequent function; MUST NOT be null
    * @param <A> the initial type
    * @param <B> an intermediary type
    * @param <Z> the resultant type
@@ -92,6 +94,23 @@ public interface Nullifier<T, R> {
     return f0.apply(a);
   }
 
+  /**
+   * Convenience method for evaluating a chain of {@link Nullifier} calls.
+   * <p>
+   * A number of overloaded methods are provided with varying argument counts.
+   *
+   * @param a the root object in the object graph (may be null)
+   * @param f0 is passed "a"; MUST NOT be null
+   * @param f1 is passed the result of "f0"; MUST NOT be null
+   * @param <A> the root type
+   * @param <B> an intermediary type
+   * @param <Z> the result type
+   * @return the result of the function chain or null
+   * @see #eval(Object, Nullifier)
+   * @see #eval(Object, Nullifier, Nullifier)
+   * @see #eval(Object, Nullifier, Nullifier, Nullifier)
+   * @see #eval(Object, Nullifier, Nullifier, Nullifier, Nullifier, Nullifier)
+   */
   public static <A, B, Z> Z eval(A a,
                                  Nullifier<? super A, ? extends B> f0,
                                  Nullifier<? super B, ? extends Z> f1) {
@@ -154,12 +173,19 @@ public interface Nullifier<T, R> {
    * <p>
    * Consumers should invoke {@link #apply(Object)} and NOT call this method directly.
    *
-   * @param t the argument
+   * @param t the argument; not null if invoked by default {@link #apply(Object)}
    * @return the result
    * @throws Exception on error
    */
   R $apply(T t) throws Exception;
 
+  /**
+   * Chains two instances together.
+   *
+   * @param after the nullifier to invoke after this; MUST NOT be null
+   * @param <V> the new result type
+   * @return a new nullifier
+   */
   default <V> Nullifier<T, V> andThenSpan(Nullifier<? super R, ? extends V> after) {
     Objects.requireNonNull(after);
     return (T t) -> after.apply(apply(t));

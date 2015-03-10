@@ -33,7 +33,7 @@ import java.util.Objects;
  *
  * @param <T> the input
  * @param <R> the result
- * @deprecated moved - use {@link uk.kludje.Nullifier} instead; this type will be removed
+ * @deprecated use {@link uk.kludje.Nullifier} instead; this type will be removed
  */
 @FunctionalInterface
 @Deprecated

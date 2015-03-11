@@ -19,15 +19,31 @@ package uk.kludje;
 import java.util.Objects;
 
 /**
- * A functional interface with null-safe checks.
- * <p>
- * For use with getter chains where one or more elements in the chain
- * can be null.
- * <p>
- * Example usage:
+ * <p>A functional interface with null-safe checks.</p>
+ * <p>For use with getter chains where one or more elements in the chain
+ * can be null.</p>
+ *
+ * <p>Example usage:</p>
  * <pre>D d = Nullifier.eval(a, A::getB, B::getC, C::getD);</pre>
- * <p>
- * Implement {@link #$apply(Object)}; invoke {@link #apply(Object)}.
+ *
+ * <p>The above code is equivalent to:</p>
+ * <pre>
+ *   D d = null;
+ *   if (a != null) {
+ *     B b = a.getB();
+ *     if (b != null) {
+ *       C c  = b.getC();
+ *       if (c != null) {
+ *         d = c.getD();
+ *       }
+ *     }
+ *   }
+ * </pre>
+ *
+ * <p>To test if <code>d</code> is null, use:</p>
+ * <pre>boolean dIsNull = Nullifier.isNull(a, A::getB, B::getC, C::getD);</pre>
+ *
+ * <p>Implement {@link #$apply(Object)}; invoke {@link #apply(Object)}.</p>
  *
  * @param <T> the input
  * @param <R> the result
@@ -149,6 +165,59 @@ public interface Nullifier<T, R> {
     D d = f2.apply(c);
     E e = f3.apply(d);
     return f4.apply(e);
+  }
+
+  public static <A, Z> boolean isNull(A a,
+                              Nullifier<? super A, ? extends Z> f0) {
+    return f0.apply(a) == null;
+  }
+
+  /**
+   * <p>Convenience method for evaluating a chain of {@link Nullifier} calls to see if any link is null.</p>
+   * <p>A number of overloaded methods are provided with varying argument counts.</p>
+   * <p>Equivalent to:</p>
+   * <pre>boolean isNull = (Nullifier.eval(a, f0, f1) == null);</pre>
+   *
+   * @param a the root object in the object graph (may be null)
+   * @param f0 is passed "a"; MUST NOT be null
+   * @param f1 is passed the result of "f0"; MUST NOT be null
+   * @param <A> the root type
+   * @param <B> an intermediary type
+   * @param <Z> the result type
+   * @return true if the result is null; false otherwise
+   * @see #isNull(Object, Nullifier)
+   * @see #isNull(Object, Nullifier, Nullifier)
+   * @see #isNull(Object, Nullifier, Nullifier, Nullifier)
+   * @see #isNull(Object, Nullifier, Nullifier, Nullifier, Nullifier, Nullifier)
+   */
+  public static <A, B, Z> boolean isNull(A a,
+                                 Nullifier<? super A, ? extends B> f0,
+                                 Nullifier<? super B, ? extends Z> f1) {
+    return eval(a, f0, f1) == null;
+  }
+
+  public static <A, B, C, Z> boolean isNull(A a,
+                                    Nullifier<? super A, ? extends B> f0,
+                                    Nullifier<? super B, ? extends C> f1,
+                                    Nullifier<? super C, ? extends Z> f2) {
+    return eval(a, f0, f1, f2) == null;
+  }
+
+  public static <A, B, C, D, Z> boolean isNull(A a,
+                                       Nullifier<? super A, ? extends B> f0,
+                                       Nullifier<? super B, ? extends C> f1,
+                                       Nullifier<? super C, ? extends D> f2,
+                                       Nullifier<? super D, ? extends Z> f3) {
+    return eval(a, f0, f1, f2, f3) == null;
+  }
+
+  public static <A, B, C, D, E, Z> boolean isNull(A a,
+                                          Nullifier<? super A, ? extends B> f0,
+                                          Nullifier<? super B, ? extends C> f1,
+                                          Nullifier<? super C, ? extends D> f2,
+                                          Nullifier<? super D, ? extends E> f3,
+                                          Nullifier<? super E, ? extends Z> f4) {
+    return eval(a, f0, f1, f2, f3, f4) == null;
   }
 
   /**

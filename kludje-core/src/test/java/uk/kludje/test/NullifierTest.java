@@ -36,7 +36,7 @@ public class NullifierTest {
   }
 
   @Test
-  public void testChain() {
+  public void testSpan() {
     // setup
     A a = new A();
     a.b = new B();
@@ -49,7 +49,7 @@ public class NullifierTest {
   }
 
   @Test
-  public void testNullChain() {
+  public void testNullSpan() {
     // setup
     A a = new A();
     // invoke
@@ -59,7 +59,7 @@ public class NullifierTest {
   }
 
   @Test
-  public void testPartialChain() {
+  public void testPartialSpan() {
     // setup
     A a = new A();
     a.b = new B();
@@ -70,7 +70,7 @@ public class NullifierTest {
   }
 
   @Test
-  public void test2Chain() {
+  public void testSpan2() {
     // setup
     A a = new A();
     a.b = new B();
@@ -83,7 +83,7 @@ public class NullifierTest {
   }
 
   @Test
-  public void test4Chain() {
+  public void testSpan4() {
     // setup
     A a = new A();
     a.b = new B();
@@ -97,14 +97,114 @@ public class NullifierTest {
   }
 
   @Test
-  public void testInheritanceCompilation() {
+  public void testIsNullSpan() {
     // setup
-    Nullifier<String, CharSequence> nullifier = Nullifier.span((CharSequence o) -> o.toString(),
-        (Object o) -> o.toString());
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
+    // verify
+    Assert.assertFalse(state);
+  }
+
+  @Test
+  public void testIsNull() {
+    // invoke
+    boolean state = Nullifier.isNull(null, A::getB, B::getC, C::getD);
+    // verify
+    Assert.assertTrue(state);
+  }
+
+  @Test
+  public void testIsPartialNull() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
+    // verify
+    Assert.assertTrue(state);
+  }
+
+  @Test
+  public void testNull1() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB);
+    // verify
+    Assert.assertFalse(state);
+  }
+
+  @Test
+  public void testNull2() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC);
+    // verify
+    Assert.assertFalse(state);
+  }
+
+  @Test
+  public void testNull4() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD, D::getE);
+    // verify
+    Assert.assertFalse(state);
+  }
+
+  /** Inheritance tests check for generics compilation problems. */
+  @Test
+  public void testInheritanceCompilation2() {
+    // setup
+    Nullifier<String, CharSequence> nullifier = Nullifier.span(this::toCharSequence,
+        this::toCharSequence);
     // invoke
     CharSequence foo = nullifier.apply("foo");
     // verify
     Assert.assertEquals("foo", foo);
+  }
+
+  @Test
+  public void testInheritanceCompilation3() {
+    // setup
+    Nullifier<String, CharSequence> nullifier = Nullifier.span(this::toCharSequence,
+        this::toCharSequence,
+        this::toCharSequence);
+    // invoke
+    CharSequence foo = nullifier.apply("foo");
+    // verify
+    Assert.assertEquals("foo", foo);
+  }
+
+  @Test
+  public void testInheritanceCompilation4() {
+    // setup
+    Nullifier<String, CharSequence> nullifier = Nullifier.span(this::toCharSequence,
+        this::toCharSequence,
+        this::toCharSequence,
+        this::toCharSequence);
+    // invoke
+    CharSequence foo = nullifier.apply("foo");
+    // verify
+    Assert.assertEquals("foo", foo);
+  }
+
+  private CharSequence toCharSequence(Object cs) {
+    return cs.toString();
   }
 
   static class A {

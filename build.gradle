@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 McDowell
+ * Copyright 2015 McDowell
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.6-SNAPSHOT'
+  version = '0.6'
 
   artifacts {
     archives jar

@@ -24,6 +24,6 @@ package uk.kludje;
  * The {@code Nil} type may carry more meaning for logging purposes, etc.
  */
 public enum Nil {
-  /**The one and only value*/
+  /**The one and only instance of {@code Nil}*/
   NIL
 }

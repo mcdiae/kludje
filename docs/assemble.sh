@@ -5,7 +5,7 @@ rm -Rf web/artefacts/*
 mkdir -p web/artefacts/sample
 cp ../kludje-testkit/src/main/java/uk/kludje/test/sample/* web/artefacts/sample/
 
-for i in `seq 1 5`;
+for i in `seq 1 6`;
 do
 	mkdir -p web/artefacts/api/0.$i
 	cd web/artefacts/api/0.$i

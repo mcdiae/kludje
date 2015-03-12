@@ -19,9 +19,7 @@ package uk.kludje;
 /**
  * Instance for when an arbitrary type and value is required.
  *
- * An alternative to using {@code Void} as a generic type.
- * Since there is no standard {@code Void} instance {@code null} is used as a value.
- * The {@code Nil} type may carry more meaning for logging purposes, etc.
+ * Usually, for when you want to return {@code Void} from a generic method but don't want to return {@code null}.
  */
 public enum Nil {
   /**The one and only instance of {@code Nil}*/

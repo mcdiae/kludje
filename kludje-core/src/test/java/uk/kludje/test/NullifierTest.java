@@ -203,6 +203,27 @@ public class NullifierTest {
     Assert.assertEquals("foo", foo);
   }
 
+  @Test
+  public void testOrElseSpan() {
+    // setup
+    A a = new A();
+    D expected = new D();
+    // invoke
+    D d = Nullifier.span(A::getB, B::getC, C::getD).applyOr(a, expected);
+    // verify
+    Assert.assertEquals(expected, d);
+  }
+
+  @Test
+  public void testOrElseGetSpan() {
+    // setup
+    A a = new A();
+    // invoke
+    D d = Nullifier.span(A::getB, B::getC, C::getD).applyOrGet(a, D::new);
+    // verify
+    Assert.assertNotNull(d);
+  }
+
   private CharSequence toCharSequence(Object cs) {
     return cs.toString();
   }

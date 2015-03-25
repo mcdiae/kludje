@@ -45,7 +45,7 @@ public class CollectionAdapter {
     return new ListAdapter();
   }
 
-  public static <E> Set<E> asSet(Supplier<? extends Iterator<E>> iterator, IntSupplier size) {
+  public static <E> Set<E> asSet(Supplier<Iterator<E>> iterator, IntSupplier size) {
     class SetAdapter extends AbstractSet<E> {
 
       @Override

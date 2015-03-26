@@ -16,16 +16,16 @@
 
 package uk.kludje.test.sample;
 
-import uk.kludje.experimental.collect.CollectionAdapter;
+import uk.kludje.experimental.collect.AdapterCollections;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-public class ArraySet {
+public class ArraySetAdapter {
   public static void main(String[] args) {
     List<String> list = Arrays.asList("foo", "bar");
-    Set<String> set = CollectionAdapter.asSet(list::iterator, list::size);
+    Set<String> set = AdapterCollections.set(list::iterator, list::size);
     System.out.println(set.contains("foo"));
     System.out.println(set.contains("baz"));
   }

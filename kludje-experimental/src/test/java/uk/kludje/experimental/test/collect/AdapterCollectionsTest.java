@@ -18,18 +18,31 @@ package uk.kludje.experimental.test.collect;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.experimental.collect.CollectionAdapter;
+import uk.kludje.experimental.collect.AdapterCollections;
 
 import java.util.*;
 
-public class CollectionAdapterTest {
+public class AdapterCollectionsTest {
+
+  @Test
+  public void testAsCollection() {
+    // setup
+    Collection<String> expected = Arrays.asList("foo", "bar");
+    // invoke
+    Collection<String> actual = AdapterCollections.<String>collection(expected::iterator, expected::size);
+    // verify
+    Assert.assertEquals(expected.size(), actual.size());
+    Assert.assertTrue(actual.contains("foo"));
+    Assert.assertTrue(actual.contains("bar"));
+    Assert.assertFalse(actual.contains("baz"));
+  }
 
   @Test
   public void testAsList() {
     // setup
     List<String> expected = Arrays.asList("foo", "bar");
     // invoke
-    List<String> actual = CollectionAdapter.asList(expected::get, expected::size);
+    List<String> actual = AdapterCollections.list(expected::get, expected::size);
     // verify
     Assert.assertEquals(expected, actual);
   }
@@ -39,19 +52,7 @@ public class CollectionAdapterTest {
     // setup
     Set<String> expected = new HashSet<>(Arrays.asList("foo", "bar"));
     // invoke
-    Set<String> actual = CollectionAdapter.asSet(expected::iterator, expected::size);
-    // verify
-    Assert.assertEquals(expected, actual);
-  }
-
-  @Test
-  public void testAsMap() {
-    // setup
-    Map<String, String> expected = new HashMap<>();
-    expected.put("foo", "bar");
-    expected.put("bar", "baz");
-    // invoke
-    Map<String, String> actual = CollectionAdapter.asMap(expected.entrySet());
+    Set<String> actual = AdapterCollections.set(expected::iterator, expected::size);
     // verify
     Assert.assertEquals(expected, actual);
   }

@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import uk.kludje.experimental.collect.CollectionAdapter;
+import uk.kludje.experimental.collect.AdapterCollections;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
@@ -39,6 +39,6 @@ public class NodeListAdapter {
   }
 
   public static List<Node> asList(NodeList nodeList) {
-    return CollectionAdapter.asList(nodeList::item, nodeList::getLength);
+    return AdapterCollections.list(nodeList::item, nodeList::getLength);
   }
 }

@@ -45,41 +45,6 @@ public class AdapterCollections {
     return new ImmutableSet(iterator, size);
   }
 
-  public static final class ListTypeBuilder<E> {
-    private final IntFunction<E> get;
-    private final IntSupplier size;
-    private IntElementFunction<E> set;
-    private IntElementFunction<E> add;
-    private IntFunction<E> remove;
-
-    private ListTypeBuilder(IntFunction<E> get, IntSupplier size) {
-      Objects.requireNonNull(get, "get");
-      Objects.requireNonNull(size, "size");
-      this.get = get;
-      this.size = size;
-    }
-
-    public ListTypeBuilder<E> modifiable(IntElementFunction<E> set) {
-      Objects.requireNonNull(set, "set");
-      this.set = set;
-      return this;
-    }
-
-    public ListTypeBuilder<E> mutable(IntElementFunction<E> set, IntElementFunction<E> add, IntFunction<E> remove) {
-      Objects.requireNonNull(set, "set");
-      Objects.requireNonNull(add, "add");
-      Objects.requireNonNull(remove, "remove");
-      this.set = set;
-      this.add = add;
-      this.remove = remove;
-      return this;
-    }
-
-    public static interface IntElementFunction<E> {
-      E apply(int i, E e);
-    }
-  }
-
   private static class UnmodifiableIterator<E> implements Iterator<E> {
     private final BooleanSupplier hasNext;
     private final Supplier<E> next;

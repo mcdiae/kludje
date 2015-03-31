@@ -16,18 +16,21 @@
 
 package uk.kludje.test.sample;
 
-import uk.kludje.experimental.collect.AdapterCollections;
+import static uk.kludje.experimental.collect.AdapterCollections.iterator;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.Iterator;
 
-public class ArraySetAdapter {
+public class PrintNetworkInterfaces {
 
-  public static void main(String[] args) {
-    List<String> list = Arrays.asList("foo", "bar");
-    Set<String> set = AdapterCollections.set(list::iterator, list::size);
-    System.out.println(set.contains("foo"));
-    System.out.println(set.contains("baz"));
+  public static <E> Iterator<E> asIterator(Enumeration<E> enumeration) {
+    return iterator(enumeration::hasMoreElements, enumeration::nextElement);
+  }
+
+  public static void main(String[] args) throws SocketException {
+    Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+    asIterator(interfaces).forEachRemaining(System.out::println);
   }
 }

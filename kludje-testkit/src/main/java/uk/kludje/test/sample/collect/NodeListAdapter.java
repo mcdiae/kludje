@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.kludje.test.sample;
+package uk.kludje.test.sample.collect;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import uk.kludje.experimental.collect.AdapterCollections;
+import uk.kludje.experimental.collect.LambdaLists;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.StringReader;
@@ -39,6 +39,6 @@ public class NodeListAdapter {
   }
 
   public static List<Node> asList(NodeList nodeList) {
-    return AdapterCollections.list(nodeList::item, nodeList::getLength);
+    return LambdaLists.list(nodeList::item, nodeList::getLength);
   }
 }

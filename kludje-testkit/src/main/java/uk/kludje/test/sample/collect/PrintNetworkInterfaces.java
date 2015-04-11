@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.kludje.test.sample;
+package uk.kludje.test.sample.collect;
 
-import static uk.kludje.experimental.collect.AdapterCollections.iterator;
+import uk.kludje.experimental.collect.LambdaIterators;
 
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -26,7 +26,7 @@ import java.util.Iterator;
 public class PrintNetworkInterfaces {
 
   public static <E> Iterator<E> asIterator(Enumeration<E> enumeration) {
-    return iterator(enumeration::hasMoreElements, enumeration::nextElement);
+    return LambdaIterators.iterator(enumeration::hasMoreElements, enumeration::nextElement);
   }
 
   public static void main(String[] args) throws SocketException {

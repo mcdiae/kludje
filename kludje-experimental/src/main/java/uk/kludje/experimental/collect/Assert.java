@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 McDowell
+ * Copyright 2015 McDowell
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,16 @@
 
 package uk.kludje.experimental.collect;
 
-public class IterableAdapterFactory<S, E> {
+final class Assert {
 
+  private Assert() {
+  }
 
+  public static void that(boolean predicate, String explanation) {
+    assert explanation != null;
+    if (!predicate) {
+      throw new AssertionError(explanation);
+    }
+  }
 
 }

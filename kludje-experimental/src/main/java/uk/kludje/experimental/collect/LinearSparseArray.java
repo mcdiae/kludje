@@ -18,7 +18,6 @@ package uk.kludje.experimental.collect;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
 class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray<T> {
 
@@ -42,6 +41,10 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
 
   @Override
   public T put(int key, T value) {
+    if (value == null) {
+      return remove(key);
+    }
+
     int replaceIndex = ArraySearch.linearSearch(keys, size, key);
 
     if (replaceIndex >= 0) {
@@ -92,8 +95,8 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
   }
 
   @Override
-  public IntStream keys() {
-    return Arrays.stream(keys, 0, size);
+  public IntSequence keys() {
+    return IntSequences.subarrayIntList(0, size, keys);
   }
 
   @Override

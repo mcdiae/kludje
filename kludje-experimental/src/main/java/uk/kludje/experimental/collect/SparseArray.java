@@ -17,7 +17,6 @@
 package uk.kludje.experimental.collect;
 
 import java.util.Collection;
-import java.util.stream.IntStream;
 
 /**
  * A simple sparse array interface.
@@ -32,7 +31,7 @@ public interface SparseArray<V> {
 
   int size();
 
-  IntStream keys();
+  IntSequence keys();
 
   Collection<V> values();
 
@@ -95,7 +94,7 @@ public interface SparseArray<V> {
       }
 
       @Override
-      public IntStream keys() {
+      public IntSequence keys() {
         return sa.keys();
       }
 

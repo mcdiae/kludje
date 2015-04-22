@@ -67,7 +67,7 @@ class ArrayBackedSet<E> extends AbstractSet<E> {
 
   @Override
   public Iterator<E> iterator() {
-    return LambdaIterators.asIterator(this::removeIndex, elements);
+    return LambdaIterators.mutableArrayIterator(this::removeIndex, elements);
   }
 
   @Override

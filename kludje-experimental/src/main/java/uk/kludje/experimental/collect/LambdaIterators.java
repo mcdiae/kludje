@@ -29,6 +29,15 @@ public final class LambdaIterators {
   private LambdaIterators() {
   }
 
+  /**
+   * Provides an {@link java.util.Iterator} backed by functional interfaces.
+   * {@link java.util.Iterator#remove} is not supported.
+   *
+   * @param hasNext used to implement {@link java.util.Iterator#hasNext()}
+   * @param next used to implement {@link java.util.Iterator#next()}
+   * @param <E> the generic type
+   * @return a new instance
+   */
   public static <E> Iterator<E> iterator(BooleanSupplier hasNext,
                                          Supplier<E> next) {
     Objects.requireNonNull(hasNext, "hasNext");
@@ -49,6 +58,15 @@ public final class LambdaIterators {
     return new LambdaIterator();
   }
 
+  /**
+   * As {@link #iterator(java.util.function.BooleanSupplier, java.util.function.Supplier)} but with remove support.
+   *
+   * @param hasNext used to implement {@link java.util.Iterator#hasNext()}
+   * @param next used to implement {@link java.util.Iterator#next()}
+   * @param remove used to implement {@link java.util.Iterator#remove()}
+   * @param <E> the generic type
+   * @return a new instance
+   */
   public static <E> Iterator<E> mutableIterator(BooleanSupplier hasNext,
                                                 Supplier<E> next,
                                                 Runnable remove) {
@@ -77,6 +95,15 @@ public final class LambdaIterators {
     return new MutableLambdaIterator();
   }
 
+  /**
+   * Creates an {@link java.util.Iterator} that has an internal count of how many times it has been called.
+   * The current index is passed to the lambda expressions.
+   *
+   * @param hasNext used to implement {@link java.util.Iterator#hasNext()}
+   * @param next used to implement {@link java.util.Iterator#next()}
+   * @param <E> the generic type
+   * @return a new instance
+   */
   public static <E> Iterator<E> indexIterator(IntPredicate hasNext,
                                               IntFunction<E> next) {
     Objects.requireNonNull(hasNext, "hasNext");
@@ -99,6 +126,16 @@ public final class LambdaIterators {
     return new IndexIterator();
   }
 
+  /**
+   * As {@link #indexIterator(java.util.function.IntPredicate, java.util.function.IntFunction)}
+   * except with a remove method.
+   *
+   * @param hasNext used to implement {@link java.util.Iterator#hasNext()}
+   * @param next used to implement {@link java.util.Iterator#next()}
+   * @param remove used to implement {@link java.util.Iterator#remove()}
+   * @param <E> the generic type
+   * @return a new instance
+   */
   public static <E> Iterator<E> mutableIndexIterator(IntPredicate hasNext,
                                                      IntFunction<E> next,
                                                      IntConsumer remove) {
@@ -121,7 +158,7 @@ public final class LambdaIterators {
 
       @Override
       protected void removeElement() {
-        remove.accept(index);
+        remove.accept(index - 1);
       }
     }
 
@@ -129,13 +166,13 @@ public final class LambdaIterators {
   }
 
   @SafeVarargs
-  public static <E> Iterator<E> asIterator(E... elements) {
+  public static <E> Iterator<E> arrayIterator(E... elements) {
     Objects.requireNonNull(elements, "elements");
     return indexIterator(i -> i < elements.length, i -> elements[i]);
   }
 
   @SafeVarargs
-  public static <E> Iterator<E> asIterator(IntConsumer remove, E... elements) {
+  public static <E> Iterator<E> mutableArrayIterator(IntConsumer remove, E... elements) {
     Objects.requireNonNull(elements, "elements");
     return mutableIndexIterator(i -> i < elements.length, i -> elements[i], remove);
   }

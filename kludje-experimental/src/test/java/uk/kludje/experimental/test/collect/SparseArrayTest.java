@@ -18,8 +18,13 @@ package uk.kludje.experimental.test.collect;
 
 import org.junit.Assert;
 import org.junit.Test;
+import uk.kludje.experimental.collect.IntSet;
 import uk.kludje.experimental.collect.SparseArray;
 import uk.kludje.experimental.collect.SparseArrays;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by user on 20/05/15.
@@ -71,5 +76,17 @@ public class SparseArrayTest {
     Assert.assertEquals(sa1, sa2);
     Assert.assertEquals(sa1.hashCode(), sa2.hashCode());
     Assert.assertEquals(sa1.toString(), sa2.toString());
+    // check keys
+    IntSet k1 = sa1.keys();
+    IntSet k2 = sa2.keys();
+    Assert.assertEquals(k1, k2);
+    Assert.assertEquals(k1.hashCode(), k2.hashCode());
+    // check values
+    Collection<?> c1 = sa1.values();
+    Collection<?> c2 = sa2.values();
+    Assert.assertEquals(c1.size(), c2.size());
+    Set<?> s1 = new HashSet<>(c1);
+    Set<?> s2 = new HashSet<>(c2);
+    Assert.assertEquals(s1, s2);
   }
 }

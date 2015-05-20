@@ -21,9 +21,12 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 /**
- * A simple list-of-integers type.
+ * A simple set-of-integers type.
+ * There is no guarantee of order.
  */
-public interface IntSequence extends Iterable<Integer> {
+public interface IntSet extends Iterable<Integer> {
+
+  public static final IntSet EMPTY = IntSets.arrayIntList();
 
   int size();
 
@@ -34,8 +37,6 @@ public interface IntSequence extends Iterable<Integer> {
 
   @Override
   int hashCode();
-
-  String toString();
 
   default boolean contains(int n) {
     int len = size();
@@ -49,7 +50,10 @@ public interface IntSequence extends Iterable<Integer> {
 
   @Override
   default Iterator<Integer> iterator() {
-    return LambdaIterators.indexIterator(i -> (i < size()), this::intAt);
+    int size = size();
+    return (size == 0)
+        ? LambdaIterators.emptyIterator()
+        : LambdaIterators.indexIterator(i -> (i < size()), this::intAt);
   }
 
   default IntStream stream() {

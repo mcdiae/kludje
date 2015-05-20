@@ -26,6 +26,8 @@ import java.util.function.*;
  */
 public final class LambdaIterators {
 
+  private static final Iterator<Object> EMPTY = arrayIterator();
+
   private LambdaIterators() {
   }
 
@@ -169,6 +171,11 @@ public final class LambdaIterators {
   public static <E> Iterator<E> arrayIterator(E... elements) {
     Objects.requireNonNull(elements, "elements");
     return indexIterator(i -> i < elements.length, i -> elements[i]);
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <E> Iterator<E> emptyIterator() {
+    return (Iterator<E>) EMPTY;
   }
 
   @SafeVarargs

@@ -20,23 +20,23 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * Convenience methods for implementing the {@link IntSequence} contract.
+ * Convenience methods for implementing the {@link IntSet} contract.
  */
-public final class IntListContracts {
-  private IntListContracts() {
+public final class IntSetContracts {
+  private IntSetContracts() {
   }
 
   /**
-   * Use to implement {@link IntSequence#equals(Object)}.
+   * Use to implement {@link IntSet#equals(Object)}.
    *
-   * @param intSequence
+   * @param intSet
    * @param other
    * @return
    */
-  public static boolean areEqual(IntSequence intSequence, Object other) {
-    assert intSequence != null;
+  public static boolean areEqual(IntSet intSet, Object other) {
+    assert intSet != null;
 
-    if (intSequence == other) {
+    if (intSet == other) {
       return true;
     }
 
@@ -44,51 +44,39 @@ public final class IntListContracts {
       return false;
     }
 
-    if (other instanceof IntSequence) {
-      IntSequence sa = (IntSequence) other;
+    if (other instanceof IntSet) {
+      IntSet sa = (IntSet) other;
 
-      int size = intSequence.size();
+      int size = intSet.size();
 
       if (size != sa.size()) {
         return false;
       }
 
-      for (int i = 0; i < size; i++) {
-        Object t0 = intSequence.intAt(i);
-        Object t1 = sa.intAt(i);
-        if (!Objects.equals(t0, t1)) {
-          return false;
-        }
-      }
+      return intSet.stream()
+          .allMatch(sa::contains);
     }
 
     return false;
   }
 
   /**
-   * Use to implement {@link IntSequence#hashCode()}.
+   * Use to implement {@link IntSet#hashCode()}.
    *
-   * @param intSequence
-   * @return
+   * @param intSet
+   * @return the hashCode
    */
-  public static int hashCodeOf(IntSequence intSequence) {
-    int hash = 0;
-
-    for (int i = 0, size = intSequence.size(); i < size; i++) {
-      int o = intSequence.intAt(i);
-      hash = hash * 31 + Objects.hashCode(o);
-    }
-
-    return hash;
+  public static int hashCodeOf(IntSet intSet) {
+    return intSet.size();
   }
 
   /**
-   * Use to implement {@link IntSequence#toString()}.
+   * May be used to implement {@link IntSet#toString()}.
    *
    * @param sparseArray
-   * @return
+   * @return an informal debug string
    */
-  public static String toString(IntSequence sparseArray) {
+  public static String toString(IntSet sparseArray) {
     StringJoiner joiner = new StringJoiner(", ", "[", "]");
 
     for (int i = 0, size = sparseArray.size(); i < size; i++) {

@@ -16,20 +16,20 @@
 
 package uk.kludje.experimental.collect;
 
-abstract class AbstractIntSequence implements IntSequence {
+abstract class AbstractIntSet implements IntSet {
 
   @Override
   public boolean equals(Object obj) {
-    return IntListContracts.areEqual(this, obj);
+    return IntSetContracts.areEqual(this, obj);
   }
 
   @Override
   public int hashCode() {
-    return IntListContracts.hashCodeOf(this);
+    return IntSetContracts.hashCodeOf(this);
   }
 
   @Override
   public String toString() {
-    return IntListContracts.toString(this);
+    return IntSetContracts.toString(this);
   }
 }

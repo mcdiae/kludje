@@ -61,9 +61,11 @@ public final class SparseArrayContracts {
           return false;
         }
       }
+
+      return true;
     }
 
-    return true;
+    return false;
   }
 
   /**

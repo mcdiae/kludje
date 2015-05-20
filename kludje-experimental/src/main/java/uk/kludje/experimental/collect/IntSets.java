@@ -16,23 +16,18 @@
 
 package uk.kludje.experimental.collect;
 
-import java.util.function.IntSupplier;
-import java.util.function.IntUnaryOperator;
+final class IntSets {
 
-public final class IntSequences {
+  private IntSets() {}
 
-  private static final IntSequence EMPTY = arrayIntList();
-
-  private IntSequences() {}
-
-  public static IntSequence subarrayIntList(int offset, int length, int...array) {
+  public static IntSet subarrayIntList(int offset, int length, int...array) {
     Assert.that(offset >= 0, "offset >= 0");
     Assert.that(length >= 0, "length >= 0");
     int end = offset + length;
     Assert.that(end >= 0, "offset + length >= 0");
     Assert.that(end <= array.length, "offset + length >= array.length");
 
-    class ArrayIntSequence extends AbstractIntSequence {
+    class ArrayIntSet extends AbstractIntSet {
 
       @Override
       public int size() {
@@ -45,31 +40,10 @@ public final class IntSequences {
       }
     }
 
-    return new ArrayIntSequence();
+    return new ArrayIntSet();
   }
 
-  public static IntSequence arrayIntList(int...array) {
+  public static IntSet arrayIntList(int...array) {
     return subarrayIntList(0, array.length, array);
-  }
-
-  public static IntSequence emptyIntList() {
-    return EMPTY;
-  }
-
-  public static IntSequence intSequence(IntSupplier size, IntUnaryOperator intAt) {
-    class LambdaIntSequence extends AbstractIntSequence {
-
-      @Override
-      public int size() {
-        return size.getAsInt();
-      }
-
-      @Override
-      public int intAt(int index) {
-        return intAt.applyAsInt(index);
-      }
-    }
-
-    return new LambdaIntSequence();
   }
 }

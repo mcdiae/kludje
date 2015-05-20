@@ -31,7 +31,12 @@ public interface SparseArray<V> {
 
   int size();
 
-  IntSequence keys();
+  /**
+   * Note: there is no requirement that
+   *
+   * @return an unordered sequence of keys
+   */
+  IntSet keys();
 
   Collection<V> values();
 
@@ -94,7 +99,7 @@ public interface SparseArray<V> {
       }
 
       @Override
-      public IntSequence keys() {
+      public IntSet keys() {
         return sa.keys();
       }
 

@@ -54,15 +54,16 @@ public final class SparseArrayContracts {
       }
 
       for (int i = 0; i < size; i++) {
-        Object t0 = sparseArray.get(i);
-        Object t1 = sa.get(i);
+        int key = sparseArray.keyAt(i);
+        Object t0 = sparseArray.get(key);
+        Object t1 = sa.get(key);
         if (!Objects.equals(t0, t1)) {
           return false;
         }
       }
     }
 
-    return false;
+    return true;
   }
 
   /**
@@ -75,7 +76,8 @@ public final class SparseArrayContracts {
     int hash = 0;
 
     for (int i = 0, size = sparseArray.size(); i < size; i++) {
-      Object o = sparseArray.get(i);
+      int key = sparseArray.keyAt(i);
+      Object o = sparseArray.get(key);
       hash = hash * 31 + Objects.hashCode(o);
     }
 
@@ -92,7 +94,8 @@ public final class SparseArrayContracts {
     StringJoiner joiner = new StringJoiner(", ", "[", "]");
 
     for (int i = 0, size = sparseArray.size(); i < size; i++) {
-      Object o = sparseArray.get(i);
+      int key = sparseArray.keyAt(i);
+      Object o = sparseArray.get(key);
       joiner.add(Objects.toString(o));
     }
 

@@ -79,6 +79,7 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
     int offset = removeIndex + 1;
     System.arraycopy(keys, offset, keys, removeIndex, after);
     System.arraycopy(values, offset, values, removeIndex, after);
+    size--;
     return value;
   }
 

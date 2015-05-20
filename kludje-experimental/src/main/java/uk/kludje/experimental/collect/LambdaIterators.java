@@ -177,6 +177,34 @@ public final class LambdaIterators {
     return mutableIndexIterator(i -> i < elements.length, i -> elements[i], remove);
   }
 
+  public static <E> Iterator<E> untilIterator(Supplier<? extends E> supplier, Predicate<? super E> until) {
+    Objects.requireNonNull(supplier, "supplier");
+    Objects.requireNonNull(until, "until");
+
+    class UntilIterator extends BaseIterator<E> {
+      private boolean initialized;
+      private E pending;
+
+      @Override
+      protected E nextElement() {
+        E value = pending;
+        pending = supplier.get();
+        return value;
+      }
+
+      @Override
+      public boolean hasNext() {
+        if (!initialized) {
+          initialized = true;
+          pending = supplier.get();
+        }
+        return until.test(pending);
+      }
+    }
+
+    return new UntilIterator();
+  }
+
   private static abstract class BaseIterator<E> implements Iterator<E> {
     @Override
     public E next() {

@@ -97,7 +97,7 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
 
   @Override
   public IntSet keys() {
-    return IntSets.subarrayIntList(0, size, keys);
+    return LambdaIntSets.toArrayIntSet(keys, 0, size);
   }
 
   @Override

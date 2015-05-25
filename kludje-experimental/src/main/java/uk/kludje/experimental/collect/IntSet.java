@@ -16,21 +16,17 @@
 
 package uk.kludje.experimental.collect;
 
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 /**
- * A simple set-of-integers type.
- * There is no guarantee of order.
+ * A simple set-of-ints type.
  */
-public interface IntSet extends Iterable<Integer> {
+public interface IntSet {
 
-  public static final IntSet EMPTY = IntSets.arrayIntList();
-
-  int size();
-
-  int intAt(int index);
+  IntStream stream();
 
   @Override
   boolean equals(Object o);
@@ -38,26 +34,26 @@ public interface IntSet extends Iterable<Integer> {
   @Override
   int hashCode();
 
-  default boolean contains(int n) {
-    int len = size();
-    for (int i = 0; i < len; i++) {
-      if (n == intAt(i)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @Override
-  default Iterator<Integer> iterator() {
-    int size = size();
-    return (size == 0)
-        ? LambdaIterators.emptyIterator()
-        : LambdaIterators.indexIterator(i -> (i < size()), this::intAt);
+  String toString();
+
+  default boolean contains(int n) {
+    return stream().anyMatch(i -> i == n);
   }
 
-  default IntStream stream() {
-    return IntStream.range(0, size())
-        .map(this::intAt);
+  default int size() {
+    long count = stream().count();
+    assert count < Integer.MAX_VALUE;
+    return (int) count;
+  }
+
+  default Set<Integer> asUnboxedSet() {
+    int size = size();
+    if(size == 0) {
+      return Collections.emptySet();
+    } else {
+      Iterable<Integer> iterable = () -> stream().mapToObj(Integer::valueOf).iterator();
+      return LambdaSets.set(iterable, () -> size);
+    }
   }
 }

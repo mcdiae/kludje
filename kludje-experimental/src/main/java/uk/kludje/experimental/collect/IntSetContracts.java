@@ -29,9 +29,9 @@ public final class IntSetContracts {
   /**
    * Use to implement {@link IntSet#equals(Object)}.
    *
-   * @param intSet
-   * @param other
-   * @return
+   * @param intSet the set
+   * @param other the object to compare it with
+   * @return true if equal
    */
   public static boolean areEqual(IntSet intSet, Object other) {
     assert intSet != null;
@@ -63,7 +63,7 @@ public final class IntSetContracts {
   /**
    * Use to implement {@link IntSet#hashCode()}.
    *
-   * @param intSet
+   * @param intSet the set
    * @return the hashCode
    */
   public static int hashCodeOf(IntSet intSet) {
@@ -73,16 +73,15 @@ public final class IntSetContracts {
   /**
    * May be used to implement {@link IntSet#toString()}.
    *
-   * @param sparseArray
+   * @param intSet the set
    * @return an informal debug string
    */
-  public static String toString(IntSet sparseArray) {
+  public static String toString(IntSet intSet) {
     StringJoiner joiner = new StringJoiner(", ", "[", "]");
 
-    for (int i = 0, size = sparseArray.size(); i < size; i++) {
-      Object o = sparseArray.intAt(i);
-      joiner.add(Objects.toString(o));
-    }
+    intSet.stream()
+        .mapToObj(String::valueOf)
+        .forEach(joiner::add);
 
     return joiner.toString();
   }

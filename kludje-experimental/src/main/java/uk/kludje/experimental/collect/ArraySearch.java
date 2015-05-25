@@ -21,6 +21,8 @@ import java.util.Objects;
 
 final class ArraySearch {
 
+  public static final int NOT_FOUND = -1;
+
   private ArraySearch() {
   }
 
@@ -29,15 +31,13 @@ final class ArraySearch {
     assert limit >= 0;
     assert limit <= arr.length;
 
-    int found = -1;
-
     for (int i = 0; i < limit; i++) {
       if (arr[i] == value) {
         return i;
       }
     }
 
-    return found;
+    return NOT_FOUND;
   }
 
   public static int linearSearch(Object[] arr, int limit, Object value) {
@@ -45,7 +45,7 @@ final class ArraySearch {
     assert limit >= 0;
     assert limit <= arr.length;
 
-    int found = -1;
+    int found = NOT_FOUND;
 
     for (int i = 0; i < limit; i++) {
       if (Objects.equals(arr[i], value)) {

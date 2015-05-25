@@ -29,9 +29,9 @@ public final class SparseArrayContracts {
   /**
    * Use to implement {@link SparseArray#equals(Object)}.
    *
-   * @param sparseArray
-   * @param other
-   * @return
+   * @param sparseArray the array
+   * @param other the object to compare it with - may be null
+   * @return true if equal
    */
   public static boolean areEqual(SparseArray<?> sparseArray, Object other) {
     assert sparseArray != null;
@@ -71,8 +71,8 @@ public final class SparseArrayContracts {
   /**
    * Use to implement {@link SparseArray#hashCode()}.
    *
-   * @param sparseArray
-   * @return
+   * @param sparseArray the array
+   * @return the hash
    */
   public static int hashCodeOf(SparseArray<?> sparseArray) {
     int hash = 0;
@@ -89,8 +89,8 @@ public final class SparseArrayContracts {
   /**
    * Use to implement {@link SparseArray#toString()}.
    *
-   * @param sparseArray
-   * @return
+   * @param sparseArray the array
+   * @return a string form for debugging
    */
   public static String toString(SparseArray<?> sparseArray) {
     StringJoiner joiner = new StringJoiner(", ", "[", "]");

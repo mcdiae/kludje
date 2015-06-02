@@ -17,11 +17,16 @@ limitations under the License.
 package uk.kludje;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Methods for translating checked exceptions to unchecked exceptions and back.
  */
 public final class Exceptions {
+
+  private static final Logger LOG = Logger.getLogger(Exceptions.class.getName());
+
   private Exceptions() {
   }
 
@@ -80,6 +85,10 @@ public final class Exceptions {
    * @throws T the exception
    */
   public static <T extends Throwable> ExceptionDeclarer expected() throws T {
+    if (LOG.isLoggable(Level.FINEST)) {
+      LOG.finest("expecting exception");
+    }
+
     return ExceptionDeclarer.INSTANCE;
   }
 

@@ -64,12 +64,14 @@ public class InterfaceTest {
   public void testRaw() {
     @SuppressWarnings({"unchecked"})
     class BadRawImplementation extends Interface {}
-    new BadRawImplementation().type();
+    Object o = new BadRawImplementation().type();
+    Assert.fail("Should not reach " + o);
   }
 
   @Test(expected = Error.class)
   public void testNotInterface() {
-    new Interface<String>() {
+    Object o = new Interface<String>() {
     }.type();
+    Assert.fail("Should not reach " + o);
   }
 }

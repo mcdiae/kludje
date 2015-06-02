@@ -4,15 +4,18 @@ package ${pack};
 /**
  * A functional interface for handling checked exceptions.
  * See parent type for intent.
+ *
+ * {@code ${parentSig}} invokes {@code ${functionSignature}}
+ * and throws anything thrown by {@code ${functionSignature}}.
+ *
+ * Method {@code public static ${generics} ${simpleName}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t)}
+ * provides a convenience method for manufacturing types as an alternative to casting.
  */
 @java.lang.FunctionalInterface
 @javax.annotation.Generated("${generator}")
+@SuppressWarnings("javadoc")
 public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
 
-      /**
-       * Invokes {@code ${functionSignature}}.
-       * Throws anything thrown by {@code ${functionSignature}}.
-       */
       ${parentSigGenerics} default ${parentSig} {
         try {
           ${invocation};
@@ -23,12 +26,6 @@ public interface ${simpleName}${generics} extends ${parent}${parentGenerics} {
 
       ${functionSignature} throws Throwable;
 
-      /**
-       * Convenience method as an alternative to casting.
-       *
-       * @param t the unchecked type
-       * @return t
-       */
       public static ${generics} ${simpleName}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t) {
         return t;
       }

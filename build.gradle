@@ -131,7 +131,7 @@ subprojects {
     mavenCentral()
   }
   dependencies {
-    testCompile 'junit:junit:4.10'
+    testCompile 'junit:junit:4.12'
     testCompile 'com.google.jimfs:jimfs:1.0-rc3'
   }
 }

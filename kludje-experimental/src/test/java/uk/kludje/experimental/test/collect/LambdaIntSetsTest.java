@@ -16,7 +16,7 @@
 
 package uk.kludje.experimental.test.collect;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.experimental.collect.IntSet;
 import uk.kludje.experimental.collect.LambdaIntSets;

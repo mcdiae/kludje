@@ -16,13 +16,14 @@
 
 package uk.kludje.experimental.collect;
 
+import uk.kludje.Unsupported;
+
 import java.util.AbstractSet;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * Created by user on 10/04/15.
@@ -61,9 +62,6 @@ public final class LambdaSets {
 
   public static <E> Set<E> set(Iterable<E> iterator,
                                IntSupplier size) {
-    Predicate<E> add = e -> {
-      throw new UnsupportedOperationException();
-    };
-    return mutableSet(iterator, size, add);
+    return mutableSet(iterator, size, Unsupported::exception);
   }
 }

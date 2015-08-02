@@ -21,8 +21,8 @@ import java.util.List;
 
 class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray<T> {
 
-  private int[] keys = EmptyArrays.EMPTY_INT;
-  private Object[] values = EmptyArrays.EMPTY_OBJECT;
+  private int[] keys = Linear.EMPTY_INT_ARRAY;
+  private Object[] values = Linear.EMPTY_OBJECT_ARRAY;
   private int size;
   private int increment;
 
@@ -33,7 +33,7 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
 
   @Override
   public T get(int key) {
-    int index = ArraySearch.linearSearch(keys, size, key);
+    int index = Linear.linearSearch(keys, size, key);
     @SuppressWarnings("unchecked")
     T value = (index < 0) ? null : (T) values[index];
     return value;
@@ -45,7 +45,7 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
       return remove(key);
     }
 
-    int replaceIndex = ArraySearch.linearSearch(keys, size, key);
+    int replaceIndex = Linear.linearSearch(keys, size, key);
 
     if (replaceIndex >= 0) {
       @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ class LinearSparseArray<T> extends AbstractSparseArray<T> implements SparseArray
 
   @Override
   public T remove(int key) {
-    int removeIndex = ArraySearch.linearSearch(keys, size, key);
+    int removeIndex = Linear.linearSearch(keys, size, key);
     if (removeIndex < 0) {
       return null;
     }

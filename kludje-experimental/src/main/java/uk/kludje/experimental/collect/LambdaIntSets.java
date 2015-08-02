@@ -67,7 +67,7 @@ public final class LambdaIntSets {
     int max = offset + size;
     for (int idx = offset; idx < max; idx++) {
       int current = ints[idx];
-      if (ArraySearch.linearSearch(backer, count, current) == ArraySearch.NOT_FOUND) {
+      if (Linear.linearSearch(backer, count, current) == Linear.NOT_FOUND) {
         backer[count++] = current;
       }
     }

@@ -19,11 +19,12 @@ package uk.kludje.experimental.collect;
 import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 class ArrayBackedSet<E> extends AbstractSet<E> {
 
   @SuppressWarnings("unchecked")
-  private E[] elements = (E[]) EmptyArrays.EMPTY_OBJECT;
+  private E[] elements = (E[]) Linear.EMPTY_OBJECT_ARRAY;
   private int size;
   private int increment;
 
@@ -34,12 +35,12 @@ class ArrayBackedSet<E> extends AbstractSet<E> {
 
   @Override
   public boolean contains(Object o) {
-    return ArraySearch.linearSearch(elements, size, o) >= 0;
+    return Linear.searchUntil(size, Objects::equals, elements, o) >= 0;
   }
 
   @Override
   public boolean add(E e) {
-    int index = ArraySearch.linearSearch(elements, size, e);
+    int index = Linear.searchUntil(size, Objects::equals, elements, e);
     if (index >= 0) {
       return false;
     }
@@ -52,7 +53,7 @@ class ArrayBackedSet<E> extends AbstractSet<E> {
 
   @Override
   public boolean remove(Object o) {
-    int index = ArraySearch.linearSearch(elements, size, o);
+    int index = Linear.searchUntil(size, Objects::equals, elements, o);
     if (index >= 0) {
       removeIndex(index);
       return true;

@@ -16,6 +16,8 @@
 
 package uk.kludje.experimental.collect;
 
+import uk.kludje.Unsupported;
+
 import java.util.AbstractList;
 import java.util.List;
 import java.util.Objects;
@@ -28,22 +30,14 @@ public final class LambdaLists {
   }
 
   public static <E> List<E> list(IntFunction<E> get, IntSupplier size) {
-    IntObjFunction<E> set = (i, o) -> {
-      throw new UnsupportedOperationException();
-    };
-    return mutableIndexList(get, size, set);
+    return mutableIndexList(get, size, Unsupported::exception);
   }
 
   public static <E> List<E> mutableIndexList(IntFunction<E> get,
                                              IntSupplier size,
                                              IntObjFunction<E> set) {
-    IntFunction<E> remove = i -> {
-      throw new UnsupportedOperationException();
-    };
-    IntObjConsumer<E> add = (i, o) -> {
-      throw new UnsupportedOperationException();
-    };
-    return mutableList(get, size, set, remove, add);
+
+    return mutableList(get, size, set, Unsupported::exception, Unsupported::exception);
   }
 
   public static <E> List<E> mutableList(IntFunction<E> get,

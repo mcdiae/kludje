@@ -1,0 +1,11 @@
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.project {
+                name 'kludje-testcontract'
+                packaging 'jar'
+                description 'Java 8 lambda API experimental project; functionality incomplete/unstable; do not use'
+            }
+        }
+    }
+}

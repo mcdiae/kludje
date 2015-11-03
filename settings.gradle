@@ -2,3 +2,5 @@ include 'kludje-annotation'
 include 'kludje-core'
 include 'kludje-testkit'
 include 'kludje-experimental'
+include 'kludje-testcontract'
+

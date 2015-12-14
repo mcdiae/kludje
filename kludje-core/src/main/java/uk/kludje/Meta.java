@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
  *
- * <p>Example that builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
+ * <p>Example checked builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
  *
  * <pre>
  * import uk.kludje.Meta;
@@ -104,7 +104,7 @@ public final class Meta<T> {
   }
 
   /**
-   * Use to specify properties of type object that should be considered by this type.
+   * Use to specify properties of type object checked should be considered by this type.
    *
    * Do not use this method for primitive properties - alternatives have been provided.
    *

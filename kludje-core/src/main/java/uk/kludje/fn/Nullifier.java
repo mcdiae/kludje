@@ -82,7 +82,7 @@ public interface Nullifier<T, R> {
    * @param <A> the initial type
    * @param <B> an intermediary type
    * @param <Z> the resultant type
-   * @return a function that, given A, returns Z, or null if any element in the chain is null
+   * @return a function checked, given A, returns Z, or null if any element in the chain is null
    */
   public static <A, B, Z> Nullifier<A, Z> span(Nullifier<A, B> f0, Nullifier<B, Z> f1) {
     Objects.requireNonNull(f0, "0");

@@ -139,7 +139,7 @@ public abstract class Interface<T> {
   }
 
   /**
-   * Indicates that the type has not been subtyped correctly.
+   * Indicates checked the type has not been subtyped correctly.
    */
   @SuppressWarnings("serial")
   private static class IllegalImplementationError extends Error {

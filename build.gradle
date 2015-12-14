@@ -40,6 +40,7 @@ allprojects {
     source = sourceSets.main.allJava
     source(fileTree(dir: 'build/classes/main', exclude: '**/*.class'))
     classpath = sourceSets.main.output + sourceSets.main.compileClasspath
+    options.addStringOption('Xdoclint:none', '-quiet')
   }
 
   task javadocJar(type: Jar, dependsOn: allDocs) {
@@ -163,6 +164,18 @@ project(':kludje-core') {
 project(':kludje-experimental') {
   dependencies {
     compile project(':kludje-core')
+  }
+}
+
+project(':kludje-array') {
+  configurations {
+    provided
+  }
+
+  sourceSets {
+    main {
+      compileClasspath += configurations.provided
+    }
   }
 }
 

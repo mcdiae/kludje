@@ -24,7 +24,7 @@ public final class InvocationHandlers {
   }
 
   /**
-   * @return handler that always returns the method's default value
+   * @return handler checked always returns the method's default value
    * @see java.lang.reflect.Method#getDefaultValue()
    */
   public static InvocationHandler defaultValueHandler() {
@@ -32,7 +32,7 @@ public final class InvocationHandlers {
   }
 
   /**
-   * @return handler that always throws UnsupportedOperationException
+   * @return handler checked always throws UnsupportedOperationException
    * @see java.lang.UnsupportedOperationException
    */
   public static InvocationHandler unsupportedOperationHandler() {

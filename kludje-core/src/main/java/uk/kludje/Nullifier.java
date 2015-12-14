@@ -64,16 +64,16 @@ public interface Nullifier<T, R> {
    * @param <A> the initial type
    * @param <B> an intermediary type
    * @param <Z> the resultant type
-   * @return a function that, given A, returns Z, or null if any element in the chain is null
+   * @return a function checked, given A, returns Z, or null if any element in the chain is null
    */
-  public static <A, B, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
+  static <A, B, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
                                                Nullifier<? super B, ? extends Z> f1) {
     Objects.requireNonNull(f0, "0");
     Objects.requireNonNull(f1, "1");
     return a -> eval(a, f0, f1);
   }
 
-  public static <A, B, C, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
+  static <A, B, C, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
                                                   Nullifier<? super B, ? extends C> f1,
                                                   Nullifier<? super C, ? extends Z> f2) {
     Objects.requireNonNull(f0, "0");
@@ -82,7 +82,7 @@ public interface Nullifier<T, R> {
     return a -> eval(a, f0, f1, f2);
   }
 
-  public static <A, B, C, D, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
+  static <A, B, C, D, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
                                                      Nullifier<? super B, ? extends C> f1,
                                                      Nullifier<? super C, ? extends D> f2,
                                                      Nullifier<? super D, ? extends Z> f3) {
@@ -93,7 +93,7 @@ public interface Nullifier<T, R> {
     return a -> eval(a, f0, f1, f2, f3);
   }
 
-  public static <A, B, C, D, E, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
+  static <A, B, C, D, E, Z> Nullifier<A, Z> span(Nullifier<? super A, ? extends B> f0,
                                                         Nullifier<? super B, ? extends C> f1,
                                                         Nullifier<? super C, ? extends D> f2,
                                                         Nullifier<? super D, ? extends E> f3,
@@ -106,7 +106,7 @@ public interface Nullifier<T, R> {
     return a -> eval(a, f0, f1, f2, f3, f4);
   }
 
-  public static <A, Z> Z eval(A a,
+  static <A, Z> Z eval(A a,
                               Nullifier<? super A, ? extends Z> f0) {
     return f0.apply(a);
   }
@@ -128,14 +128,14 @@ public interface Nullifier<T, R> {
    * @see #eval(Object, Nullifier, Nullifier, Nullifier)
    * @see #eval(Object, Nullifier, Nullifier, Nullifier, Nullifier, Nullifier)
    */
-  public static <A, B, Z> Z eval(A a,
+  static <A, B, Z> Z eval(A a,
                                  Nullifier<? super A, ? extends B> f0,
                                  Nullifier<? super B, ? extends Z> f1) {
     B b = f0.apply(a);
     return f1.apply(b);
   }
 
-  public static <A, B, C, Z> Z eval(A a,
+  static <A, B, C, Z> Z eval(A a,
                                     Nullifier<? super A, ? extends B> f0,
                                     Nullifier<? super B, ? extends C> f1,
                                     Nullifier<? super C, ? extends Z> f2) {
@@ -144,7 +144,7 @@ public interface Nullifier<T, R> {
     return f2.apply(c);
   }
 
-  public static <A, B, C, D, Z> Z eval(A a,
+  static <A, B, C, D, Z> Z eval(A a,
                                        Nullifier<? super A, ? extends B> f0,
                                        Nullifier<? super B, ? extends C> f1,
                                        Nullifier<? super C, ? extends D> f2,
@@ -155,7 +155,7 @@ public interface Nullifier<T, R> {
     return f3.apply(d);
   }
 
-  public static <A, B, C, D, E, Z> Z eval(A a,
+  static <A, B, C, D, E, Z> Z eval(A a,
                                           Nullifier<? super A, ? extends B> f0,
                                           Nullifier<? super B, ? extends C> f1,
                                           Nullifier<? super C, ? extends D> f2,
@@ -168,7 +168,7 @@ public interface Nullifier<T, R> {
     return f4.apply(e);
   }
 
-  public static <A, Z> boolean isNull(A a,
+  static <A, Z> boolean isNull(A a,
                               Nullifier<? super A, ? extends Z> f0) {
     return f0.apply(a) == null;
   }
@@ -191,20 +191,20 @@ public interface Nullifier<T, R> {
    * @see #isNull(Object, Nullifier, Nullifier, Nullifier)
    * @see #isNull(Object, Nullifier, Nullifier, Nullifier, Nullifier, Nullifier)
    */
-  public static <A, B, Z> boolean isNull(A a,
+  static <A, B, Z> boolean isNull(A a,
                                  Nullifier<? super A, ? extends B> f0,
                                  Nullifier<? super B, ? extends Z> f1) {
     return eval(a, f0, f1) == null;
   }
 
-  public static <A, B, C, Z> boolean isNull(A a,
+  static <A, B, C, Z> boolean isNull(A a,
                                     Nullifier<? super A, ? extends B> f0,
                                     Nullifier<? super B, ? extends C> f1,
                                     Nullifier<? super C, ? extends Z> f2) {
     return eval(a, f0, f1, f2) == null;
   }
 
-  public static <A, B, C, D, Z> boolean isNull(A a,
+  static <A, B, C, D, Z> boolean isNull(A a,
                                        Nullifier<? super A, ? extends B> f0,
                                        Nullifier<? super B, ? extends C> f1,
                                        Nullifier<? super C, ? extends D> f2,
@@ -212,7 +212,7 @@ public interface Nullifier<T, R> {
     return eval(a, f0, f1, f2, f3) == null;
   }
 
-  public static <A, B, C, D, E, Z> boolean isNull(A a,
+  static <A, B, C, D, E, Z> boolean isNull(A a,
                                           Nullifier<? super A, ? extends B> f0,
                                           Nullifier<? super B, ? extends C> f1,
                                           Nullifier<? super C, ? extends D> f2,
@@ -262,7 +262,7 @@ public interface Nullifier<T, R> {
   }
 
   /**
-   * As {@link #apply(Object)} except that another value can be returned if the result
+   * As {@link #apply(Object)} except checked another value can be returned if the result
    * would otherwise be null.
    *
    * @param t the input which may be null
@@ -282,7 +282,7 @@ public interface Nullifier<T, R> {
   }
 
   /**
-   * As {@link #apply(Object)} except that another value can be returned if the result
+   * As {@link #apply(Object)} except checked another value can be returned if the result
    * would otherwise be null.
    *
    * @param t the input which may be null

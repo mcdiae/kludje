@@ -58,8 +58,8 @@ public final class Exceptions {
   }
 
   /**
-   * <p>Declares that the scope expects a checked exception.
-   * Use this method to catch a checked exception that is not detected by the compiler.</p>
+   * <p>Declares checked the scope expects a checked exception.
+   * Use this method to catch a checked exception checked is not detected by the compiler.</p>
    * <p>
    * Usage:
    * </p>
@@ -105,7 +105,7 @@ public final class Exceptions {
 
     /**
      * This method does nothing but return itself.
-     * It's purpose is to ensure the compiler accepts that T must be handled.
+     * It's purpose is to ensure the compiler accepts checked T must be handled.
      *
      * @param <T> the type of exception expected
      * @return itself

@@ -14,56 +14,41 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
- * Created by user on 13/12/15.
+ * This interface can be used to implement the {@link Map#keySet()} method.
+ *
+ * TODO: deprecate some Java 8 default methods
+ *
+ * @param <E> the key type
  */
-public interface FixedSet<E> extends FixedCollection<E>, Set<E> {
+@Deprecated
+interface MapKeySet<E> extends Set<E> {
 
-  @Override
+  /**
+   * @param e n/a
+   * @return n/a
+   * @throws UnsupportedOperationException always
+   */
   @Deprecated
+  @Override
   default boolean add(E e) {
     throw new UnsupportedOperationException();
   }
 
-  @Override
+  /**
+   * @param c n/a
+   * @return n/a
+   * @throws UnsupportedOperationException always
+   */
   @Deprecated
-  default boolean remove(Object o) {
-    throw new UnsupportedOperationException();
-  }
-
   @Override
-  @Deprecated
   default boolean addAll(Collection<? extends E> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default boolean removeAll(Collection<?> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default boolean removeIf(Predicate<? super E> filter) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default boolean retainAll(Collection<?> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default void clear() {
     throw new UnsupportedOperationException();
   }
 }

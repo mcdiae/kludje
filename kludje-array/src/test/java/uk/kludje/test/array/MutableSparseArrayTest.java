@@ -18,8 +18,8 @@ package uk.kludje.test.array;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.array.ArrayCollections;
-import uk.kludje.array.MutableSparseArray;
+import uk.kludje.collect.array.ArrayCollections;
+import uk.kludje.collect.MutableSparseArray;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,9 +28,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * Created by user on 13/12/15.
- */
 public class MutableSparseArrayTest {
 
   @Test
@@ -135,6 +132,8 @@ public class MutableSparseArrayTest {
     }
 
     Assert.assertEquals(limit, sparseArray.size());
+    Assert.assertFalse(sparseArray.isEmpty());
+    Assert.assertTrue(sparseArray.isNotEmpty());
 
     for (int key : keys) {
       boolean changed = sparseArray.remove(key);
@@ -143,6 +142,8 @@ public class MutableSparseArrayTest {
     }
 
     Assert.assertEquals(0, sparseArray.size());
+    Assert.assertTrue(sparseArray.isEmpty());
+    Assert.assertFalse(sparseArray.isNotEmpty());
   }
 
   @Test
@@ -167,5 +168,28 @@ public class MutableSparseArrayTest {
     Assert.assertNotNull(stream);
     Set<Integer> actualKeys = stream.mapToObj(i -> i).collect(Collectors.toSet());
     Assert.assertEquals(expectedKeys, actualKeys);
+  }
+
+  @Test
+  public void testContains() {
+    int limit = 10;
+
+    MutableSparseArray<Integer> sparseArray = ArrayCollections.mutableSparseArray();
+    Assert.assertNotNull(sparseArray);
+
+    Set<Integer> expectedKeys = new HashSet<>();
+    int removed = limit / 2;
+    for (int i = 0; i < limit; i++) {
+      sparseArray.put(i, i);
+      if (i != removed) {
+        expectedKeys.add(i);
+      }
+    }
+    sparseArray.remove(removed);
+    Assert.assertEquals(expectedKeys.size(), sparseArray.size());
+    // begin test
+    for(Integer key: expectedKeys) {
+      Assert.assertTrue(key.toString(), sparseArray.contains(key));
+    }
   }
 }

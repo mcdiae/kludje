@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect;
+
+import uk.kludje.collect.array.SparseArrayEntry;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

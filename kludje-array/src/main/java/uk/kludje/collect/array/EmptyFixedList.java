@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
+
+import uk.kludje.collect.fixed.FixedList;
 
 import java.util.AbstractList;
 
-/**
- * Created by user on 13/12/15.
- */
+@SuppressWarnings("deprecation")
 final class EmptyFixedList<E> extends AbstractList<E> implements FixedList<E> {
 
   private static final FixedList<?> INSTANCE = new EmptyFixedList<>();

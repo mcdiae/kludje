@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
+import uk.kludje.collect.fixed.FixedSet;
+
+import java.util.AbstractSet;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.stream.IntStream;
 
-/**
- * Immutable {@link SparseArray} with one entry.
- */
-final class EmptySparseArray<V> implements SparseArray<V> {
+@SuppressWarnings("deprecation")
+final class EmptyFixedSet<E> extends AbstractSet<E> implements FixedSet<E> {
 
-  private static final SparseArray<?> INSTANCE = new EmptySparseArray<>();
+  private static final FixedSet<?> INSTANCE = new EmptyFixedSet<>();
 
   @Override
-  public V get(int key) {
-    return null;
+  public boolean contains(Object o) {
+    return false;
+  }
+
+  @Override
+  public Iterator<E> iterator() {
+    return Collections.emptyIterator();
   }
 
   @Override
@@ -37,24 +42,9 @@ final class EmptySparseArray<V> implements SparseArray<V> {
     return 0;
   }
 
-  @Override
-  public boolean contains(int key) {
-    return false;
-  }
-
-  @Override
-  public IntStream keyStream() {
-    return IntStream.empty();
-  }
-
-  @Override
-  public Iterator<SparseArrayEntry<V>> iterator() {
-    return Collections.emptyIterator();
-  }
-
-  public static <V> SparseArray<V> emptySparseArray() {
+  public static <E> FixedSet<E> emptyFixedSet() {
     @SuppressWarnings("unchecked")
-    SparseArray<V> empty = (SparseArray<V>) INSTANCE;
-    return empty;
+    FixedSet<E> set = (FixedSet<E>) INSTANCE;
+    return set;
   }
 }

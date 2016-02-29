@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
+
+import uk.kludje.array.LinearSearch;
+import uk.kludje.collect.SparseArray;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-final class ImmutableSparseArray<V> implements SparseArray<V> {
+final class ArrayBackedSparseArray<V> implements SparseArray<V> {
 
   private final int[] keys;
   private final Object[] values;
 
-  private ImmutableSparseArray(int[] keys, Object[] values) {
+  private ArrayBackedSparseArray(int[] keys, Object[] values) {
     this.keys = keys;
     this.values = values;
 
@@ -35,8 +38,8 @@ final class ImmutableSparseArray<V> implements SparseArray<V> {
 
   @Override
   public V get(int key) {
-    int index = Linear.linearSearch(keys, 0, keys.length, key);
-    Object element = (index == Linear.NOT_FOUND) ? null : values[index];
+    int index = LinearSearch.find(keys, 0, keys.length, key);
+    Object element = (index == LinearSearch.NOT_FOUND) ? null : values[index];
     @SuppressWarnings("unchecked")
     V value = (V) element;
     return value;
@@ -49,7 +52,7 @@ final class ImmutableSparseArray<V> implements SparseArray<V> {
 
   @Override
   public boolean contains(int key) {
-    return Linear.linearSearch(keys, 0, keys.length, key) != Linear.NOT_FOUND;
+    return LinearSearch.find(keys, 0, keys.length, key) != LinearSearch.NOT_FOUND;
   }
 
   @Override
@@ -91,11 +94,12 @@ final class ImmutableSparseArray<V> implements SparseArray<V> {
     if (!(obj instanceof SparseArray)) {
       return false;
     }
-    SparseArray that = (SparseArray) obj;
+    SparseArray<?> that = (SparseArray<?>) obj;
 
     if (keys.length != that.size()) {
       return false;
     }
+
     for (int i = 0; i < keys.length; i++) {
       int key = keys[i];
       @SuppressWarnings("unchecked")
@@ -140,20 +144,6 @@ final class ImmutableSparseArray<V> implements SparseArray<V> {
       values[index] = entry.getValue();
     }
 
-    return new ImmutableSparseArray<>(keys, values);
-  }
-
-  @SafeVarargs
-  public static <V> SparseArray<V> toImmutableSparseArray(SparseArrayEntry<? extends V>... entries) {
-    int size = entries.length;
-    int[] keys = new int[size];
-    Object[] values = new Object[size];
-    int index = 0;
-    for (SparseArrayEntry<? extends V> entry : entries) {
-      keys[index] = entry.getKey();
-      values[index] = entry.getValue();
-    }
-
-    return new ImmutableSparseArray<>(keys, values);
+    return new ArrayBackedSparseArray<>(keys, values);
   }
 }

@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
-import java.util.function.Function;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-final class Assert {
+/**
+ * Created by user on 27/12/15.
+ */
+final class SingletonIterator<E> implements Iterator<E> {
 
-  private Assert() {
+  private final E element;
+  private boolean served;
+
+  public SingletonIterator(E element) {
+    this.element = element;
   }
 
-  public static <T extends Throwable> void that(boolean predicate, String explanation, Function<String, T> factory) throws T {
-    assert explanation != null;
-    if (!predicate) {
-      T t = factory.apply(explanation);
-      throw t;
+  @Override
+  public boolean hasNext() {
+    return !served;
+  }
+
+  @Override
+  public E next() {
+    if (served) {
+      throw new NoSuchElementException();
     }
-  }
-
-  public static void that(boolean predicate, String explanation)  {
-    assert explanation != null;
-    that(predicate, explanation, AssertionError::new);
+    return element;
   }
 }

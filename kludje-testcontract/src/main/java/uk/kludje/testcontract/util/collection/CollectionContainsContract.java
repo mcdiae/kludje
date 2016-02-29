@@ -16,7 +16,7 @@
 
 package uk.kludje.testcontract.util.collection;
 
-import uk.kludje.testcontract.ContractViolationException;
+import static uk.kludje.testcontract.ContractViolationException.*;
 
 import java.util.*;
 
@@ -25,17 +25,15 @@ public class CollectionContainsContract {
   public static <E> void assertIteratorContains(Collection<E> coll) {
     Iterator<E> it = coll.iterator();
     while (it.hasNext()) {
-      ContractViolationException.assertThat(coll.contains(it.next()), "assertIteratorContains: " + coll.getClass());
+      assertThat(coll.contains(it.next()), "assertIteratorContains: " + coll.getClass());
     }
   }
 
   public static <E> void assertStreamContains(Collection<E> coll) {
-    ContractViolationException.assertThat(coll.stream().map(coll::contains).allMatch(b -> b == true), "assertStreamContains: " + coll.getClass());
+    assertThat(coll.stream().map(coll::contains).allMatch(b -> b == true), "assertStreamContains: " + coll.getClass());
   }
 
   public static <E> void assertToArrayContains(Collection<E> coll) {
-    ContractViolationException.assertThat(Arrays.asList(coll.toArray()).stream().map(coll::contains).allMatch(b -> b == true), "assertToArrayContains: " + coll.getClass());
+    assertThat(Arrays.asList(coll.toArray()).stream().map(coll::contains).allMatch(b -> b == true), "assertToArrayContains: " + coll.getClass());
   }
-
-
 }

@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package uk.kludje.testcontract;
+package uk.kludje.collect.array;
 
-public class ContractViolationException extends RuntimeException {
+import java.util.function.Function;
 
-  private static final long serialVersionUID = 1L;
+final class Assert {
 
-  public ContractViolationException(String violation) {
-    super(violation);
+  private Assert() {
   }
 
-  public ContractViolationException(Throwable violation) {
-    super(violation);
-  }
-
-  public static void assertThat(boolean assertion, String failure) {
-    if(!assertion) {
-      throw new ContractViolationException(failure);
+  public static <T extends Throwable> void that(boolean predicate, String explanation, Function<String, T> factory) throws T {
+    assert explanation != null;
+    if (!predicate) {
+      T t = factory.apply(explanation);
+      throw t;
     }
+  }
+
+  public static void that(boolean predicate, String explanation)  {
+    assert explanation != null;
+    that(predicate, explanation, AssertionError::new);
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,13 +28,8 @@ abstract class AbstractMutableCollection<E> extends MutableStore implements Coll
   }
 
   @Override
-  public void clear() {
-    super.clear();
-  }
-
-  @Override
-  public boolean add(E element) {
-    return super.addElement(element);
+  public void clearElements() {
+    super.clearElements();
   }
 
   @Override
@@ -84,6 +79,10 @@ abstract class AbstractMutableCollection<E> extends MutableStore implements Coll
 
   @Override
   public boolean addAll(Collection<? extends E> c) {
-    return super.addAllElements(c);
+    boolean changed = false;
+    for (E e : c) {
+      changed |= add(e);
+    }
+    return changed;
   }
 }

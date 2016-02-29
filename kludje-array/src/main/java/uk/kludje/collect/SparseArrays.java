@@ -14,36 +14,20 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
-
-import java.util.AbstractMap;
-import java.util.Map;
-import java.util.stream.IntStream;
+package uk.kludje.collect;
 
 /**
- * Created by user on 11/12/15.
+ * Created by user on 10/01/16.
  */
-public interface SparseArray<V> extends Iterable<SparseArrayEntry<V>> {
+public final class SparseArrays {
 
-  V get(int key);
+  private SparseArrays() {}
 
-  int size();
-
-  boolean contains(int key);
-
-  IntStream keyStream();
-
-  default boolean isEmpty() {
-    return size() == 0;
+  public static <V> SparseArray<V> emptySparseArray() {
+    return EmptySparseArray.emptySparseArray();
   }
 
-  default boolean isNotEmpty() {
-    return size() != 0;
+  public static <V> SparseArray<V> singletonSparseArray(int key, V value) {
+    return SingletonSparseArray.singletonSparseArray(key, value);
   }
-
-  boolean equals(Object o);
-
-  int hashCode();
-
-  String toString();
 }

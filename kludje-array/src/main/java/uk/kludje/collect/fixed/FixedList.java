@@ -14,67 +14,77 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.fixed;
 
-import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
 
 /**
- * Created by user on 13/12/15.
+ * Type for contract documentation.
  */
-public interface FixedMap<K, V> extends Map<K, V> {
+public interface FixedList<E> extends FixedCollection<E>, List<E> {
 
   @Override
   @Deprecated
-  default V put(K key, V value) {
+  default boolean add(E e) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean remove(Object key, Object value) {
+  default boolean remove(Object o) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean replace(K key, V oldValue, V newValue) {
+  default boolean addAll(Collection<? extends E> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
+  default boolean removeAll(Collection<?> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default V remove(Object key) {
+  default boolean removeIf(Predicate<? super E> filter) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default V replace(K key, V value) {
+  default boolean retainAll(Collection<?> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+  default void clear() throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
+  default void add(int index, E element) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
+  default boolean addAll(int index, Collection<? extends E> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  @Deprecated
+  default E set(int index, E element) throws UnsupportedOperationException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  FixedList<E> subList(int fromIndex, int toIndex);
 }

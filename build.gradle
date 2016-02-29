@@ -177,6 +177,10 @@ project(':kludje-array') {
       compileClasspath += configurations.provided
     }
   }
+
+  dependencies {
+    testCompile project(':kludje-testcontract')
+  }
 }
 
 uploadArchives {

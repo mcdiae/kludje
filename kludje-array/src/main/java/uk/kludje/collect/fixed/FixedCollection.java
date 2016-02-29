@@ -14,77 +14,56 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.fixed;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Created by user on 13/12/15.
+ * Type for contract documentation.
  */
-public interface FixedList<E> extends FixedCollection<E>, List<E> {
+public interface FixedCollection<E> extends Collection<E> {
 
   @Override
   @Deprecated
-  default boolean add(E e) {
+  default boolean add(E e) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean remove(Object o) {
+  default boolean remove(Object o) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean addAll(Collection<? extends E> c) {
+  default boolean addAll(Collection<? extends E> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean removeAll(Collection<?> c) {
+  default boolean removeAll(Collection<?> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean removeIf(Predicate<? super E> filter) {
+  default boolean removeIf(Predicate<? super E> filter) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default boolean retainAll(Collection<?> c) {
+  default boolean retainAll(Collection<?> c) throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
 
   @Override
   @Deprecated
-  default void clear() {
+  default void clear() throws UnsupportedOperationException {
     throw new UnsupportedOperationException();
   }
-
-  @Override
-  @Deprecated
-  default void add(int index, E element) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default boolean addAll(int index, Collection<? extends E> c) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  @Deprecated
-  default E set(int index, E element) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  FixedList<E> subList(int fromIndex, int toIndex);
 }

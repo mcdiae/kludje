@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
+
+import uk.kludje.array.EmptyArrays;
+import uk.kludje.array.LinearSearch;
+import uk.kludje.collect.MutableSparseArray;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -23,15 +27,17 @@ import java.util.stream.IntStream;
 /**
  * Created by user on 12/12/15.
  */
-final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSparseArray<V> {
+final class ArrayBackedMutableSparseArray<V> extends MutableStore implements MutableSparseArray<V> {
 
   private int[] keys = EmptyArrays.EMPTY_INT_ARRAY;
 
   @Override
   public V put(int key, V value) {
+    assert value != this: "value != this";
+
     // first check if this is a replace operation
-    int index = Linear.linearSearch(keys, start, end, key);
-    if (index != Linear.NOT_FOUND) {
+    int index = LinearSearch.find(keys, start, end, key);
+    if (index != LinearSearch.NOT_FOUND) {
       @SuppressWarnings("unchecked")
       V old = (V) elements[index];
       elements[index] = value;
@@ -52,8 +58,9 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
     return null;
   }
 
-  @Override
   protected void ensureFreeCapacity(int growBy) {
+    assert growBy >= 0: "growBy >= 0";
+
     version++;
 
     if (start > growBy) {
@@ -90,8 +97,8 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
 
   @Override
   public boolean remove(int key) {
-    int index = Linear.linearSearch(keys, start, end, key);
-    if (index == Linear.NOT_FOUND) {
+    int index = LinearSearch.find(keys, start, end, key);
+    if (index == LinearSearch.NOT_FOUND) {
       return false;
     }
     // found
@@ -114,9 +121,9 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
 
   @Override
   public V get(int key) {
-    int index = Linear.linearSearch(keys, start, end, key);
+    int index = LinearSearch.find(keys, start, end, key);
     @SuppressWarnings("unchecked")
-    V value = (index == Linear.NOT_FOUND) ? null : (V) elements[index];
+    V value = (index == LinearSearch.NOT_FOUND) ? null : (V) elements[index];
     return value;
   }
 
@@ -127,7 +134,7 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
 
   @Override
   public boolean contains(int key) {
-    return Linear.linearSearch(keys, start, end, key) != Linear.NOT_FOUND;
+    return LinearSearch.find(keys, start, end, key) != LinearSearch.NOT_FOUND;
   }
 
   @Override
@@ -169,7 +176,7 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
       public void remove() {
         checkVersion(version);
         int indexToRemove = start + index--;
-        MutableSparseArrayImpl.this.remove(indexToRemove);
+        ArrayBackedMutableSparseArray.this.remove(indexToRemove);
         version = getVersion();
       }
     }
@@ -178,6 +185,6 @@ final class MutableSparseArrayImpl<V> extends MutableStore implements MutableSpa
   }
 
   public static <V> MutableSparseArray<V> sparseArray() {
-    return new MutableSparseArrayImpl<>();
+    return new ArrayBackedMutableSparseArray<>();
   }
 }

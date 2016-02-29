@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.fixed;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * Created by user on 13/12/15.
+ * Type for contract documentation.
  */
-public interface FixedCollection<E> extends Collection<E> {
+public interface FixedSet<E> extends FixedCollection<E>, Set<E> {
 
   @Override
   @Deprecated

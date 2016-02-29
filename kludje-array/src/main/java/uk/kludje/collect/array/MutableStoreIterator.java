@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;

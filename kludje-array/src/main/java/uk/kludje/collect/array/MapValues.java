@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package uk.kludje.testcontract;
+package uk.kludje.collect.array;
 
-public class ContractViolationException extends RuntimeException {
+import java.util.Collection;
 
-  private static final long serialVersionUID = 1L;
+/**
+ *
+ */
+@Deprecated
+interface MapValues<E> extends Collection<E> {
 
-  public ContractViolationException(String violation) {
-    super(violation);
-  }
+  @Override
+  @Deprecated
+  boolean remove(Object o);
 
-  public ContractViolationException(Throwable violation) {
-    super(violation);
-  }
+  @Override
+  @Deprecated
+  boolean removeAll(Collection<?> c);
 
-  public static void assertThat(boolean assertion, String failure) {
-    if(!assertion) {
-      throw new ContractViolationException(failure);
-    }
-  }
+  @Override
+  @Deprecated
+  boolean retainAll(Collection<?> c);
+
+  @Override
+  @Deprecated
+  void clear();
 }

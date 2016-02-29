@@ -43,7 +43,7 @@ public final class EqualsContract {
 
   public static void assertTransitive(Object x, Object y, Object z) {
     boolean xEqualsY = x.equals(y);
-    boolean xEqualsZ = z.equals(z);
+    boolean xEqualsZ = x.equals(z);
     if (xEqualsY && xEqualsZ) {
       assertThat(y.equals(z), "assertTransitive: " + x.getClass() + ";" + y.getClass() + ";" + z.getClass());
     } else if (xEqualsY || xEqualsZ) {
@@ -57,5 +57,12 @@ public final class EqualsContract {
     }
   }
 
-
+  public static void assertAll(Object x, Object y, Object z) {
+    assertReflexive(x);
+    assertConsistent(x, y);
+    assertHashCode(x, y);
+    assertNotNull(x);
+    assertSymmetric(x, y);
+    assertTransitive(x, y, z);
+  }
 }

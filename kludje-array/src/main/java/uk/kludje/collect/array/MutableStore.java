@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
+
+import uk.kludje.array.EmptyArrays;
 
 import java.util.*;
 
@@ -59,40 +61,6 @@ abstract class MutableStore {
     return end - start;
   }
 
-  protected void ensureFreeCapacity(int n) {
-    version++;
-
-    int endCapacity = elements.length - end;
-    if (n <= endCapacity) {
-      // have enough room
-      return;
-    }
-
-    int size = size();
-    int capacity = endCapacity + start;
-    if (n <= capacity) {
-      defrag();
-      // make room at the end
-      return;
-    }
-    // increase space
-    int increase = growSizeBy(n - size);
-    int newSize = increase + size;
-    Assert.that(newSize >= (size + n), "newSize >= (size + n)");
-    Object[] newArray = new Object[newSize];
-    System.arraycopy(elements, start, newArray, 0, size);
-    start = 0;
-    end = size;
-    elements = newArray;
-  }
-
-  protected void defrag() {
-    int size = size();
-    System.arraycopy(elements, start, elements, 0, size);
-    start = 0;
-    end = size;
-  }
-
   protected int indexOf(Object o) {
     for (int i = start; i < end; i++) {
       Object element = elements[i];
@@ -101,30 +69,6 @@ abstract class MutableStore {
       }
     }
     return -1;
-  }
-
-  protected void insert(int index, Object element) {
-    version++;
-    ensureFreeCapacity(size() + 1);
-    int setAt = index + start;
-    Assert.that(setAt >= start, "setAt >= start", IndexOutOfBoundsException::new);
-    Assert.that(setAt <= end, "setAt <= end", IndexOutOfBoundsException::new);
-    System.arraycopy(elements, setAt, elements, setAt + 1, end - setAt);
-    elements[setAt] = element;
-  }
-
-  protected boolean addElement(Object element) {
-    insert(size(), element);
-    return true;
-  }
-
-  protected Object set(int index, Object element) {
-    int setAt = start + index;
-    assertIndexInBounds(setAt);
-    version++;
-    Object old = elements[setAt];
-    elements[setAt] = element;
-    return old;
   }
 
   protected Object removeIndex(int index) {
@@ -153,7 +97,7 @@ abstract class MutableStore {
     return indexOf(o) != -1;
   }
 
-  protected void clear() {
+  protected void clearElements() {
     Arrays.fill(elements, null);
     start = 0;
     end = 0;
@@ -165,14 +109,6 @@ abstract class MutableStore {
 
   protected boolean removeEntry(Object o) {
     return removeIndex(indexOf(o)) != null;
-  }
-
-  protected boolean addAllElements(Collection<?> c) {
-    boolean added = false;
-    for (Object e : c) {
-      added |= addElement(e);
-    }
-    return added;
   }
 
   protected boolean containsAll(Collection<?> c) {
@@ -205,6 +141,7 @@ abstract class MutableStore {
   }
 
   protected <T> T[] toArray(T[] a) {
+    //noinspection SuspiciousSystemArraycopy
     System.arraycopy(elements, start, a, 0, end - start);
     return a;
   }

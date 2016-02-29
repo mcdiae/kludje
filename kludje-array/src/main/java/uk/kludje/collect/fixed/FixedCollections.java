@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package uk.kludje.testcontract;
+package uk.kludje.collect.fixed;
 
-public class ContractViolationException extends RuntimeException {
+/**
+ * Created by user on 10/01/16.
+ */
+public final class FixedCollections {
 
-  private static final long serialVersionUID = 1L;
+  private FixedCollections() {}
 
-  public ContractViolationException(String violation) {
-    super(violation);
-  }
-
-  public ContractViolationException(Throwable violation) {
-    super(violation);
-  }
-
-  public static void assertThat(boolean assertion, String failure) {
-    if(!assertion) {
-      throw new ContractViolationException(failure);
-    }
+  public static <E> FixedCollection<E> emptyFixedCollection() {
+    return null;
   }
 }

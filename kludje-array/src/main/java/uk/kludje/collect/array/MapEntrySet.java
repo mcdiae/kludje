@@ -14,13 +14,27 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
- * Created by user on 12/12/15.
+ * TODO: deprecate some default methods
  */
-public interface MutableSparseArray<V> extends SparseArray<V> {
-  V put(int key, V value);
+@Deprecated
+interface MapEntrySet<K, V> extends Set<Map.Entry<K, V>> {
 
-  boolean remove(int key);
+  @Override
+  @Deprecated
+  default boolean add(Map.Entry<K, V> kvEntry)  {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  @Deprecated
+  default boolean addAll(Collection<? extends Map.Entry<K, V>> c)  {
+    throw new UnsupportedOperationException();
+  }
 }

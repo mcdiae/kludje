@@ -14,31 +14,83 @@
  * limitations under the License.
  */
 
-package uk.kludje.array;
+package uk.kludje.collect.array;
 
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
-final class MutableSet<E> extends AbstractMutableCollection<E> implements Set<E> {
+final class ArrayBackedMutableSet<E> extends AbstractMutableCollection<E> implements Set<E> {
 
   @Override
   public boolean add(E element) {
+    assert element != this: "element != this";
+
     boolean contains = contains(element);
     if (contains) {
       return false;
     } else {
-      return super.add(element);
+      ensureFreeCapacity(1);
+      if (start == 0) {
+        elements[end++] = element;
+      } else {
+        elements[--start] = element;
+      }
+      return true;
     }
   }
 
-  @Override
-  public boolean addAll(Collection<? extends E> c) {
-    boolean changed = false;
-    for (E element : c) {
-      changed |= add(element);
+  protected void ensureFreeCapacity(int n) {
+    assert n >= 0: "n >= 0";
+
+    version++;
+
+    if (n < start) {
+      return;
     }
-    return changed;
+
+    ensureFreeTailCapacity(n);
+  }
+
+  private void ensureFreeTailCapacity(int n) {
+    assert n >= 0: "n >= 0";
+
+    version++;
+
+    int endCapacity = elements.length - end;
+    if (n <= endCapacity) {
+      // have enough room
+      return;
+    }
+
+    int size = size();
+    int capacity = endCapacity + start;
+    if (n <= capacity) {
+      defrag();
+      // make room at the end
+      return;
+    }
+    // increase space
+    int increase = growSizeBy(n - size);
+    int newSize = increase + size;
+    Assert.that(newSize >= (size + n), "newSize >= (size + n)");
+    Object[] newArray = new Object[newSize];
+    System.arraycopy(elements, start, newArray, 0, size);
+    start = 0;
+    end = size;
+    elements = newArray;
+  }
+
+  private void defrag() {
+    version++;
+    int size = size();
+    System.arraycopy(elements, start, elements, 0, size);
+    start = 0;
+    end = size;
+  }
+
+  @Override
+  public void clear() {
+    clearElements();
   }
 
   @Override

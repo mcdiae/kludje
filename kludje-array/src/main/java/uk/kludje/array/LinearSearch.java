@@ -19,20 +19,33 @@ package uk.kludje.array;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-final class Linear {
+/**
+ * Linear search algorithms for select types.
+ */
+public final class LinearSearch {
 
+  /** The value returned if the element is not in the array */
   public static final int NOT_FOUND = -1;
 
-  private Linear() {}
+  private LinearSearch() {}
 
-  public static int linearSearch(int[] arr, int start, int end, int value) {
+  /**
+   * Finds a value in an int array.
+   *
+   * @param arr the target array
+   * @param start the inclusive initial value to check
+   * @param end the exclusive end value to check
+   * @param valueToFind the value to find
+   * @return the index or NOT_FOUND
+   */
+  public static int find(int[] arr, int start, int end, int valueToFind) {
     assert arr != null;
     assert end >= 0;
     assert end <= arr.length;
 
 
     for (int i = start; i < end; i++) {
-      if (arr[i] == value) {
+      if (arr[i] == valueToFind) {
         return i;
       }
     }
@@ -40,14 +53,23 @@ final class Linear {
     return NOT_FOUND;
   }
 
-  public static int linearSearch(Object[] arr, int start, int end, Object value) {
+  /**
+   * Finds a value in an Object array.
+   *
+   * @param arr the target array
+   * @param start the inclusive initial value to check
+   * @param end the exclusive end value to check
+   * @param valueToFind the value to find
+   * @return the index or NOT_FOUND
+   */
+  public static int find(Object[] arr, int start, int end, Object valueToFind) {
     assert arr != null;
     assert end >= 0;
     assert end <= arr.length;
 
 
     for (int i = start; i < end; i++) {
-      if (Objects.equals(arr[i], value)) {
+      if (Objects.equals(arr[i], valueToFind)) {
         return i;
       }
     }

@@ -20,13 +20,13 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class MutableStoreIterator implements Iterator<Object> {
+class MutableStoreIterator<E> implements Iterator<E> {
 
-  private final MutableStore store;
+  private final AbstractArrayCollection<E> store;
   private int version;
   private int index;
 
-  public MutableStoreIterator(MutableStore store) {
+  public MutableStoreIterator(AbstractArrayCollection<E> store) {
     this.store = store;
     version = store.getVersion();
   }
@@ -38,7 +38,7 @@ public class MutableStoreIterator implements Iterator<Object> {
   }
 
   @Override
-  public Object next() {
+  public E next() {
     Assert.that(version == store.getVersion(), "initVersion == store.getVersion()", ConcurrentModificationException::new);
     if(!hasNext()) {
       throw new NoSuchElementException();

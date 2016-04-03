@@ -19,7 +19,7 @@ package uk.kludje.collect.array;
 import java.util.Objects;
 import java.util.Set;
 
-final class ArrayBackedMutableSet<E> extends AbstractMutableCollection<E> implements Set<E> {
+final class ArrayBackedMutableSet<E> extends AbstractArrayCollection<E> implements Set<E> {
 
   @Override
   public boolean add(E element) {

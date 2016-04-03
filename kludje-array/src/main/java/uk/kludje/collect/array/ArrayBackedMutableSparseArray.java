@@ -20,6 +20,7 @@ import uk.kludje.array.EmptyArrays;
 import uk.kludje.array.LinearSearch;
 import uk.kludje.collect.MutableSparseArray;
 
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.stream.IntStream;
@@ -27,9 +28,13 @@ import java.util.stream.IntStream;
 /**
  * Created by user on 12/12/15.
  */
-final class ArrayBackedMutableSparseArray<V> extends MutableStore implements MutableSparseArray<V> {
+final class ArrayBackedMutableSparseArray<V> implements MutableSparseArray<V> {
 
   private int[] keys = EmptyArrays.EMPTY_INT_ARRAY;
+  protected Object[] elements = EmptyArrays.EMPTY_OBJECT_ARRAY;
+  protected int start;
+  protected int end;
+  protected int version;
 
   @Override
   public V put(int key, V value) {
@@ -56,6 +61,19 @@ final class ArrayBackedMutableSparseArray<V> extends MutableStore implements Mut
       end++;
     }
     return null;
+  }
+
+  protected int growSizeBy(int requiredCapacity) {
+    assert requiredCapacity >= 0 : "requiredCapacity >= 0";
+
+    int size = size();
+    int standardIncrease = (size == 0) ? 8 : size;
+
+    if (requiredCapacity > standardIncrease) {
+      return requiredCapacity;
+    } else {
+      return standardIncrease;
+    }
   }
 
   protected void ensureFreeCapacity(int growBy) {
@@ -129,7 +147,7 @@ final class ArrayBackedMutableSparseArray<V> extends MutableStore implements Mut
 
   @Override
   public int size() {
-    return super.size();
+    return end - start;
   }
 
   @Override
@@ -144,9 +162,20 @@ final class ArrayBackedMutableSparseArray<V> extends MutableStore implements Mut
         .limit(size());
   }
 
+  public int getVersion() {
+    return version;
+  }
+
+  protected void checkVersion(int version) {
+    if (version != this.version) {
+      String threadName = Thread.currentThread().getName();
+      throw new ConcurrentModificationException(threadName);
+    }
+  }
+
   @Override
   public boolean isEmpty() {
-    return super.isEmpty();
+    return end == start;
   }
 
   @Override

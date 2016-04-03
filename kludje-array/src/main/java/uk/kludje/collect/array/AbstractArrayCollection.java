@@ -20,18 +20,31 @@ import uk.kludje.array.EmptyArrays;
 
 import java.util.*;
 
-abstract class MutableStore {
+abstract class AbstractArrayCollection<E> implements Collection<E> {
 
   protected Object[] elements = EmptyArrays.EMPTY_OBJECT_ARRAY;
   protected int start;
   protected int end;
   protected int version;
 
-  protected void checkVersion(int version) {
-    if (version != this.version) {
-      String threadName = Thread.currentThread().getName();
-      throw new ConcurrentModificationException(threadName);
-    }
+  @Override
+  public Iterator<E> iterator() {
+    return new MutableStoreIterator<>(this);
+  }
+
+  protected E at(int index) {
+    int getAt = index + start;
+    assertIndexInBounds(getAt);
+    return (E) elements[getAt];
+  }
+
+  protected void assertIndexInBounds(int offset) {
+    Assert.that(offset >= start, "offset >= start", IndexOutOfBoundsException::new);
+    Assert.that(offset < end, "offset < end", IndexOutOfBoundsException::new);
+  }
+
+  protected int getVersion() {
+    return version;
   }
 
   protected int growSizeBy(int requiredCapacity) {
@@ -45,20 +58,6 @@ abstract class MutableStore {
     } else {
       return standardIncrease;
     }
-  }
-
-  protected Object at(int index) {
-    int getAt = index + start;
-    assertIndexInBounds(getAt);
-    return elements[getAt];
-  }
-
-  protected int getVersion() {
-    return version;
-  }
-
-  protected int size() {
-    return end - start;
   }
 
   protected int indexOf(Object o) {
@@ -80,38 +79,33 @@ abstract class MutableStore {
     return removed;
   }
 
-  protected void assertIndexInBounds(int offset) {
-    Assert.that(offset >= start, "offset >= start", IndexOutOfBoundsException::new);
-    Assert.that(offset < end, "offset < end", IndexOutOfBoundsException::new);
-  }
-
-  protected boolean isEmpty() {
-    return start == end;
-  }
-
-  protected Object[] toArray() {
-    return elements.clone();
-  }
-
-  protected boolean contains(Object o) {
-    return indexOf(o) != -1;
-  }
-
   protected void clearElements() {
     Arrays.fill(elements, null);
     start = 0;
     end = 0;
   }
 
-  protected Iterator<Object> storeIterator() {
-    return new MutableStoreIterator(this);
+  @Override
+  public boolean contains(Object o) {
+    return indexOf(o) != -1;
   }
 
-  protected boolean removeEntry(Object o) {
+  @Override
+  public int size() {
+    return end - start;
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return end == start;
+  }
+
+  @Override
+  public boolean remove(Object o) {
     return removeIndex(indexOf(o)) != null;
   }
 
-  protected boolean containsAll(Collection<?> c) {
+  public boolean containsAll(Collection<?> c) {
     for (Object o : c) {
       if (contains(o)) {
         return true;
@@ -120,15 +114,15 @@ abstract class MutableStore {
     return false;
   }
 
-  protected boolean removeAll(Collection<?> c) {
+  public boolean removeAll(Collection<?> c) {
     boolean removed = false;
     for (Object o : c) {
-      removed |= removeEntry(o);
+      removed |= remove(o);
     }
     return removed;
   }
 
-  protected boolean retainAll(Collection<?> c) {
+  public boolean retainAll(Collection<?> c) {
     boolean changed = false;
     for (Object o : c) {
       int idx = indexOf(o);
@@ -140,7 +134,20 @@ abstract class MutableStore {
     return changed;
   }
 
-  protected <T> T[] toArray(T[] a) {
+  @Override
+  public boolean addAll(Collection<? extends E> c) {
+    boolean changed = false;
+    for (E e : c) {
+      changed |= add(e);
+    }
+    return changed;
+  }
+
+  public Object[] toArray() {
+    return toArray(new Object[size()]);
+  }
+
+  public <T> T[] toArray(T[] a) {
     //noinspection SuspiciousSystemArraycopy
     System.arraycopy(elements, start, a, 0, end - start);
     return a;

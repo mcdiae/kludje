@@ -24,9 +24,13 @@ import java.util.*;
 /**
  * Created by user on 13/12/15.
  */
-final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V> {
+final class ArrayBackedMutableMap<K, V> implements Map<K, V> {
 
   private Object[] keys = EmptyArrays.EMPTY_OBJECT_ARRAY;
+  private Object[] elements = EmptyArrays.EMPTY_OBJECT_ARRAY;
+  private int start;
+  private int end;
+  private int version;
 
   @Override
   public boolean containsKey(Object key) {
@@ -103,6 +107,19 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     keys = newKeys;
   }
 
+  protected int growSizeBy(int requiredCapacity) {
+    assert requiredCapacity >= 0 : "requiredCapacity >= 0";
+
+    int size = size();
+    int standardIncrease = (size == 0) ? 8 : size;
+
+    if (requiredCapacity > standardIncrease) {
+      return requiredCapacity;
+    } else {
+      return standardIncrease;
+    }
+  }
+
   protected void defrag() {
     version++;
     int size = size();
@@ -146,17 +163,17 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
   }
 
   @Override
-  public MapKeySet<K> keySet() {
+  public Set<K> keySet() {
     return new KeySet();
   }
 
   @Override
-  public MapValues<V> values() {
+  public Collection<V> values() {
     return new MapValuesCollection();
   }
 
   @Override
-  public MapEntrySet<K, V> entrySet() {
+  public Set<Entry<K, V>> entrySet() {
     return new EntrySet();
   }
 
@@ -165,8 +182,7 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     clearElements();
   }
 
-  @Override
-  protected void clearElements() {
+  private void clearElements() {
     Arrays.fill(keys, start, end, null);
     Arrays.fill(elements, start, end, null);
     start = 0;
@@ -175,12 +191,12 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
 
   @Override
   public int size() {
-    return super.size();
+    return end - start;
   }
 
   @Override
   public boolean isEmpty() {
-    return super.isEmpty();
+    return (end - start) == 0;
   }
 
   @Override
@@ -231,7 +247,7 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     return buf.append("}").toString();
   }
 
-  private class MapValuesCollection extends AbstractCollection<V> implements MapValues<V> {
+  private class MapValuesCollection extends AbstractCollection<V> {
 
     @Override
     public Iterator<V> iterator() {
@@ -267,7 +283,14 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     }
   }
 
-  private class KeySet extends AbstractSet<K> implements MapKeySet<K> {
+  private void checkVersion(int version) {
+    if (version != this.version) {
+      String threadName = Thread.currentThread().getName();
+      throw new ConcurrentModificationException(threadName);
+    }
+  }
+
+  private class KeySet extends AbstractSet<K> {
     @Override
     public Iterator<K> iterator() {
       return new KeyIterator();
@@ -286,18 +309,6 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
       }
       removeAtIndex(index);
       return true;
-    }
-
-    @Override
-    @Deprecated
-    public boolean add(K k) {
-      return super.add(k);
-    }
-
-    @Override
-    @Deprecated
-    public boolean addAll(Collection<? extends K> c) {
-      return super.addAll(c);
     }
   }
 
@@ -387,7 +398,7 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     }
   }
 
-  private class EntrySet extends AbstractSet<Entry<K, V>> implements MapEntrySet<K, V> {
+  private class EntrySet extends AbstractSet<Entry<K, V>> implements Set<Entry<K, V>> {
 
     @Override
     public Iterator<Entry<K, V>> iterator() {
@@ -415,15 +426,13 @@ final class ArrayBackedMutableMap<K, V> extends MutableStore implements Map<K, V
     }
 
     @Override
-    @Deprecated
     public boolean add(Entry<K, V> kvEntry) {
-      return super.add(kvEntry);
+      throw new UnsupportedOperationException();
     }
 
     @Override
-    @Deprecated
     public boolean addAll(Collection<? extends Entry<K, V>> c) {
-      return super.addAll(c);
+      throw new UnsupportedOperationException();
     }
   }
 }

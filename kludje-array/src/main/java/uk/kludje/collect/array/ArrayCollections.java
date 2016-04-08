@@ -48,6 +48,14 @@ public final class ArrayCollections {
     return new ArrayBackedMutableSet<>();
   }
 
+  public static <E extends Comparable<E>> Set<E> mutableSortedSet() {
+    return new ArrayBackedMutableComparatorSet<>(Comparable::compareTo);
+  }
+
+  public static <E> Set<E> mutableSortedSet(Comparator<E> comparator) {
+    return new ArrayBackedMutableComparatorSet<>(comparator);
+  }
+
   public static <K, V> Map<K, V> mutableMap() {
     return new ArrayBackedMutableMap<>();
   }

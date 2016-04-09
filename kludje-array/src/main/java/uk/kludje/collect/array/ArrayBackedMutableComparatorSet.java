@@ -16,10 +16,7 @@
 
 package uk.kludje.collect.array;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 final class ArrayBackedMutableComparatorSet<E> extends AbstractArrayCollection<E> implements Set<E> {
 
@@ -35,24 +32,16 @@ final class ArrayBackedMutableComparatorSet<E> extends AbstractArrayCollection<E
   public boolean add(E element) {
     assert element != this: "element != this";
 
-    int low = start;
-    int high = end - 1;
+    @SuppressWarnings("unchecked")
+    Comparator<Object> c = (Comparator<Object>) comparator;
+    int index = Arrays.binarySearch(this.elements, start, end, element, c);
 
-    int position = 0;
-    while (low <= high) {
-      int mid = (low + high) >>> 1;
-      E midVal = (E) elements[mid];
-      int cmp = comparator.compare(midVal, element);
-      if (cmp < 0) {
-        low = mid + 1;
-        position = low;
-      } else if (cmp > 0) {
-        high = mid - 1;
-        position = high;
-      } else {
-        return false;
-      }
+    if (index >= 0) {
+      // already present
+      return false;
     }
+
+    int position = -1 * (1 + index);
 
     ensureFreeCapacity(1);
     if (start > 0) {
@@ -69,7 +58,11 @@ final class ArrayBackedMutableComparatorSet<E> extends AbstractArrayCollection<E
   protected int indexOf(Object o) {
     @SuppressWarnings("unchecked")
     Comparator<Object> c = (Comparator<Object>) comparator;
-    return Arrays.binarySearch(this.elements, start, end, o, c);
+    int index = Arrays.binarySearch(this.elements, start, end, o, c);
+    if (index < 0) {
+      return -1;
+    }
+    return index - start;
   }
 
   protected void ensureFreeCapacity(int n) {

@@ -21,7 +21,6 @@ import org.junit.Test;
 import uk.kludje.collect.array.ArrayCollections;
 import uk.kludje.testcontract.lang.object.EqualsContract;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,8 +31,8 @@ public class MutableSortedSetTest {
     String foo = "foo";
 
     Set<String> hash = new HashSet<>();
-    Set<String> mutable = ArrayCollections.mutableSortedSet();
-    Set<String> mutable2 = ArrayCollections.mutableSortedSet();
+    Set<String> mutable = ArrayCollections.mutableComparableSet();
+    Set<String> mutable2 = ArrayCollections.mutableComparableSet();
 
     Assert.assertEquals(hash, mutable);
     Assert.assertEquals(mutable, mutable2);
@@ -52,10 +51,10 @@ public class MutableSortedSetTest {
     EqualsContract.assertAll(mutable, hash, mutable2);
   }
 
-  //@Test
+  @Test
   public void testAddRemove() {
 
-    Set<Integer> mutable = ArrayCollections.mutableSortedSet();
+    Set<Integer> mutable = ArrayCollections.mutableComparableSet();
 
     mutable.add(2);
     mutable.add(1);

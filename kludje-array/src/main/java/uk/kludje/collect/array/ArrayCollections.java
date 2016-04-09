@@ -48,11 +48,17 @@ public final class ArrayCollections {
     return new ArrayBackedMutableSet<>();
   }
 
-  public static <E extends Comparable<E>> Set<E> mutableSortedSet() {
+  /**
+   * 
+   *
+   * @param <E> the element type
+   * @return a new set backed by an array
+     */
+  public static <E extends Comparable<E>> Set<E> mutableComparableSet() {
     return new ArrayBackedMutableComparatorSet<>(Comparable::compareTo);
   }
 
-  public static <E> Set<E> mutableSortedSet(Comparator<E> comparator) {
+  public static <E> Set<E> mutableComparableSet(Comparator<E> comparator) {
     return new ArrayBackedMutableComparatorSet<>(comparator);
   }
 

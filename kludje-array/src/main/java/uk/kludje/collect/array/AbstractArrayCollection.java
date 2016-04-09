@@ -64,7 +64,7 @@ abstract class AbstractArrayCollection<E> implements Collection<E> {
     for (int i = start; i < end; i++) {
       Object element = elements[i];
       if (Objects.equals(element, o)) {
-        return i;
+        return i - start;
       }
     }
     return -1;
@@ -75,7 +75,17 @@ abstract class AbstractArrayCollection<E> implements Collection<E> {
     assertIndexInBounds(removeFrom);
     version++;
     Object removed = elements[removeFrom];
-    System.arraycopy(elements, removeFrom + 1, elements, removeFrom, end - removeFrom);
+    if (removeFrom == start) {
+      elements[removeFrom] = null;
+      start++;
+    } else if (removeFrom == (end - 1)) {
+      elements[removeFrom] = null;
+      end--;
+    } else {
+      System.arraycopy(elements, removeFrom + 1, elements, removeFrom, end - removeFrom);
+      end--;
+      elements[end] = null;
+    }
     return removed;
   }
 
@@ -87,7 +97,7 @@ abstract class AbstractArrayCollection<E> implements Collection<E> {
 
   @Override
   public boolean contains(Object o) {
-    return indexOf(o) != -1;
+    return indexOf(o) >= 0;
   }
 
   @Override
@@ -102,7 +112,11 @@ abstract class AbstractArrayCollection<E> implements Collection<E> {
 
   @Override
   public boolean remove(Object o) {
-    return removeIndex(indexOf(o)) != null;
+    int index = indexOf(o);
+    if (index == -1) {
+      return false;
+    }
+    return removeIndex(index) != null;
   }
 
   public boolean containsAll(Collection<?> c) {

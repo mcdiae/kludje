@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 McDowell
+ * Copyright 2016 McDowell
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,7 @@
 
 package uk.kludje;
 
-import java.util.*;
-import static java.util.Collections.emptyList;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
-import static java.util.Arrays.asList;
+import java.util.Objects;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
@@ -78,19 +72,28 @@ import static java.util.Arrays.asList;
  * @param <T> the accessed type
  */
 public final class Meta<T> {
-  private static final Meta<?> INIT = new Meta<>(emptyList(), emptyList(), emptyList());
+  private static final Meta<?> INIT = new Meta<>(new TypedProperty[0], new String[0]);
 
-  private final BiConsumer<T, StringBuilder>[] toString;
-  private final BiPredicate<T, T>[] equals;
-  private final ToIntFunction<T>[] hashCode;
+  private final TypedProperty[] props;
+  private final String[] names;
 
   @SuppressWarnings("unchecked")
-  private Meta(List<BiConsumer<T, StringBuilder>> toString,
-               List<BiPredicate<T, T>> equals,
-               List<ToIntFunction<T>> hashCode) {
-    this.toString = toString.toArray(new BiConsumer[toString.size()]);
-    this.equals = equals.toArray(new BiPredicate[equals.size()]);
-    this.hashCode = hashCode.toArray(new ToIntFunction[hashCode.size()]);
+  private Meta(TypedProperty[] props,
+               String[] names) {
+    this.props = props;
+    this.names = names;
+  }
+
+  private static <T> Meta<T> newMeta(TypedProperty[] props, TypedProperty prop, String[] names, String name) {
+    TypedProperty[] newProps = new TypedProperty[props.length + 1];
+    System.arraycopy(props, 0, newProps, 0, props.length);
+    newProps[props.length] = prop;
+
+    String[] newNames = new String[props.length + 1];
+    System.arraycopy(names, 0, names, 0, props.length);
+    newNames[props.length] = name;
+
+    return new Meta<T>(newProps, newNames);
   }
 
   /**
@@ -101,6 +104,27 @@ public final class Meta<T> {
     @SuppressWarnings("unchecked")
     Meta<T> safe = (Meta<T>) INIT;
     return safe;
+  }
+
+  /** @return the number of properties this instance exposes */
+  public int size() {
+    return props.length;
+  }
+
+  /**
+   * @param index the getter to return
+   * @return an instance that can be cast to a getter type
+   */
+  public TypedProperty propertyAt(int index) {
+    return props[index];
+  }
+
+  /**
+   * @param index the name index
+   * @return the property name for the given index or the empty string
+   */
+  public String nameAt(int index) {
+    return names[index];
   }
 
   /**
@@ -115,110 +139,82 @@ public final class Meta<T> {
    */
   @SafeVarargs
   public final Meta<T> objects(Getter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<Getter<T>> list = asList(getters);
-    return update(list,
-        str()::objects,
-        eq()::objects,
-        hash()::objects);
+    Meta<T> result = this;
+    for (Getter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> booleans(BooleanGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<BooleanGetter<T>> list = asList(getters);
-    return update(list,
-        str()::booleans,
-        eq()::booleans,
-        hash()::booleans);
+    Meta<T> result = this;
+    for (BooleanGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> chars(CharGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<CharGetter<T>> list = asList(getters);
-    return update(list,
-        str()::chars,
-        eq()::chars,
-        hash()::chars);
+    Meta<T> result = this;
+    for (CharGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> bytes(ByteGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<ByteGetter<T>> list = asList(getters);
-    return update(list,
-        str()::bytes,
-        eq()::bytes,
-        hash()::bytes);
+    Meta<T> result = this;
+    for (ByteGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> shorts(ShortGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<ShortGetter<T>> list = asList(getters);
-    return update(list,
-        str()::shorts,
-        eq()::shorts,
-        hash()::shorts);
+    Meta<T> result = this;
+    for (ShortGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> ints(IntGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<IntGetter<T>> list = asList(getters);
-    return update(list,
-        str()::ints,
-        eq()::ints,
-        hash()::ints);
+    Meta<T> result = this;
+    for (IntGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> longs(LongGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<LongGetter<T>> list = asList(getters);
-    return update(list,
-        str()::longs,
-        eq()::longs,
-        hash()::longs);
+    Meta<T> result = this;
+    for (LongGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> floats(FloatGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<FloatGetter<T>> list = asList(getters);
-    return update(list,
-        str()::floats,
-        eq()::floats,
-        hash()::floats);
+    Meta<T> result = this;
+    for (FloatGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
+    return result;
   }
 
   @SafeVarargs
   public final Meta<T> doubles(DoubleGetter<T>... getters) {
-    @SuppressWarnings("varargs")
-    List<DoubleGetter<T>> list = asList(getters);
-    return update(list,
-        str()::doubles,
-        eq()::doubles,
-        hash()::doubles);
-  }
-
-  private <G> Meta<T> update(List<G> getters,
-                            Function<G, BiConsumer<T, StringBuilder>> strTransform,
-                            Function<G, BiPredicate<T, T>> eqTransform,
-                            Function<G, ToIntFunction<T>> hashTransform) {
-    List<BiConsumer<T, StringBuilder>> newToString = combine(toString, getters, strTransform);
-    List<BiPredicate<T, T>> newEquals = combine(equals, getters, eqTransform);
-    List<ToIntFunction<T>> newHashCode = combine(hashCode, getters, hashTransform);
-    return new Meta<>(newToString, newEquals, newHashCode);
-  }
-
-  private <A, R> List<R> combine(R[] existing, List<A> src, Function<A, R> transform) {
-    List<R> result = new ArrayList<>();
-    result.addAll(asList(existing));
-    src.stream()
-        .map(transform)
-        .forEach(result::add);
+    Meta<T> result = this;
+    for (DoubleGetter<T> g : getters) {
+      result = newMeta(result.props, g, result.names, "");
+    }
     return result;
   }
 
@@ -243,9 +239,65 @@ public final class Meta<T> {
     }
     @SuppressWarnings("unchecked")
     T other = (T) any;
-    for(BiPredicate<T, T> bp : equals) {
-      if(!bp.test(t, other)) {
-        return false;
+    for(TypedProperty p : props) {
+      PropertyType type = p.type();
+      switch (type) {
+        case INT:
+          IntGetter<T> ig = (IntGetter<T>) p;
+          if (ig.getInt(t) != ig.getInt(other)) {
+            return false;
+          }
+          break;
+        case OBJECT:
+          Getter<T> g = (Getter<T>) p;
+          if (!Objects.equals(g.get(t), g.get(other))) {
+            return false;
+          }
+          break;
+        case BOOLEAN:
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          if (bg.getBoolean(t) != bg.getBoolean(other)) {
+            return false;
+          }
+          break;
+        case LONG:
+          LongGetter<T> lg = (LongGetter<T>) p;
+          if (lg.getLong(t) != lg.getLong(other)) {
+            return false;
+          }
+          break;
+        case CHAR:
+          CharGetter<T> cg = (CharGetter<T>) p;
+          if (cg.getChar(t) != cg.getChar(other)) {
+            return false;
+          }
+          break;
+        case DOUBLE:
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          if (dg.getDouble(t) != dg.getDouble(other)) {
+            return false;
+          }
+          break;
+        case FLOAT:
+          FloatGetter<T> fg = (FloatGetter<T>) p;
+          if (fg.getFloat(t) != fg.getFloat(other)) {
+            return false;
+          }
+          break;
+        case SHORT:
+          ShortGetter<T> sg = (ShortGetter<T>) p;
+          if (sg.getShort(t) != sg.getShort(other)) {
+            return false;
+          }
+          break;
+        case BYTE:
+          ByteGetter<T> byg = (ByteGetter<T>) p;
+          if (byg.getByte(t) != byg.getByte(other)) {
+            return false;
+          }
+          break;
+        default:
+          throw new AssertionError("Unsupported PropertyType: " + type);
       }
     }
     return true;
@@ -259,9 +311,55 @@ public final class Meta<T> {
    * @return the hash
    */
   public int hashCode(T t) {
+    Objects.requireNonNull(t);
+
     int result = 0;
-    for (ToIntFunction<T> fn : hashCode) {
-      result = (result * 31) + fn.applyAsInt(t);
+    int prime = 31;
+
+    for(TypedProperty p : props) {
+      result = result * prime;
+
+      PropertyType type = p.type();
+      switch (type) {
+        case INT:
+          IntGetter<T> ig = (IntGetter<T>) p;
+          result += ig.getInt(t);
+          break;
+        case OBJECT:
+          Getter<T> g = (Getter<T>) p;
+          result += Objects.hashCode(g.get(t));
+          break;
+        case BOOLEAN:
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          result += bg.getBoolean(t) ? 1 : 0;
+          break;
+        case LONG:
+          LongGetter<T> lg = (LongGetter<T>) p;
+          result += Long.hashCode(lg.getLong(t));
+          break;
+        case CHAR:
+          CharGetter<T> cg = (CharGetter<T>) p;
+          result += cg.getChar(t);
+          break;
+        case DOUBLE:
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          result += Double.hashCode(dg.getDouble(t));
+          break;
+        case FLOAT:
+          FloatGetter<T> fg = (FloatGetter<T>) p;
+          result += Float.hashCode(fg.getFloat(t));
+          break;
+        case SHORT:
+          ShortGetter<T> sg = (ShortGetter<T>) p;
+          result += sg.getShort(t);
+          break;
+        case BYTE:
+          ByteGetter<T> byg = (ByteGetter<T>) p;
+          result += byg.getByte(t);
+          break;
+        default:
+          throw new AssertionError("Unsupported PropertyType");
+      }
     }
     return result;
   }
@@ -277,31 +375,61 @@ public final class Meta<T> {
     StringBuilder buf = new StringBuilder();
     buf.append(t.getClass().getSimpleName());
     buf.append(" {");
-    for (BiConsumer<T, StringBuilder> val : toString) {
-      if (buf.length() > 0) {
-        buf.append(", ");
+
+    for(int i = 0; i < props.length; i++) {
+
+      TypedProperty p = props[i];
+      String name = names[i];
+
+      if (!"".equals(name)) {
+        buf.append(name);
+        buf.append('=');
       }
-      val.accept(t, buf);
+
+      PropertyType type = p.type();
+      switch (type) {
+        case INT:
+          IntGetter<T> ig = (IntGetter<T>) p;
+          buf.append(ig.getInt(t));
+          break;
+        case OBJECT:
+          Getter<T> g = (Getter<T>) p;
+          buf.append(g.get(t));
+          break;
+        case BOOLEAN:
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          buf.append(bg.getBoolean(t));
+          break;
+        case LONG:
+          LongGetter<T> lg = (LongGetter<T>) p;
+          buf.append(lg.getLong(t));
+          break;
+        case CHAR:
+          CharGetter<T> cg = (CharGetter<T>) p;
+          buf.append(cg.getChar(t));
+          break;
+        case DOUBLE:
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          buf.append(dg.getDouble(t));
+          break;
+        case FLOAT:
+          FloatGetter<T> fg = (FloatGetter<T>) p;
+          buf.append(fg.getFloat(t));
+          break;
+        case SHORT:
+          ShortGetter<T> sg = (ShortGetter<T>) p;
+          buf.append(sg.getShort(t));
+          break;
+        case BYTE:
+          ByteGetter<T> byg = (ByteGetter<T>) p;
+          buf.append(byg.getByte(t));
+          break;
+        default:
+          throw new AssertionError("Unsupported PropertyType");
+      }
     }
-    return buf.append("}").toString();
-  }
 
-  private ToStringTransformer<T> str() {
-    @SuppressWarnings("unchecked")
-    ToStringTransformer<T> typed = (ToStringTransformer<T>) ToStringTransformer.INST;
-    return typed;
-  }
-
-  private EqualsTransformer<T> eq() {
-    @SuppressWarnings("unchecked")
-    EqualsTransformer<T> typed = (EqualsTransformer<T>) EqualsTransformer.INST;
-    return typed;
-  }
-
-  private HashTransformer<T> hash() {
-    @SuppressWarnings("unchecked")
-    HashTransformer<T> typed = (HashTransformer<T>) HashTransformer.INST;
-    return typed;
+    return buf.append('}').toString();
   }
 
   /**
@@ -309,10 +437,10 @@ public final class Meta<T> {
    * Alternative types have been provided for primitives.
    *
    * @param <T> the type to read the property from
-   * @see Meta#objects(uk.kludje.Meta.Getter[])
+   * @see Meta#objects(Meta.Getter[])
    */
   @FunctionalInterface
-  public static interface Getter<T> {
+  public interface Getter<T> extends TypedProperty {
     /**
      * Reads a property value from the argument.
      *
@@ -320,231 +448,101 @@ public final class Meta<T> {
      * @return the property value instance or null
      */
     Object get(T t);
+
+    /**
+     * @return OBJECT
+     */
+    default PropertyType type() { return PropertyType.OBJECT; }
   }
 
   @FunctionalInterface
-  public static interface BooleanGetter<T> {
+  public interface BooleanGetter<T> extends TypedProperty {
     boolean getBoolean(T t);
+
+    /**
+     * @return BOOLEAN
+     */
+    default PropertyType type() { return PropertyType.BOOLEAN; }
   }
 
   @FunctionalInterface
-  public static interface CharGetter<T> {
+  public interface CharGetter<T> extends TypedProperty {
     char getChar(T t);
+
+    /**
+     * @return CHAR
+     */
+    default PropertyType type() { return PropertyType.CHAR; }
   }
 
   @FunctionalInterface
-  public static interface ByteGetter<T> {
+  public interface ByteGetter<T> extends TypedProperty {
     byte getByte(T t);
+
+    /**
+     * @return BYTE
+     */
+    default PropertyType type() { return PropertyType.BYTE; }
   }
 
   @FunctionalInterface
-  public static interface ShortGetter<T> {
+  public interface ShortGetter<T> extends TypedProperty {
     short getShort(T t);
+
+    /**
+     * @return SHORT
+     */
+    default PropertyType type() { return PropertyType.SHORT; }
   }
 
   @FunctionalInterface
-  public static interface IntGetter<T> {
+  public interface IntGetter<T> extends TypedProperty{
     int getInt(T t);
+
+    /**
+     * @return INT
+     */
+    default PropertyType type() { return PropertyType.INT; }
   }
 
   @FunctionalInterface
-  public static interface LongGetter<T> {
+  public interface LongGetter<T> extends TypedProperty {
     long getLong(T t);
+
+    /**
+     * @return LONG
+     */
+    default PropertyType type() { return PropertyType.LONG; }
   }
 
   @FunctionalInterface
-  public static interface FloatGetter<T> {
+  public interface FloatGetter<T> extends TypedProperty {
     float getFloat(T t);
+
+    /**
+     * @return FLOAT
+     */
+    default PropertyType type() { return PropertyType.FLOAT; }
   }
 
   @FunctionalInterface
-  public static interface DoubleGetter<T> {
+  public interface DoubleGetter<T> extends TypedProperty {
     double getDouble(T t);
-  }
-}
 
-interface GetterTransformer<T, U> {
-  U objects(Meta.Getter<T> g);
-
-  U booleans(Meta.BooleanGetter<T> g);
-
-  U chars(Meta.CharGetter<T> g);
-
-  U bytes(Meta.ByteGetter<T> g);
-
-  U shorts(Meta.ShortGetter<T> g);
-
-  U ints(Meta.IntGetter<T> g);
-
-  U longs(Meta.LongGetter<T> g);
-
-  U floats(Meta.FloatGetter<T> g);
-
-  U doubles(Meta.DoubleGetter<T> g);
-}
-
-class ToStringTransformer<T> implements GetterTransformer<T, BiConsumer<T, StringBuilder>> {
-  public static final ToStringTransformer<?> INST = new ToStringTransformer<>();
-
-  private ToStringTransformer() {
+    /**
+     * @return DOUBLE
+     */
+    default PropertyType type() { return PropertyType.DOUBLE; }
   }
 
-  @Override
-  public BiConsumer<T, StringBuilder> objects(Meta.Getter<T> g) {
-    return (t, buf) -> buf.append(g.get(t));
+  public interface TypedProperty {
+    PropertyType type();
   }
 
-  @Override
-  public BiConsumer<T, StringBuilder> booleans(Meta.BooleanGetter<T> g) {
-    return (t, buf) -> buf.append(g.getBoolean(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> chars(Meta.CharGetter<T> g) {
-    return (t, buf) -> buf.append(g.getChar(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> bytes(Meta.ByteGetter<T> g) {
-    return (t, buf) -> buf.append(g.getByte(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> shorts(Meta.ShortGetter<T> g) {
-    return (t, buf) -> buf.append(g.getShort(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> ints(Meta.IntGetter<T> g) {
-    return (t, buf) -> buf.append(g.getInt(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> longs(Meta.LongGetter<T> g) {
-    return (t, buf) -> buf.append(g.getLong(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> floats(Meta.FloatGetter<T> g) {
-    return (t, buf) -> buf.append(g.getFloat(t));
-  }
-
-  @Override
-  public BiConsumer<T, StringBuilder> doubles(Meta.DoubleGetter<T> g) {
-    return (t, buf) -> buf.append(g.getDouble(t));
-  }
-}
-
-class EqualsTransformer<T> implements GetterTransformer<T, BiPredicate<T, T>> {
-  public static final EqualsTransformer<?> INST = new EqualsTransformer<>();
-
-  private EqualsTransformer() {
-  }
-
-  @Override
-  public BiPredicate<T, T> objects(Meta.Getter<T> g) {
-    return (t1, t2) -> {
-      Object o1 = g.get(t1);
-      Object o2 = g.get(t2);
-      return (o1 == null) ? (o2 == null) : o1.equals(o2);
-    };
-  }
-
-  @Override
-  public BiPredicate<T, T> booleans(Meta.BooleanGetter<T> g) {
-    return (t1, t2) -> g.getBoolean(t1) == g.getBoolean(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> chars(Meta.CharGetter<T> g) {
-    return (t1, t2) -> g.getChar(t1) == g.getChar(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> bytes(Meta.ByteGetter<T> g) {
-    return (t1, t2) -> g.getByte(t1) == g.getByte(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> shorts(Meta.ShortGetter<T> g) {
-    return (t1, t2) -> g.getShort(t1) == g.getShort(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> ints(Meta.IntGetter<T> g) {
-    return (t1, t2) -> g.getInt(t1) == g.getInt(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> longs(Meta.LongGetter<T> g) {
-    return (t1, t2) -> g.getLong(t1) == g.getLong(t2);
-  }
-
-  @Override
-  public BiPredicate<T, T> floats(Meta.FloatGetter<T> g) {
-    return (t1, t2) -> Float.compare(g.getFloat(t1), g.getFloat(t2)) == 0;
-  }
-
-  @Override
-  public BiPredicate<T, T> doubles(Meta.DoubleGetter<T> g) {
-    return (t1, t2) -> Double.compare(g.getDouble(t1), g.getDouble(t2)) == 0;
-  }
-}
-
-class HashTransformer<T> implements GetterTransformer<T, ToIntFunction<T>> {
-  public static final HashTransformer<?> INST = new HashTransformer<>();
-
-  private HashTransformer() {
-  }
-
-  @Override
-  public ToIntFunction<T> objects(Meta.Getter<T> g) {
-    return t -> {
-      Object o = g.get(t);
-      return (o == null) ? 0 : o.hashCode();
-    };
-  }
-
-  @Override
-  public ToIntFunction<T> booleans(Meta.BooleanGetter<T> g) {
-    return t -> g.getBoolean(t) ? 1 : 0;
-  }
-
-  @Override
-  public ToIntFunction<T> chars(Meta.CharGetter<T> g) {
-    return t -> g.getChar(t);
-  }
-
-  @Override
-  public ToIntFunction<T> bytes(Meta.ByteGetter<T> g) {
-    return t -> g.getByte(t);
-  }
-
-  @Override
-  public ToIntFunction<T> shorts(Meta.ShortGetter<T> g) {
-    return t -> g.getShort(t);
-  }
-
-  @Override
-  public ToIntFunction<T> ints(Meta.IntGetter<T> g) {
-    return t -> g.getInt(t);
-  }
-
-  @Override
-  public ToIntFunction<T> longs(Meta.LongGetter<T> g) {
-    return t -> {
-      long l = g.getLong(t);
-      return (int) (l ^ (l >>> 32));
-    };
-  }
-
-  @Override
-  public ToIntFunction<T> floats(Meta.FloatGetter<T> g) {
-    return t -> Float.hashCode(g.getFloat(t));
-  }
-
-  @Override
-  public ToIntFunction<T> doubles(Meta.DoubleGetter<T> g) {
-    return t -> Double.hashCode(g.getDouble(t));
+  /**
+   * Supported property types.
+   */
+  public enum PropertyType {
+    OBJECT, BOOLEAN, CHAR, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE
   }
 }

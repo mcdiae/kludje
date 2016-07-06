@@ -21,10 +21,13 @@ import org.junit.Test;
 import uk.kludje.Meta;
 
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-public class MetaTest {
+/**
+ * Will be removed; checks deprecated meta() method
+ */
+@Deprecated
+public class DeprecatedMetaTest {
   @Test
   public void basicTest() {
     Assert.assertEquals(new MetaPojo(), new MetaPojo());
@@ -34,8 +37,6 @@ public class MetaTest {
 
   @Test
   public void comboTest() {
-    AtomicInteger count = new AtomicInteger();
-
     Arrays.<Consumer<MetaPojo>>asList(
         m -> m.a = true,
         m -> m.b = 'a',
@@ -51,21 +52,12 @@ public class MetaTest {
       MetaPojo pojo = new MetaPojo();
       c.accept(pojo);
 
-      Assert.assertNotEquals("hint=" + count.getAndIncrement(), pojo, new MetaPojo());
+      Assert.assertNotEquals(pojo, new MetaPojo());
       Assert.assertNotEquals(pojo.toString(), new MetaPojo().toString());
     });
   }
 
-  @Test
-  public void testSubclass() {
-    MetaPojo base = new MetaPojo();
-    MetaPojo sub = new MetaPojo() {};
-
-    Assert.assertEquals(base, sub);
-    Assert.assertEquals(sub, base);
-  }
-
-  private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)
+  private static final Meta<MetaPojo> META = Meta.<MetaPojo>meta()
       .booleans($ -> $.a)
       .chars($ -> $.b)
       .bytes($ -> $.c)

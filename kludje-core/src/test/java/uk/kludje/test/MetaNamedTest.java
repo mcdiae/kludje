@@ -17,14 +17,19 @@
 package uk.kludje.test;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import uk.kludje.Meta;
 
+import static java.util.Arrays.asList;
+
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
-public class MetaTest {
+public class MetaNamedTest {
+
   @Test
   public void basicTest() {
     Assert.assertEquals(new MetaPojo(), new MetaPojo());
@@ -34,26 +39,48 @@ public class MetaTest {
 
   @Test
   public void comboTest() {
-    AtomicInteger count = new AtomicInteger();
-
     Arrays.<Consumer<MetaPojo>>asList(
-        m -> m.a = true,
-        m -> m.b = 'a',
-        m -> m.c = -1,
-        m -> m.d = -2,
-        m -> m.e = 10,
-        m -> m.f = 5l,
-        m -> m.g = 1.0f,
-        m -> m.h = new Object(),
-        m -> m.i = "",
-        m -> m.j = 1.0
+      m -> m.a = true,
+      m -> m.b = 'a',
+      m -> m.c = -1,
+      m -> m.d = -2,
+      m -> m.e = 10,
+      m -> m.f = 5l,
+      m -> m.g = 1.0f,
+      m -> m.h = new Object(),
+      m -> m.i = "",
+      m -> m.j = 1.0
     ).stream().forEach(c -> {
       MetaPojo pojo = new MetaPojo();
       c.accept(pojo);
 
-      Assert.assertNotEquals("hint=" + count.getAndIncrement(), pojo, new MetaPojo());
+      Assert.assertNotEquals(pojo, new MetaPojo());
       Assert.assertNotEquals(pojo.toString(), new MetaPojo().toString());
     });
+  }
+
+  @Test
+  public void testSize() {
+    Assert.assertEquals(10, META.size());
+  }
+
+  @Test
+  public void testNames() {
+    // setup
+    Set<String> expected = new HashSet<>(asList("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"));
+    // invoke
+    Set<String> actual = new HashSet<>();
+    for (int i = 0; i < META.size(); i++) {
+      String name = META.nameAt(i);
+      actual.add(name);
+    }
+    // verify
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testPojo() {
+    //MetaPojo pojo = new MetaPojo();
   }
 
   @Test
@@ -66,15 +93,16 @@ public class MetaTest {
   }
 
   private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)
-      .booleans($ -> $.a)
-      .chars($ -> $.b)
-      .bytes($ -> $.c)
-      .shorts($ -> $.d)
-      .ints($ -> $.e)
-      .longs($ -> $.f)
-      .floats($ -> $.g)
-      .objects($ -> $.h, $ -> $.i)
-      .doubles($ -> $.j);
+    .namedBoolean("a", o -> o.a)
+    .namedChar("b", o -> o.b)
+    .namedByte("c", o -> o.c)
+    .namedShort("d", $ -> $.d)
+    .namedInt("e", $ -> $.e)
+    .namedLong("f", $ -> $.f)
+    .namedFloat("g", $ -> $.g)
+    .namedObject("h", $ -> $.h)
+    .namedObject("i", $ -> $.i)
+    .namedDouble("j", $ -> $.j);
 
   private static class MetaPojo {
     boolean a;

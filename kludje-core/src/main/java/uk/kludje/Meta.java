@@ -20,9 +20,9 @@ import java.util.Objects;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
- *
+ * <p>
  * <p>Example checked builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
- *
+ * <p>
  * <pre>
  * import uk.kludje.Meta;
  * import java.time.LocalDate;
@@ -63,75 +63,163 @@ import java.util.Objects;
  *   }
  * }
  * </pre>
- *
+ * <p>
  * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
  * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
- *
+ * <p>
  * <p>Instances of this type are immutable and thread safe.</p>
  *
  * @param <T> the accessed type
  */
 public final class Meta<T> {
-  private static final Meta<?> INIT = new Meta<>(new TypedProperty[0], new String[0]);
 
+  private final Class<T> type;
   private final TypedProperty[] props;
   private final String[] names;
 
   @SuppressWarnings("unchecked")
-  private Meta(TypedProperty[] props,
+  private Meta(Class<T> type,
+               TypedProperty[] props,
                String[] names) {
+    this.type = type;
     this.props = props;
     this.names = names;
   }
 
-  private static <T> Meta<T> newMeta(TypedProperty[] props, TypedProperty prop, String[] names, String name) {
-    TypedProperty[] newProps = new TypedProperty[props.length + 1];
-    System.arraycopy(props, 0, newProps, 0, props.length);
-    newProps[props.length] = prop;
+  private static <T> Meta<T> newMeta(Meta<T> old, String name, TypedProperty getter) {
+    Ensure.that(getter != null, "getter != null");
+    Ensure.that(name != null, "name != null");
 
-    String[] newNames = new String[props.length + 1];
-    System.arraycopy(names, 0, names, 0, props.length);
-    newNames[props.length] = name;
+    TypedProperty[] newProps = new TypedProperty[old.props.length + 1];
+    System.arraycopy(old.props, 0, newProps, 0, old.props.length);
+    newProps[old.props.length] = getter;
 
-    return new Meta<T>(newProps, newNames);
+    String[] newNames = new String[old.names.length + 1];
+    System.arraycopy(old.names, 0, newNames, 0, old.names.length);
+    newNames[old.names.length] = name;
+
+    return new Meta<T>(old.type, newProps, newNames);
   }
 
   /**
+   * WARNING: this method will be removed
+   *
    * @param <T> the type of class
    * @return a new instance
+   * @deprecated does not retain enough type information for subclasses; use meta(Class) instead
+   * @see #meta(Class)
    */
+  @Deprecated
   public static <T> Meta<T> meta() {
-    @SuppressWarnings("unchecked")
-    Meta<T> safe = (Meta<T>) INIT;
-    return safe;
-  }
-
-  /** @return the number of properties this instance exposes */
-  public int size() {
-    return props.length;
+    return new Meta<>(null, new TypedProperty[0], new String[0]);
   }
 
   /**
-   * @param index the getter to return
-   * @return an instance that can be cast to a getter type
+   * @param type the class of type T
+   * @param <T> the type
+   * @return a new instance with no properties
    */
-  public TypedProperty propertyAt(int index) {
-    return props[index];
+  public static <T> Meta<T> meta(Class<T> type) {
+    Ensure.that(type != null, "type != null");
+
+    return new Meta<>(type, new TypedProperty[0], new String[0]);
   }
 
   /**
-   * @param index the name index
-   * @return the property name for the given index or the empty string
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
    */
-  public String nameAt(int index) {
-    return names[index];
+  public Meta<T> namedObject(String name, Getter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> intProperty(String name, IntGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedBoolean(String name, BooleanGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedByte(String name, ByteGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedShort(String name, ShortGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedInt(String name, IntGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedLong(String name, LongGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedFloat(String name, FloatGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedDouble(String name, DoubleGetter<T> getter) {
+    return newMeta(this, name, getter);
+  }
+
+  /**
+   * @param name   a property name for toString() generation; must not be null
+   * @param getter the value retriever
+   * @return a new instance with the property appended
+   */
+  public Meta<T> namedChar(String name, CharGetter<T> getter) {
+    return newMeta(this, name, getter);
   }
 
   /**
    * Use to specify properties of type object checked should be considered by this type.
-   *
+   * <p>
    * Do not use this method for primitive properties - alternatives have been provided.
-   *
+   * <p>
    * This method does not mutate the instance; it returns a new one.
    *
    * @param getters a vararg array of non-null getters
@@ -141,7 +229,7 @@ public final class Meta<T> {
   public final Meta<T> objects(Getter<T>... getters) {
     Meta<T> result = this;
     for (Getter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -150,7 +238,7 @@ public final class Meta<T> {
   public final Meta<T> booleans(BooleanGetter<T>... getters) {
     Meta<T> result = this;
     for (BooleanGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -159,7 +247,7 @@ public final class Meta<T> {
   public final Meta<T> chars(CharGetter<T>... getters) {
     Meta<T> result = this;
     for (CharGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -168,7 +256,7 @@ public final class Meta<T> {
   public final Meta<T> bytes(ByteGetter<T>... getters) {
     Meta<T> result = this;
     for (ByteGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -177,7 +265,7 @@ public final class Meta<T> {
   public final Meta<T> shorts(ShortGetter<T>... getters) {
     Meta<T> result = this;
     for (ShortGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -186,7 +274,7 @@ public final class Meta<T> {
   public final Meta<T> ints(IntGetter<T>... getters) {
     Meta<T> result = this;
     for (IntGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -195,7 +283,7 @@ public final class Meta<T> {
   public final Meta<T> longs(LongGetter<T>... getters) {
     Meta<T> result = this;
     for (LongGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -204,7 +292,7 @@ public final class Meta<T> {
   public final Meta<T> floats(FloatGetter<T>... getters) {
     Meta<T> result = this;
     for (FloatGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -213,7 +301,7 @@ public final class Meta<T> {
   public final Meta<T> doubles(DoubleGetter<T>... getters) {
     Meta<T> result = this;
     for (DoubleGetter<T> g : getters) {
-      result = newMeta(result.props, g, result.names, "");
+      result = newMeta(result, "", g);
     }
     return result;
   }
@@ -222,10 +310,11 @@ public final class Meta<T> {
    * {@code any} is equal to {@code t} if it is of type {@code T}
    * and all the properties defined by this type are equal.
    *
-   * @param t a non-null instance of type T
+   * @param t   a non-null instance of type T
    * @param any any object, including null
    * @return true if the arguments are equal
    */
+  @SuppressWarnings("unchecked")
   public boolean equals(T t, Object any) {
     Objects.requireNonNull(t);
     if (any == null) {
@@ -234,12 +323,13 @@ public final class Meta<T> {
     if (any == t) {
       return true;
     }
-    if (!t.getClass().isInstance(any)) {
+    Class<T> tClass = (type == null) ? (Class<T>) t.getClass() : type;
+    if (!tClass.isInstance(any)) {
       return false;
     }
-    @SuppressWarnings("unchecked")
+
     T other = (T) any;
-    for(TypedProperty p : props) {
+    for (TypedProperty p : props) {
       PropertyType type = p.type();
       switch (type) {
         case INT:
@@ -310,13 +400,14 @@ public final class Meta<T> {
    * @param t the non-null instance to create a hash for
    * @return the hash
    */
+  @SuppressWarnings("unchecked")
   public int hashCode(T t) {
     Objects.requireNonNull(t);
 
     int result = 0;
     int prime = 31;
 
-    for(TypedProperty p : props) {
+    for (TypedProperty p : props) {
       result = result * prime;
 
       PropertyType type = p.type();
@@ -371,12 +462,20 @@ public final class Meta<T> {
    * @param t the non-null instance to create a string form of
    * @return debug string
    */
+  @SuppressWarnings("unchecked")
   public String toString(T t) {
+    Class<?> tClass = t.getClass();
+
     StringBuilder buf = new StringBuilder();
-    buf.append(t.getClass().getSimpleName());
+    buf.append(tClass.getSimpleName());
     buf.append(" {");
 
-    for(int i = 0; i < props.length; i++) {
+    String delim = "";
+
+    for (int i = 0; i < props.length; i++) {
+
+      buf.append(delim);
+      delim = ", ";
 
       TypedProperty p = props[i];
       String name = names[i];
@@ -433,6 +532,40 @@ public final class Meta<T> {
   }
 
   /**
+   * @return the number of properties this instance exposes
+   */
+  public int size() {
+    return props.length;
+  }
+
+  /**
+   * @param index the getter to return
+   * @return an object that can be cast to a getter type
+   * @see Getter
+   * @see BooleanGetter
+   * @see ByteGetter
+   * @see ShortGetter
+   * @see IntGetter
+   * @see LongGetter
+   * @see FloatGetter
+   * @see DoubleGetter
+   * @see CharGetter
+   * @see PropertyType
+   */
+  public TypedProperty propertyAt(int index) {
+    return props[index];
+  }
+
+  /**
+   * @param index the name index
+   * @return the property name for the given index or the empty string
+   */
+  public String nameAt(int index) {
+    return names[index];
+  }
+
+
+  /**
    * A functional interface for reading a property value.
    * Alternative types have been provided for primitives.
    *
@@ -452,7 +585,9 @@ public final class Meta<T> {
     /**
      * @return OBJECT
      */
-    default PropertyType type() { return PropertyType.OBJECT; }
+    default PropertyType type() {
+      return PropertyType.OBJECT;
+    }
   }
 
   @FunctionalInterface
@@ -462,7 +597,9 @@ public final class Meta<T> {
     /**
      * @return BOOLEAN
      */
-    default PropertyType type() { return PropertyType.BOOLEAN; }
+    default PropertyType type() {
+      return PropertyType.BOOLEAN;
+    }
   }
 
   @FunctionalInterface
@@ -472,7 +609,9 @@ public final class Meta<T> {
     /**
      * @return CHAR
      */
-    default PropertyType type() { return PropertyType.CHAR; }
+    default PropertyType type() {
+      return PropertyType.CHAR;
+    }
   }
 
   @FunctionalInterface
@@ -482,7 +621,9 @@ public final class Meta<T> {
     /**
      * @return BYTE
      */
-    default PropertyType type() { return PropertyType.BYTE; }
+    default PropertyType type() {
+      return PropertyType.BYTE;
+    }
   }
 
   @FunctionalInterface
@@ -492,17 +633,21 @@ public final class Meta<T> {
     /**
      * @return SHORT
      */
-    default PropertyType type() { return PropertyType.SHORT; }
+    default PropertyType type() {
+      return PropertyType.SHORT;
+    }
   }
 
   @FunctionalInterface
-  public interface IntGetter<T> extends TypedProperty{
+  public interface IntGetter<T> extends TypedProperty {
     int getInt(T t);
 
     /**
      * @return INT
      */
-    default PropertyType type() { return PropertyType.INT; }
+    default PropertyType type() {
+      return PropertyType.INT;
+    }
   }
 
   @FunctionalInterface
@@ -512,7 +657,9 @@ public final class Meta<T> {
     /**
      * @return LONG
      */
-    default PropertyType type() { return PropertyType.LONG; }
+    default PropertyType type() {
+      return PropertyType.LONG;
+    }
   }
 
   @FunctionalInterface
@@ -522,7 +669,9 @@ public final class Meta<T> {
     /**
      * @return FLOAT
      */
-    default PropertyType type() { return PropertyType.FLOAT; }
+    default PropertyType type() {
+      return PropertyType.FLOAT;
+    }
   }
 
   @FunctionalInterface
@@ -532,7 +681,9 @@ public final class Meta<T> {
     /**
      * @return DOUBLE
      */
-    default PropertyType type() { return PropertyType.DOUBLE; }
+    default PropertyType type() {
+      return PropertyType.DOUBLE;
+    }
   }
 
   public interface TypedProperty {

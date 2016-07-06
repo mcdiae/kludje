@@ -23,7 +23,7 @@ import java.time.LocalDate;
 
 public class PersonPojo {
   private static final Meta<PersonPojo> META =
-      Meta.<PersonPojo>meta()
+      Meta.meta(PersonPojo.class)
           .longs($ -> $.id)
           .objects($ -> $.name, $ -> $.dateOfBirth);
 

@@ -21,7 +21,7 @@ package uk.kludje.test;
 import uk.kludje.Meta;
 
 public class GenericPojo<T> {
-  private static final Meta<GenericPojo<?>> META = Meta.<GenericPojo<?>>meta()
+  private static final Meta<GenericPojo> META = Meta.meta(GenericPojo.class)
       .objects($ -> $.gen);
 
   private final T gen;

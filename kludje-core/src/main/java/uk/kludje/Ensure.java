@@ -31,7 +31,7 @@ public final class Ensure {
   }
 
   /**
-   * Usage: {@code Assert.checked(connection != null, "connection != null", IOException::new);}
+   * Usage: {@code Ensure.checked(connection != null, "connection != null", IOException::new);}
    *
    * The throwable type must have a constructor checked just takes a String.
    *
@@ -63,13 +63,12 @@ public final class Ensure {
   }
 
   /**
-   * As {@link #unchecked(boolean, String, Function)} except the throwable is thrown as an unchecked exception type.
+   * As {@link #checked(boolean, String, Function)} except the throwable is thrown as an unchecked exception type.
    *
    * @param predicate the condition
    * @param explanation failure reason
    * @param exceptionFactory source of error
    * @param <T> the type to throw
-   * @throws T if predicate is false
    * @see Exceptions#throwChecked(Throwable)
    */
   public static <T extends Throwable> void unchecked(boolean predicate,

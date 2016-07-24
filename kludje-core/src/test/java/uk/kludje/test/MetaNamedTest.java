@@ -102,7 +102,8 @@ public class MetaNamedTest {
     .namedFloat("g", $ -> $.g)
     .namedObject("h", $ -> $.h)
     .namedObject("i", $ -> $.i)
-    .namedDouble("j", $ -> $.j);
+    .namedDouble("j", $ -> $.j)
+    .instanceCheckPolicy(Meta.InstanceCheckPolicy.instanceOf());
 
   private static class MetaPojo {
     boolean a;

@@ -16,13 +16,15 @@
 
 package uk.kludje;
 
+import uk.kludje.property.PropertyGetterList;
+import uk.kludje.property.PropertyType;
+import uk.kludje.property.TypedProperty;
+
 import java.util.Objects;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
- * <p>
  * <p>Example checked builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
- * <p>
  * <pre>
  * import uk.kludje.Meta;
  * import java.time.LocalDate;
@@ -30,7 +32,8 @@ import java.util.Objects;
  *
  * public class PersonPojo {
  *   private static final Meta&lt;PersonPojo&gt; META = meta(PersonPojo.class)
- * .                            longs($ -&gt; $.id).objects($ -&gt; $.name, $ -&gt; $.dateOfBirth);
+ *                              .longs($ -&gt; $.id)
+ *                              .objects($ -&gt; $.name, $ -&gt; $.dateOfBirth);
  *
  *   private final long id;
  *   private final String name;
@@ -63,30 +66,35 @@ import java.util.Objects;
  *   }
  * }
  * </pre>
- * <p>
  * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
  * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
- * <p>
  * <p>Instances of this type are immutable and thread safe.</p>
  *
  * @param <T> the accessed type
  */
-public final class Meta<T> {
+public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
   private final Class<T> type;
   private final TypedProperty[] props;
   private final String[] names;
+  private final InstanceCheckPolicy checkPolicy;
 
   @SuppressWarnings("unchecked")
   private Meta(Class<T> type,
                TypedProperty[] props,
-               String[] names) {
+               String[] names,
+               InstanceCheckPolicy checkPolicy) {
+
+    Ensure.that(checkPolicy != null, "checkPolicy != null");
+
     this.type = type;
     this.props = props;
     this.names = names;
+    this.checkPolicy = checkPolicy;
   }
 
-  private static <T> Meta<T> newMeta(Meta<T> old, String name, TypedProperty getter) {
+  @Override
+  protected Meta<T> newInstance(Meta<T> old, String name, TypedProperty getter) {
     Ensure.that(getter != null, "getter != null");
     Ensure.that(name != null, "name != null");
 
@@ -98,20 +106,7 @@ public final class Meta<T> {
     System.arraycopy(old.names, 0, newNames, 0, old.names.length);
     newNames[old.names.length] = name;
 
-    return new Meta<T>(old.type, newProps, newNames);
-  }
-
-  /**
-   * WARNING: this method will be removed
-   *
-   * @param <T> the type of class
-   * @return a new instance
-   * @deprecated does not retain enough type information for subclasses; use meta(Class) instead
-   * @see #meta(Class)
-   */
-  @Deprecated
-  public static <T> Meta<T> meta() {
-    return new Meta<>(null, new TypedProperty[0], new String[0]);
+    return new Meta<>(old.type, newProps, newNames, old.checkPolicy);
   }
 
   /**
@@ -122,188 +117,32 @@ public final class Meta<T> {
   public static <T> Meta<T> meta(Class<T> type) {
     Ensure.that(type != null, "type != null");
 
-    return new Meta<>(type, new TypedProperty[0], new String[0]);
+    return new Meta<>(type, new TypedProperty[0], new String[0], InstanceCheckPolicy.sameClass());
   }
 
   /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedObject(String name, Getter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> intProperty(String name, IntGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedBoolean(String name, BooleanGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedByte(String name, ByteGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedShort(String name, ShortGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedInt(String name, IntGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedLong(String name, LongGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedFloat(String name, FloatGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedDouble(String name, DoubleGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * @param name   a property name for toString() generation; must not be null
-   * @param getter the value retriever
-   * @return a new instance with the property appended
-   */
-  public Meta<T> namedChar(String name, CharGetter<T> getter) {
-    return newMeta(this, name, getter);
-  }
-
-  /**
-   * Use to specify properties of type object checked should be considered by this type.
-   * <p>
-   * Do not use this method for primitive properties - alternatives have been provided.
-   * <p>
-   * This method does not mutate the instance; it returns a new one.
+   * WARNING: when this method is used a subclass can never be equal to a parent type.
    *
-   * @param getters a vararg array of non-null getters
+   * @param <T> the type of class
    * @return a new instance
    */
-  @SafeVarargs
-  public final Meta<T> objects(Getter<T>... getters) {
-    Meta<T> result = this;
-    for (Getter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
+  public static <T> Meta<T> meta() {
+    return new Meta<>(null, new TypedProperty[0], new String[0], InstanceCheckPolicy.sameClass());
   }
 
-  @SafeVarargs
-  public final Meta<T> booleans(BooleanGetter<T>... getters) {
-    Meta<T> result = this;
-    for (BooleanGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
+  /**
+   * This method sets the policy for equality checks. There are two approaches: {@code this.getType() == that.getType()}
+   * and {@code that instanceof AType}.
+   *
+   * It is an error to invoke this method when {@link #meta()} is used to construct the type.
+   *
+   * @param policy the type check policy
+   * @return a new instance with the new policy
+   */
+  public Meta<T> instanceCheckPolicy(InstanceCheckPolicy policy) {
+    Ensure.that(this.type != null, "this.type != null");
 
-  @SafeVarargs
-  public final Meta<T> chars(CharGetter<T>... getters) {
-    Meta<T> result = this;
-    for (CharGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> bytes(ByteGetter<T>... getters) {
-    Meta<T> result = this;
-    for (ByteGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> shorts(ShortGetter<T>... getters) {
-    Meta<T> result = this;
-    for (ShortGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> ints(IntGetter<T>... getters) {
-    Meta<T> result = this;
-    for (IntGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> longs(LongGetter<T>... getters) {
-    Meta<T> result = this;
-    for (LongGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> floats(FloatGetter<T>... getters) {
-    Meta<T> result = this;
-    for (FloatGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
-  }
-
-  @SafeVarargs
-  public final Meta<T> doubles(DoubleGetter<T>... getters) {
-    Meta<T> result = this;
-    for (DoubleGetter<T> g : getters) {
-      result = newMeta(result, "", g);
-    }
-    return result;
+    return new Meta<>(this.type, this.props, this.names, policy);
   }
 
   /**
@@ -323,8 +162,7 @@ public final class Meta<T> {
     if (any == t) {
       return true;
     }
-    Class<T> tClass = (type == null) ? (Class<T>) t.getClass() : type;
-    if (!tClass.isInstance(any)) {
+    if (!this.checkPolicy.isSameType(type == null ? t.getClass() : type, any)) {
       return false;
     }
 
@@ -333,55 +171,55 @@ public final class Meta<T> {
       PropertyType type = p.type();
       switch (type) {
         case INT:
-          IntGetter<T> ig = (IntGetter<T>) p;
+          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
           if (ig.getInt(t) != ig.getInt(other)) {
             return false;
           }
           break;
         case OBJECT:
-          Getter<T> g = (Getter<T>) p;
+          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
           if (!Objects.equals(g.get(t), g.get(other))) {
             return false;
           }
           break;
         case BOOLEAN:
-          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
           if (bg.getBoolean(t) != bg.getBoolean(other)) {
             return false;
           }
           break;
         case LONG:
-          LongGetter<T> lg = (LongGetter<T>) p;
+          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
           if (lg.getLong(t) != lg.getLong(other)) {
             return false;
           }
           break;
         case CHAR:
-          CharGetter<T> cg = (CharGetter<T>) p;
+          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
           if (cg.getChar(t) != cg.getChar(other)) {
             return false;
           }
           break;
         case DOUBLE:
-          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
           if (dg.getDouble(t) != dg.getDouble(other)) {
             return false;
           }
           break;
         case FLOAT:
-          FloatGetter<T> fg = (FloatGetter<T>) p;
+          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
           if (fg.getFloat(t) != fg.getFloat(other)) {
             return false;
           }
           break;
         case SHORT:
-          ShortGetter<T> sg = (ShortGetter<T>) p;
+          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
           if (sg.getShort(t) != sg.getShort(other)) {
             return false;
           }
           break;
         case BYTE:
-          ByteGetter<T> byg = (ByteGetter<T>) p;
+          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
           if (byg.getByte(t) != byg.getByte(other)) {
             return false;
           }
@@ -413,39 +251,39 @@ public final class Meta<T> {
       PropertyType type = p.type();
       switch (type) {
         case INT:
-          IntGetter<T> ig = (IntGetter<T>) p;
+          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
           result += ig.getInt(t);
           break;
         case OBJECT:
-          Getter<T> g = (Getter<T>) p;
+          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
           result += Objects.hashCode(g.get(t));
           break;
         case BOOLEAN:
-          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
           result += bg.getBoolean(t) ? 1 : 0;
           break;
         case LONG:
-          LongGetter<T> lg = (LongGetter<T>) p;
+          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
           result += Long.hashCode(lg.getLong(t));
           break;
         case CHAR:
-          CharGetter<T> cg = (CharGetter<T>) p;
+          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
           result += cg.getChar(t);
           break;
         case DOUBLE:
-          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
           result += Double.hashCode(dg.getDouble(t));
           break;
         case FLOAT:
-          FloatGetter<T> fg = (FloatGetter<T>) p;
+          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
           result += Float.hashCode(fg.getFloat(t));
           break;
         case SHORT:
-          ShortGetter<T> sg = (ShortGetter<T>) p;
+          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
           result += sg.getShort(t);
           break;
         case BYTE:
-          ByteGetter<T> byg = (ByteGetter<T>) p;
+          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
           result += byg.getByte(t);
           break;
         default:
@@ -488,39 +326,39 @@ public final class Meta<T> {
       PropertyType type = p.type();
       switch (type) {
         case INT:
-          IntGetter<T> ig = (IntGetter<T>) p;
+          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
           buf.append(ig.getInt(t));
           break;
         case OBJECT:
-          Getter<T> g = (Getter<T>) p;
+          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
           buf.append(g.get(t));
           break;
         case BOOLEAN:
-          BooleanGetter<T> bg = (BooleanGetter<T>) p;
+          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
           buf.append(bg.getBoolean(t));
           break;
         case LONG:
-          LongGetter<T> lg = (LongGetter<T>) p;
+          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
           buf.append(lg.getLong(t));
           break;
         case CHAR:
-          CharGetter<T> cg = (CharGetter<T>) p;
+          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
           buf.append(cg.getChar(t));
           break;
         case DOUBLE:
-          DoubleGetter<T> dg = (DoubleGetter<T>) p;
+          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
           buf.append(dg.getDouble(t));
           break;
         case FLOAT:
-          FloatGetter<T> fg = (FloatGetter<T>) p;
+          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
           buf.append(fg.getFloat(t));
           break;
         case SHORT:
-          ShortGetter<T> sg = (ShortGetter<T>) p;
+          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
           buf.append(sg.getShort(t));
           break;
         case BYTE:
-          ByteGetter<T> byg = (ByteGetter<T>) p;
+          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
           buf.append(byg.getByte(t));
           break;
         default:
@@ -541,15 +379,15 @@ public final class Meta<T> {
   /**
    * @param index the getter to return
    * @return an object that can be cast to a getter type
-   * @see Getter
-   * @see BooleanGetter
-   * @see ByteGetter
-   * @see ShortGetter
-   * @see IntGetter
-   * @see LongGetter
-   * @see FloatGetter
-   * @see DoubleGetter
-   * @see CharGetter
+   * @see uk.kludje.property.Getter
+   * @see uk.kludje.property.BooleanGetter
+   * @see uk.kludje.property.ByteGetter
+   * @see uk.kludje.property.ShortGetter
+   * @see uk.kludje.property.IntGetter
+   * @see uk.kludje.property.LongGetter
+   * @see uk.kludje.property.FloatGetter
+   * @see uk.kludje.property.DoubleGetter
+   * @see uk.kludje.property.CharGetter
    * @see PropertyType
    */
   public TypedProperty propertyAt(int index) {
@@ -564,136 +402,104 @@ public final class Meta<T> {
     return names[index];
   }
 
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface Getter<T> extends uk.kludje.property.Getter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface BooleanGetter<T> extends uk.kludje.property.BooleanGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface CharGetter<T> extends uk.kludje.property.CharGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface ByteGetter<T> extends uk.kludje.property.ByteGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface ShortGetter<T> extends uk.kludje.property.ShortGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface IntGetter<T> extends uk.kludje.property.IntGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface LongGetter<T> extends uk.kludje.property.LongGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface FloatGetter<T> extends uk.kludje.property.FloatGetter<T> {}
+
+  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  @Deprecated
+  @FunctionalInterface
+  public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {}
 
   /**
-   * A functional interface for reading a property value.
-   * Alternative types have been provided for primitives.
+   * Functional interface for declaring the type checking policy for the {@link #equals(Object, Object)} method.
+   * It is unlikely that this interface will need to be implemented.
+   * Use the instances provided by the static methods.
    *
-   * @param <T> the type to read the property from
-   * @see Meta#objects(Meta.Getter[])
+   * @see #instanceCheckPolicy(InstanceCheckPolicy)
+   * @see InstanceCheckPolicy#sameClass()
+   * @see InstanceCheckPolicy#instanceOf()
    */
   @FunctionalInterface
-  public interface Getter<T> extends TypedProperty {
-    /**
-     * Reads a property value from the argument.
-     *
-     * @param t the source of the property value
-     * @return the property value instance or null
-     */
-    Object get(T t);
+  public interface InstanceCheckPolicy {
 
     /**
-     * @return OBJECT
+     * @param declaredType the meta type
+     * @param thatInstance the instance to check
+     * @return true if thatInstance is the "same" type as declaredType; false otherwise
      */
-    default PropertyType type() {
-      return PropertyType.OBJECT;
+    boolean isSameType(Class<?> declaredType, Object thatInstance);
+
+    /**
+     * Checks that {@code declaredType == thatInstance.getClass()}.
+     * @return the check policy
+     */
+    static InstanceCheckPolicy sameClass() {
+      return SameClassCheck.INSTANCE;
+    }
+
+    /**
+     * Checks that {@code declaredType.isInstance(thatInstance)}
+     * @return the check policy
+     */
+    static InstanceCheckPolicy instanceOf() {
+      return InstanceOfCheck.INSTANCE;
     }
   }
 
-  @FunctionalInterface
-  public interface BooleanGetter<T> extends TypedProperty {
-    boolean getBoolean(T t);
+  private static final class SameClassCheck implements Meta.InstanceCheckPolicy {
 
-    /**
-     * @return BOOLEAN
-     */
-    default PropertyType type() {
-      return PropertyType.BOOLEAN;
+    static final Meta.InstanceCheckPolicy INSTANCE = new SameClassCheck();
+
+    @Override
+    public boolean isSameType(Class<?> declaredType, Object thatInstance) {
+      return declaredType == thatInstance.getClass();
     }
   }
 
-  @FunctionalInterface
-  public interface CharGetter<T> extends TypedProperty {
-    char getChar(T t);
+  private static final class InstanceOfCheck implements Meta.InstanceCheckPolicy {
 
-    /**
-     * @return CHAR
-     */
-    default PropertyType type() {
-      return PropertyType.CHAR;
+    static final Meta.InstanceCheckPolicy INSTANCE = new InstanceOfCheck();
+
+    @Override
+    public boolean isSameType(Class<?> declaredType, Object thatInstance) {
+      return declaredType.isInstance(thatInstance);
     }
-  }
-
-  @FunctionalInterface
-  public interface ByteGetter<T> extends TypedProperty {
-    byte getByte(T t);
-
-    /**
-     * @return BYTE
-     */
-    default PropertyType type() {
-      return PropertyType.BYTE;
-    }
-  }
-
-  @FunctionalInterface
-  public interface ShortGetter<T> extends TypedProperty {
-    short getShort(T t);
-
-    /**
-     * @return SHORT
-     */
-    default PropertyType type() {
-      return PropertyType.SHORT;
-    }
-  }
-
-  @FunctionalInterface
-  public interface IntGetter<T> extends TypedProperty {
-    int getInt(T t);
-
-    /**
-     * @return INT
-     */
-    default PropertyType type() {
-      return PropertyType.INT;
-    }
-  }
-
-  @FunctionalInterface
-  public interface LongGetter<T> extends TypedProperty {
-    long getLong(T t);
-
-    /**
-     * @return LONG
-     */
-    default PropertyType type() {
-      return PropertyType.LONG;
-    }
-  }
-
-  @FunctionalInterface
-  public interface FloatGetter<T> extends TypedProperty {
-    float getFloat(T t);
-
-    /**
-     * @return FLOAT
-     */
-    default PropertyType type() {
-      return PropertyType.FLOAT;
-    }
-  }
-
-  @FunctionalInterface
-  public interface DoubleGetter<T> extends TypedProperty {
-    double getDouble(T t);
-
-    /**
-     * @return DOUBLE
-     */
-    default PropertyType type() {
-      return PropertyType.DOUBLE;
-    }
-  }
-
-  public interface TypedProperty {
-    PropertyType type();
-  }
-
-  /**
-   * Supported property types.
-   */
-  public enum PropertyType {
-    OBJECT, BOOLEAN, CHAR, BYTE, SHORT, INT, LONG, FLOAT, DOUBLE
   }
 }

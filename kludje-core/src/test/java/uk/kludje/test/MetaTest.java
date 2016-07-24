@@ -74,7 +74,8 @@ public class MetaTest {
       .longs($ -> $.f)
       .floats($ -> $.g)
       .objects($ -> $.h, $ -> $.i)
-      .doubles($ -> $.j);
+      .doubles($ -> $.j)
+      .instanceCheckPolicy(Meta.InstanceCheckPolicy.instanceOf());
 
   private static class MetaPojo {
     boolean a;

@@ -21,9 +21,8 @@ package uk.kludje.test;
 import uk.kludje.Meta;
 
 public class GenericPojo<T> {
-  @SuppressWarnings("rawtypes")
   private static final Meta<GenericPojo> META = Meta.meta(GenericPojo.class)
-      .objects($ -> $.gen);
+      .namedObject("gen", $ -> $.gen);
 
   private final T gen;
 

@@ -2,6 +2,7 @@ package uk.kludje.property;
 
 import uk.kludje.Ensure;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -42,6 +43,7 @@ public interface Getter<T> extends TypedProperty, Function<T, Object> {
    * @param <T> the source type
    * @return a new instance
    */
+  @Deprecated // not sure this is safe
   static <T> Getter<T> neverArray(Getter<T> getter) {
     Ensure.that(getter != null, "getter != null");
 
@@ -74,6 +76,7 @@ public interface Getter<T> extends TypedProperty, Function<T, Object> {
    * @return the decorated instance
    * @see IdentityObject
    */
+  @Deprecated // not sure this is safe
   static <T> Getter<T> identity(Getter<T> getter) {
     Ensure.that(getter != null, "getter != null");
 

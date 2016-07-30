@@ -21,7 +21,6 @@ import uk.kludje.property.PropertyType;
 import uk.kludje.property.TypedProperty;
 
 import java.util.Objects;
-import java.util.Arrays;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
@@ -72,46 +71,34 @@ import java.util.Arrays;
  * <p>Instances of this type are immutable and thread safe.</p>
  *
  * @param <T> the accessed type
+ * @see PropertyGetterList
  */
 public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
-  private static final ArrayMapper<TypedProperty> TYPED_PROPERTY_ARRAY_MAPPER = ArrayMapper.arrayMapper(TypedProperty.class);
-  private static final ArrayMapper<String> TYPED_STRING_ARRAY_MAPPER = ArrayMapper.arrayMapper(String.class);
+  private static final ArrayMapper<TypedProperty> TYPED_PROPERTY_ARRAYS = ArrayMapper.arrayMapper(TypedProperty.class);
+  private static final ArrayMapper<String> TYPED_STRING_ARRAYS = ArrayMapper.arrayMapper(String.class);
 
+  private final MetaConfig config;
   private final Class<T> type;
   private final TypedProperty[] props;
   private final String[] names;
-  private final InstanceCheckPolicy instancePolicy;
-  private final ObjectEqualsPolicy equalsPolicy;
-  private final ObjectHashCodePolicy hashcodePolicy;
+  private final MetaConfig.InstanceCheckPolicy instancePolicy;
+  private final MetaConfig.ObjectEqualsPolicy equalsPolicy;
+  private final MetaConfig.ObjectHashCodePolicy hashcodePolicy;
+  private final MetaConfig.EmptyNamePolicy emptyNamePolicy;
 
-  private Meta(Class<T> type,
+  private Meta(MetaConfig config,
+               Class<T> type,
                TypedProperty[] props,
                String[] names) {
+    this.config = config;
     this.type = type;
     this.props = props;
     this.names = names;
-    this.instancePolicy = InstanceCheckPolicy.sameClass();
-    this.equalsPolicy = MetaPolicies.DEFAULT_EQUALS_POLICY;
-    this.hashcodePolicy = MetaPolicies.DEFAULT_HASHCODE_POLICY;
-  }
-
-  private Meta(Meta<T> old, InstanceCheckPolicy policy) {
-    this.type = old.type;
-    this.props = old.props;
-    this.names = old.names;
-    this.instancePolicy = policy;
-    this.equalsPolicy = old.equalsPolicy;
-    this.hashcodePolicy = old.hashcodePolicy;
-  }
-
-  private Meta(Meta<T> old, ObjectEqualsPolicy equalsPolicy, ObjectHashCodePolicy hashPolicy) {
-    this.type = old.type;
-    this.props = old.props;
-    this.names = old.names;
-    this.instancePolicy = old.instancePolicy;
-    this.equalsPolicy = equalsPolicy;
-    this.hashcodePolicy = hashPolicy;
+    this.instancePolicy = config.instanceCheckPolicy;
+    this.equalsPolicy = config.objectEqualsPolicy;
+    this.hashcodePolicy = config.objectHashCodePolicy;
+    this.emptyNamePolicy = config.emptyNamePolicy;
   }
 
   @Override
@@ -119,10 +106,14 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
     Ensure.that(getter != null, "getter != null");
     Ensure.that(name != null, "name != null");
 
-    TypedProperty[] newProps = TYPED_PROPERTY_ARRAY_MAPPER.concat(old.props, getter);
-    String[] newNames = TYPED_STRING_ARRAY_MAPPER.concat(old.names, name);
+    if ("".equals(name)) {
+      name = emptyNamePolicy.toName(getter);
+    }
 
-    return new Meta<>(old.type, newProps, newNames);
+    TypedProperty[] newProps = TYPED_PROPERTY_ARRAYS.concat(old.props, getter);
+    String[] newNames = TYPED_STRING_ARRAYS.concat(old.names, name);
+
+    return new Meta<>(old.config, old.type, newProps, newNames);
   }
 
   /**
@@ -133,7 +124,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   public static <T> Meta<T> meta(Class<T> type) {
     Ensure.that(type != null, "type != null");
 
-    return new Meta<>(type, TYPED_PROPERTY_ARRAY_MAPPER.empty(), TYPED_STRING_ARRAY_MAPPER.empty());
+    return new Meta<>(MetaConfig.defaultConfig(), type, TYPED_PROPERTY_ARRAYS.empty(), TYPED_STRING_ARRAYS.empty());
   }
 
   /**
@@ -143,40 +134,28 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
    * @return a new instance
    */
   public static <T> Meta<T> meta() {
-    return new Meta<>(null, new TypedProperty[0], new String[0]);
+    return new Meta<>(MetaConfig.defaultConfig(), null, TYPED_PROPERTY_ARRAYS.empty(), TYPED_STRING_ARRAYS.empty());
   }
 
   /**
-   * This method sets the policy for equality checks. There are two approaches: {@code this.getType() == that.getType()}
-   * and {@code that instanceof AType}.
+   * Some aspects of the provided methods are caller-configurable.
+   * Use this method to alter these aspects of the configuration.
    *
-   * It is an error to invoke this method when {@link #meta()} is used to construct the type.
+   * If {@link #meta()} was used to instantiate the instance any changes to {@link MetaConfig.ObjectEqualsPolicy}
+   * will result in an error. Use {@link #meta(Class)} instead.
    *
-   * @param policy the type check policy
-   * @return a new instance with the new policy
+   * @param config the new configuration; must not be null
+   * @return a new instance with the new configuration
    */
-  public Meta<T> instanceCheckPolicy(InstanceCheckPolicy policy) {
-    Ensure.that(this.type != null, "this.type != null");
-    Ensure.that(policy != null, "policy != null");
+  public Meta<T> configure(MetaConfig config) {
+    Ensure.that(config != null, "config != null");
 
-    return new Meta<>(this, policy);
-  }
+    if (type == null && (config.instanceCheckPolicy != MetaConfig.defaultConfig().instanceCheckPolicy)) {
+      String message = "Not enough type information to guarantee equals contract. Use Meta.meta(Class) to construct this type instead.";
+      throw new AssertionError(message);
+    }
 
-  /**
-   * Redefines how equality and hashCodes work.
-   * Callers should take care that objects conform to the general equals/hashCode contract.
-   *
-   * @param equalsPolicy the new equals policy
-   * @param hashPolicy the new hashCode policy
-   * @return a new instance
-   * @see Object#equals(Object)
-   * @see Object#hashCode()
-   */
-  public Meta<T> equalsCheckPolicy(ObjectEqualsPolicy equalsPolicy, ObjectHashCodePolicy hashPolicy) {
-    Ensure.that(equalsPolicy != null, "equalsPolicy != null");
-    Ensure.that(hashPolicy != null, "hashPolicy != null");
-
-    return new Meta<>(this, equalsPolicy, hashPolicy);
+    return new Meta<>(config, this.type, this.props, this.names);
   }
 
   /**
@@ -482,103 +461,4 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   @Deprecated
   @FunctionalInterface
   public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {}
-
-  /**
-   * Functional interface for declaring the type checking policy for the {@link #equals(Object, Object)} method.
-   * It is unlikely that this interface will need to be implemented.
-   * Use the instances provided by the static methods.
-   *
-   * @see #instanceCheckPolicy(InstanceCheckPolicy)
-   * @see InstanceCheckPolicy#sameClass()
-   * @see InstanceCheckPolicy#instanceOf()
-   */
-  @FunctionalInterface
-  public interface InstanceCheckPolicy {
-
-    /**
-     * @param declaredType the meta type
-     * @param thatInstance the instance to check
-     * @return true if thatInstance is the "same" type as declaredType; false otherwise
-     */
-    boolean isSameType(Class<?> declaredType, Object thatInstance);
-
-    /**
-     * Checks that {@code declaredType == thatInstance.getClass()}.
-     * @return the check policy
-     */
-    static InstanceCheckPolicy sameClass() {
-      return MetaPolicies.SameClassCheck.INSTANCE;
-    }
-
-    /**
-     * Checks that {@code declaredType.isInstance(thatInstance)}
-     * @return the check policy
-     */
-    static InstanceCheckPolicy instanceOf() {
-      return MetaPolicies.InstanceOfCheck.INSTANCE;
-    }
-  }
-
-  /**
-   * Allows callers to configure how objects are considered equal.
-   */
-  @FunctionalInterface
-  public interface ObjectEqualsPolicy {
-
-    /**
-     * @param o1 an object
-     * @param o2 another object
-     * @return true if the objects are considered equal
-     */
-    boolean areEqual(Object o1, Object o2);
-
-    /**
-     * @return default object equals policy
-     * @see Objects#equals(Object, Object)
-     */
-    static ObjectEqualsPolicy defaultEqualsPolicy() {
-      return MetaPolicies.DEFAULT_EQUALS_POLICY;
-    }
-
-    /**
-     * @return a policy that performs shallow array equality on object and primitive arrays
-     * @see Arrays#equals(Object[], Object[])
-     * @see Arrays#equals(boolean[], boolean[])
-     * @see uk.kludje.property.Getter
-     */
-    static ObjectEqualsPolicy shallowArrayEqualsPolicy() {
-      return MetaPolicies.ArrayHandlingEqualsPolicy.INSTANCE;
-    }
-  }
-
-  /**
-   * Allows callers to configure how objects are translated to hash codes.
-   */
-  @FunctionalInterface
-  public interface ObjectHashCodePolicy {
-
-    /**
-     * @param o the object
-     * @return the hash code
-     */
-    int toHashcode(Object o);
-  }
-
-  /**
-   * @return regular object hashing implementation
-   * @see Objects#hashCode(Object)
-   */
-  static ObjectHashCodePolicy defaultHashCodePolicy() {
-    return MetaPolicies.DEFAULT_HASHCODE_POLICY;
-  }
-
-  /**
-   * @return a policy that performs shallow array equality on object and primitive arrays
-   * @see Arrays#hashCode(Object[])
-   * @see Arrays#hashCode(boolean[])
-   * @see uk.kludje.property.Getter
-   */
-  static ObjectHashCodePolicy shallowArrayHashCodePolicy() {
-    return MetaPolicies.ArrayHandlingHashCodePolicy.INSTANCE;
-  }
 }

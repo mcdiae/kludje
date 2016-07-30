@@ -17,16 +17,16 @@
 package uk.kludje.test;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import uk.kludje.Meta;
+import uk.kludje.MetaConfig;
 
 import static java.util.Arrays.asList;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class MetaNamedTest {
 
@@ -39,18 +39,18 @@ public class MetaNamedTest {
 
   @Test
   public void comboTest() {
-    Arrays.<Consumer<MetaPojo>>asList(
+    Stream.<Consumer<MetaPojo>>of(
       m -> m.a = true,
       m -> m.b = 'a',
       m -> m.c = -1,
       m -> m.d = -2,
       m -> m.e = 10,
-      m -> m.f = 5l,
+      m -> m.f = 5L,
       m -> m.g = 1.0f,
       m -> m.h = new Object(),
       m -> m.i = "",
       m -> m.j = 1.0
-    ).stream().forEach(c -> {
+    ).forEach(c -> {
       MetaPojo pojo = new MetaPojo();
       c.accept(pojo);
 
@@ -103,7 +103,7 @@ public class MetaNamedTest {
     .namedObject("h", $ -> $.h)
     .namedObject("i", $ -> $.i)
     .namedDouble("j", $ -> $.j)
-    .instanceCheckPolicy(Meta.InstanceCheckPolicy.instanceOf());
+    .configure(MetaConfig.defaultConfig().withInstanceofEqualsTypeCheck());
 
   private static class MetaPojo {
     boolean a;

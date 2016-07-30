@@ -19,10 +19,12 @@ package uk.kludje.test;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.Meta;
+import uk.kludje.MetaConfig;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class MetaTest {
   @Test
@@ -36,7 +38,7 @@ public class MetaTest {
   public void comboTest() {
     AtomicInteger count = new AtomicInteger();
 
-    Arrays.<Consumer<MetaPojo>>asList(
+    Stream.<Consumer<MetaPojo>>of(
         m -> m.a = true,
         m -> m.b = 'a',
         m -> m.c = -1,
@@ -47,7 +49,7 @@ public class MetaTest {
         m -> m.h = new Object(),
         m -> m.i = "",
         m -> m.j = 1.0
-    ).stream().forEach(c -> {
+    ).forEach(c -> {
       MetaPojo pojo = new MetaPojo();
       c.accept(pojo);
 
@@ -75,7 +77,7 @@ public class MetaTest {
       .floats($ -> $.g)
       .objects($ -> $.h, $ -> $.i)
       .doubles($ -> $.j)
-      .instanceCheckPolicy(Meta.InstanceCheckPolicy.instanceOf());
+      .configure(MetaConfig.defaultConfig().withInstanceofEqualsTypeCheck());
 
   private static class MetaPojo {
     boolean a;

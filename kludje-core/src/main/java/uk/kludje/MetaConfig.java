@@ -1,11 +1,17 @@
 package uk.kludje;
 
+import uk.kludje.property.Getter;
 import uk.kludje.property.TypedProperty;
 
 import java.util.Objects;
 
 /**
- * Created by user on 29/07/16.
+ * Allows more flexible configuration of {@link Meta} instances.
+ * Use the default configuration to create new configurations.
+ * Instances must be immutable and thread-safe.
+ *
+ * @see Meta#configure(MetaConfig)
+ * @see MetaConfig#defaultConfig()
  */
 public final class MetaConfig {
 
@@ -25,25 +31,57 @@ public final class MetaConfig {
     emptyNamePolicy = builder.emptyNamePolicy;
   }
 
+  /**
+   * The default configuration for {@link Meta} instances.
+   * It is not possible to alter the default configuration.
+   * Callers must generate new configurations using methods like
+   * {@link #withShallowArraySupport()} and then use {@link Meta#configure(MetaConfig)}
+   * to create a new instance with the given configuration.
+   *
+   * @return the default configuration
+   */
   public static MetaConfig defaultConfig() {
     return DEFAULT_POLICY;
   }
-
+  
+  /**
+   * Alters the config to use {@code thisType.isInstance(thatInstance)} instead of
+   * the default {@code thisType == thatInstance.getClass()}.
+   *
+   * Use this method if you need subtypes to be equal to the parent type {@code T}.
+   *
+   * @return a new config
+   * @see MetaConfig.InstanceCheckPolicy
+   */
   public MetaConfig withInstanceofEqualsTypeCheck() {
-    return new MetaConfigBuilder()
+    return new MetaConfigBuilder(this)
       .setInstanceCheckPolicy(MetaPolicy::isInstanceOfClass)
       .build();
   }
 
+  /**
+   * Alters the configuration to have basic array support.
+   * Where a {@link Getter} returns an array the configuration will support shallow equality, hash code and to string
+   * inspection to determine equivalence.
+   * Refer to the following methods for base implementation details:
+   * {@link java.util.Arrays#equals(boolean[], boolean[])};
+   * {@link java.util.Arrays#hashCode(boolean[])};
+   * {@link java.util.Arrays#toString(boolean[])}.
+   *
+   * @return a new configuration with array handling support
+   * @see Meta#equals(Object, Object)
+   * @see Meta#hashCode(Object)
+   * @see Meta#toString(Object)
+   */
   public MetaConfig withShallowArraySupport() {
-    return new MetaConfigBuilder()
+    return new MetaConfigBuilder(this)
       .setObjectEqualsPolicy(MetaPolicy::areEqualWithShallowArrayCheck)
       .setObjectHashCodePolicy(MetaPolicy::toHashcodeWithShallowArrayHandling)
       .setObjectToStringPolicy(MetaPolicy::toStringWithShallowArrayHandling)
       .build();
   }
 
-  public static final class MetaConfigBuilder {
+  private static final class MetaConfigBuilder {
 
     private InstanceCheckPolicy instanceCheckPolicy;
     private ObjectEqualsPolicy objectEqualsPolicy;
@@ -97,19 +135,27 @@ public final class MetaConfig {
     }
   }
 
+  /**
+   * Used at the start of {@link Meta#equals(Object, Object)} to check type equivalence.
+   * Instances must be immutable and thread-safe.
+   *
+   * @see MetaConfig#withInstanceofEqualsTypeCheck()
+   */
   @FunctionalInterface
   public interface InstanceCheckPolicy {
 
     /**
-     * @param declaredType the meta type
+     * @param thisType the meta type
      * @param thatInstance the instance to check
-     * @return true if thatInstance is the "same" type as declaredType; false otherwise
+     * @return true if thatInstance is the "same" type as thisType; false otherwise
      */
-    boolean isSameType(Class<?> declaredType, Object thatInstance);
+    boolean isSameType(Class<?> thisType, Object thatInstance);
   }
 
   /**
-   * Allows callers to configure how objects are considered equal.
+   * Allows configuration of how objects are considered equal.
+   * Used in {@link Meta#equals(Object, Object)} when {@link Getter#type()} == {@link uk.kludje.property.PropertyType#OBJECT}.
+   * Instances must be immutable and thread-safe.
    */
   @FunctionalInterface
   public interface ObjectEqualsPolicy {
@@ -123,7 +169,9 @@ public final class MetaConfig {
   }
 
   /**
-   * Allows callers to configure how objects are translated to hash codes.
+   * Allows configuration of how an object's hash code is generated.
+   * Used in {@link Meta#hashCode(Object)} when {@link Getter#type()} == {@link uk.kludje.property.PropertyType#OBJECT}.
+   * Instances must be immutable and thread-safe.
    */
   @FunctionalInterface
   public interface ObjectHashCodePolicy {
@@ -135,13 +183,26 @@ public final class MetaConfig {
     int toHashcode(Object o);
   }
 
+  /**
+   * Allows configuration of how objects are converted to strings.
+   * Used in {@link Meta#toString(Object)} when {@link Getter#type()} == {@link uk.kludje.property.PropertyType#OBJECT}.
+   * Instances must be immutable and thread-safe.
+   */
   @FunctionalInterface
   public interface ObjectToStringPolicy {
     String toString(Object o);
   }
 
+  /**
+   * Allows alternative interpretation of a typed property that has not been formally named.
+   * Instances must be immutable and thread-safe.
+   */
   @FunctionalInterface
   public interface EmptyNamePolicy {
+    /**
+     * @param property the getter
+     * @return a String; must not be null
+     */
     String toName(TypedProperty property);
   }
 }

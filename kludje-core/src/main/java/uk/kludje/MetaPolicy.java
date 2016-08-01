@@ -52,8 +52,8 @@ final class MetaPolicy {
     return declaredType == thatInstance.getClass();
   }
 
-  public static boolean isInstanceOfClass(Class<?> declaredType, Object thatInstance) {
-    return declaredType.isInstance(thatInstance);
+  public static boolean isInstanceOfClass(Class<?> thisType, Object thatInstance) {
+    return thisType.isInstance(thatInstance);
   }
 
   public static boolean areEqualWithShallowArrayCheck(Object o1, Object o2) {

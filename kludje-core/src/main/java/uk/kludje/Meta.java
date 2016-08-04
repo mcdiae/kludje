@@ -18,9 +18,12 @@ package uk.kludje;
 
 import uk.kludje.property.PropertyGetterList;
 import uk.kludje.property.PropertyType;
+import static uk.kludje.property.PropertyType.*;
 import uk.kludje.property.TypedProperty;
 
+import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
@@ -85,6 +88,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   private final MetaConfig.InstanceCheckPolicy instancePolicy;
   private final MetaConfig.ObjectEqualsPolicy equalsPolicy;
   private final MetaConfig.ObjectHashCodePolicy hashcodePolicy;
+  private final MetaConfig.ObjectToStringPolicy toStringPolicy;
   private final MetaConfig.EmptyNamePolicy emptyNamePolicy;
 
   private Meta(MetaConfig config,
@@ -95,10 +99,11 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
     this.type = type;
     this.props = props;
     this.names = names;
-    this.instancePolicy = config.instanceCheckPolicy;
-    this.equalsPolicy = config.objectEqualsPolicy;
-    this.hashcodePolicy = config.objectHashCodePolicy;
-    this.emptyNamePolicy = config.emptyNamePolicy;
+    this.instancePolicy = config.getInstanceCheckPolicy();
+    this.equalsPolicy = config.getObjectEqualsPolicy();
+    this.hashcodePolicy = config.getObjectHashCodePolicy();
+    this.toStringPolicy = config.getObjectToStringPolicy();
+    this.emptyNamePolicy = config.getEmptyNamePolicy();
   }
 
   @Override
@@ -150,7 +155,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   public Meta<T> configure(MetaConfig config) {
     Ensure.that(config != null, "config != null");
 
-    if (type == null && (config.instanceCheckPolicy != MetaConfig.defaultConfig().instanceCheckPolicy)) {
+    if (type == null && (config.getInstanceCheckPolicy() != MetaConfig.defaultConfig().getInstanceCheckPolicy())) {
       String message = "Not enough type information to guarantee equals contract. Use Meta.meta(Class) to construct this type instead.";
       throw new AssertionError(message);
     }
@@ -182,6 +187,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
     T other = (T) any;
     for (TypedProperty p : props) {
       PropertyType type = p.type();
+
       switch (type) {
         case INT:
           uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
@@ -240,7 +246,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
           }
           break;
         default:
-          throw new AssertionError("Unsupported PropertyType: " + type);
+          throw new AssertionError("Unsupported PropertyType");
       }
     }
     return true;
@@ -264,6 +270,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
       result = result * prime;
 
       PropertyType type = p.type();
+
       switch (type) {
         case INT:
           uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
@@ -346,7 +353,8 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
           break;
         case OBJECT:
           uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
-          buf.append(g.get(t));
+          String str = this.toStringPolicy.toString(g.apply(t));
+          buf.append(str);
           break;
         case BOOLEAN:
           uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
@@ -461,4 +469,5 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   @Deprecated
   @FunctionalInterface
   public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {}
+
 }

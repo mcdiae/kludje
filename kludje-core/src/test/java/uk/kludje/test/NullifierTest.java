@@ -16,7 +16,7 @@
 
 package uk.kludje.test;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.kludje.Nullifier;
 
@@ -28,11 +28,11 @@ public class NullifierTest {
 
     // not null
     String str = nullifier.apply("foo");
-    Assert.assertEquals("foofoo", str);
+    assertEquals("foofoo", str);
 
     // null
     String nullStr = nullifier.apply(null);
-    Assert.assertNull(nullStr);
+    assertNull(nullStr);
   }
 
   @Test
@@ -45,7 +45,7 @@ public class NullifierTest {
     // invoke
     D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
-    Assert.assertEquals(a.b.c.d, d);
+    assertEquals(a.b.c.d, d);
   }
 
   @Test
@@ -55,7 +55,7 @@ public class NullifierTest {
     // invoke
     D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
-    Assert.assertNull(d);
+    assertNull(d);
   }
 
   @Test
@@ -66,7 +66,7 @@ public class NullifierTest {
     // invoke
     D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
-    Assert.assertNull(d);
+    assertNull(d);
   }
 
   @Test
@@ -79,7 +79,7 @@ public class NullifierTest {
     // invoke
     C c = Nullifier.span(A::getB, B::getC).apply(a);
     // verify
-    Assert.assertEquals(a.b.c, c);
+    assertEquals(a.b.c, c);
   }
 
   @Test
@@ -93,7 +93,22 @@ public class NullifierTest {
     // invoke
     E e = Nullifier.span(A::getB, B::getC, C::getD, D::getE).apply(a);
     // verify
-    Assert.assertEquals(a.b.c.d.e, e);
+    assertEquals(a.b.c.d.e, e);
+  }
+
+  @Test
+  public void testSpan5() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    a.b.c.d.e.f = new F();
+    // invoke
+    F f = Nullifier.span(A::getB, B::getC, C::getD, D::getE, E::getF).apply(a);
+    // verify
+    assertEquals(a.b.c.d.e.f, f);
   }
 
   @Test
@@ -106,7 +121,7 @@ public class NullifierTest {
     // invoke
     boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
     // verify
-    Assert.assertFalse(state);
+    assertFalse(state);
   }
 
   @Test
@@ -114,7 +129,7 @@ public class NullifierTest {
     // invoke
     boolean state = Nullifier.isNull(null, A::getB, B::getC, C::getD);
     // verify
-    Assert.assertTrue(state);
+    assertTrue(state);
   }
 
   @Test
@@ -125,22 +140,32 @@ public class NullifierTest {
     // invoke
     boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
     // verify
-    Assert.assertTrue(state);
+    assertTrue(state);
   }
 
   @Test
-  public void testNull1() {
+  public void testNotNull1() {
     // setup
     A a = new A();
     a.b = new B();
     // invoke
     boolean state = Nullifier.isNull(a, A::getB);
     // verify
-    Assert.assertFalse(state);
+    assertFalse(state);
   }
 
   @Test
-  public void testNull2() {
+  public void testNull1() {
+    // setup
+    A a = new A();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB);
+    // verify
+    assertTrue(state);
+  }
+
+  @Test
+  public void testNotNull2() {
     // setup
     A a = new A();
     a.b = new B();
@@ -149,11 +174,47 @@ public class NullifierTest {
     // invoke
     boolean state = Nullifier.isNull(a, A::getB, B::getC);
     // verify
-    Assert.assertFalse(state);
+    assertFalse(state);
   }
 
   @Test
-  public void testNull4() {
+  public void testNull2() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC);
+    // verify
+    assertTrue(state);
+  }
+
+  @Test
+  public void testNotNull3() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
+    // verify
+    assertFalse(state);
+  }
+
+  @Test
+  public void testNull3() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD);
+    // verify
+    assertTrue(state);
+  }
+
+  @Test
+  public void testNotNull4() {
     // setup
     A a = new A();
     a.b = new B();
@@ -163,7 +224,49 @@ public class NullifierTest {
     // invoke
     boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD, D::getE);
     // verify
-    Assert.assertFalse(state);
+    assertFalse(state);
+  }
+
+  @Test
+  public void testNull4() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD, D::getE);
+    // verify
+    assertTrue(state);
+  }
+
+  @Test
+  public void testNotNull5() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    a.b.c.d.e.f = new F();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD, D::getE, E::getF);
+    // verify
+    assertFalse(state);
+  }
+
+  @Test
+  public void testNull5() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    // invoke
+    boolean state = Nullifier.isNull(a, A::getB, B::getC, C::getD, D::getE, E::getF);
+    // verify
+    assertTrue(state);
   }
 
   /** Inheritance tests check for generics compilation problems. */
@@ -175,7 +278,7 @@ public class NullifierTest {
     // invoke
     CharSequence foo = nullifier.apply("foo");
     // verify
-    Assert.assertEquals("foo", foo);
+    assertEquals("foo", foo);
   }
 
   @Test
@@ -187,7 +290,7 @@ public class NullifierTest {
     // invoke
     CharSequence foo = nullifier.apply("foo");
     // verify
-    Assert.assertEquals("foo", foo);
+    assertEquals("foo", foo);
   }
 
   @Test
@@ -200,7 +303,7 @@ public class NullifierTest {
     // invoke
     CharSequence foo = nullifier.apply("foo");
     // verify
-    Assert.assertEquals("foo", foo);
+    assertEquals("foo", foo);
   }
 
   @Test
@@ -211,7 +314,7 @@ public class NullifierTest {
     // invoke
     D d = Nullifier.span(A::getB, B::getC, C::getD).applyOr(a, expected);
     // verify
-    Assert.assertEquals(expected, d);
+    assertEquals(expected, d);
   }
 
   @Test
@@ -221,7 +324,7 @@ public class NullifierTest {
     // invoke
     D d = Nullifier.span(A::getB, B::getC, C::getD).applyOrGet(a, D::new);
     // verify
-    Assert.assertNotNull(d);
+    assertNotNull(d);
   }
 
   private CharSequence toCharSequence(Object cs) {
@@ -256,5 +359,10 @@ public class NullifierTest {
     }
   }
 
-  static class E {}
+  static class E {
+    F f;
+    F getF() { return f; }
+  }
+
+  static class F {}
 }

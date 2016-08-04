@@ -17,11 +17,11 @@ public final class MetaConfig {
 
   private static final MetaConfig DEFAULT_POLICY = new MetaConfigBuilder().build();
 
-  final InstanceCheckPolicy instanceCheckPolicy;
-  final ObjectEqualsPolicy objectEqualsPolicy;
-  final ObjectHashCodePolicy objectHashCodePolicy;
-  final ObjectToStringPolicy objectToStringPolicy;
-  final EmptyNamePolicy emptyNamePolicy;
+  private final InstanceCheckPolicy instanceCheckPolicy;
+  private final ObjectEqualsPolicy objectEqualsPolicy;
+  private final ObjectHashCodePolicy objectHashCodePolicy;
+  private final ObjectToStringPolicy objectToStringPolicy;
+  private final EmptyNamePolicy emptyNamePolicy;
 
   private MetaConfig(MetaConfigBuilder builder) {
     instanceCheckPolicy = builder.instanceCheckPolicy;
@@ -43,7 +43,70 @@ public final class MetaConfig {
   public static MetaConfig defaultConfig() {
     return DEFAULT_POLICY;
   }
-  
+
+  /**
+   * Called at the start of {@link Meta#equals(Object, Object)} to ensure that the 2nd argument is the same type
+   * as the first before it is cast to that type.
+   *
+   * The default policy returns true if {@code this.getClass() == that.getClass()}.
+   *
+   * @return the policy
+   * @see InstanceCheckPolicy
+   * @see #withInstanceofEqualsTypeCheck()
+   */
+  public InstanceCheckPolicy getInstanceCheckPolicy() {
+    return instanceCheckPolicy;
+  }
+
+  /**
+   * Used in {@link Meta#equals(Object, Object)} for any return value from {@link Getter} to check whether
+   * values are equal.
+   *
+   * The default policy uses {@link Objects#equals(Object, Object)}.
+   *
+   * @return the policy
+   * @see #withShallowArraySupport()
+   */
+  public ObjectEqualsPolicy getObjectEqualsPolicy() {
+    return objectEqualsPolicy;
+  }
+
+  /**
+   * Used in {@link Meta#hashCode(Object)} for any return value from {@link Getter}.
+   *
+   * The default policy uses {@link Objects#hashCode(Object)}.
+   *
+   * @return the policy
+   * @see #withShallowArraySupport()
+   */
+  public ObjectHashCodePolicy getObjectHashCodePolicy() {
+    return objectHashCodePolicy;
+  }
+
+  /**
+   * Used in {@link Meta#toString(Object)} for any return value from {@link Getter}.
+   *
+   * The default policy uses {@link Objects#toString(Object)}.
+   *
+   * @return the policy
+   * @see #withShallowArraySupport()
+   */
+  public ObjectToStringPolicy getObjectToStringPolicy() {
+    return objectToStringPolicy;
+  }
+
+  /**
+   * Used during creation of a {@link Meta} instance to infer names from {@link TypedProperty} getter instances
+   * when the empty string is provided as the property name.
+   *
+   * The default policy returns the empty string.
+   *
+   * @return the policy
+   */
+  public EmptyNamePolicy getEmptyNamePolicy() {
+    return emptyNamePolicy;
+  }
+
   /**
    * Alters the config to use {@code thisType.isInstance(thatInstance)} instead of
    * the default {@code thisType == thatInstance.getClass()}.
@@ -54,9 +117,7 @@ public final class MetaConfig {
    * @see MetaConfig.InstanceCheckPolicy
    */
   public MetaConfig withInstanceofEqualsTypeCheck() {
-    return new MetaConfigBuilder(this)
-      .setInstanceCheckPolicy(MetaPolicy::isInstanceOfClass)
-      .build();
+    return withInstanceCheck(MetaPolicy::isInstanceOfClass);
   }
 
   /**
@@ -74,10 +135,73 @@ public final class MetaConfig {
    * @see Meta#toString(Object)
    */
   public MetaConfig withShallowArraySupport() {
+    return withObjectEqualsChecks(MetaPolicy::areEqualWithShallowArrayCheck, MetaPolicy::toHashcodeWithShallowArrayHandling)
+      .withObjectToString(MetaPolicy::toStringWithShallowArrayHandling);
+  }
+
+  /**
+   * Allows consumers to set special handling for how {@link Meta#equals(Object, Object)} determines whether
+   * the 2nd argument is the same type as the first.
+   *
+   * @param policy a non-null policy
+   * @return the new config
+   * @see #withInstanceofEqualsTypeCheck()
+   */
+  public MetaConfig withInstanceCheck(InstanceCheckPolicy policy) {
+    Ensure.that(policy != null, "policy != null");
+
     return new MetaConfigBuilder(this)
-      .setObjectEqualsPolicy(MetaPolicy::areEqualWithShallowArrayCheck)
-      .setObjectHashCodePolicy(MetaPolicy::toHashcodeWithShallowArrayHandling)
-      .setObjectToStringPolicy(MetaPolicy::toStringWithShallowArrayHandling)
+      .setInstanceCheckPolicy(policy)
+      .build();
+  }
+
+  /**
+   * Allows consumers to set special handling for {@link Getter#get(Object)} responses for
+   * {@link Meta#equals(Object, Object)}, {@link Meta#hashCode(Object).
+   *
+   * @param equalsPolicy a non-null equals policy
+   * @param hashCodePolicy a non-null hash policy
+   * @return the new config
+   * @see #withShallowArraySupport()
+   */
+  public MetaConfig withObjectEqualsChecks(ObjectEqualsPolicy equalsPolicy, ObjectHashCodePolicy hashCodePolicy) {
+    Ensure.that(equalsPolicy != null, "equalsPolicy != null");
+    Ensure.that(hashCodePolicy != null, "hashCodePolicy != null");
+
+    return new MetaConfigBuilder(this)
+      .setObjectEqualsPolicy(equalsPolicy)
+      .setObjectHashCodePolicy(hashCodePolicy)
+      .build();
+  }
+
+  /**
+   * Allows consumers to set special handling for {@link Getter#get(Object)} responses for
+   * {@link Meta#toString(Object)}.
+   *
+   * @param stringPolicy a non-null to string policy
+   * @return the new config
+   * @see #withShallowArraySupport()
+   */
+  public MetaConfig withObjectToString(ObjectToStringPolicy stringPolicy) {
+    Ensure.that(stringPolicy != null, "stringPolicy != null");
+
+    return new MetaConfigBuilder(this)
+      .setObjectToStringPolicy(stringPolicy)
+      .build();
+  }
+
+  /**
+   * There is no requirement for creators of {@link Meta} instances to name all properties.
+   * This method can be used to infer a name from getter types.
+   *
+   * @param policy a non-null policy
+   * @return the new config
+   */
+  public MetaConfig withEmptyNamePolicy(EmptyNamePolicy policy) {
+    Ensure.that(policy != null, "policy != null");
+
+    return new MetaConfigBuilder(this)
+      .setEmptyNamePolicy(policy)
       .build();
   }
 
@@ -105,31 +229,31 @@ public final class MetaConfig {
       emptyNamePolicy = defaultInstance.emptyNamePolicy;
     }
 
-    public MetaConfig build() {
+    MetaConfig build() {
       return new MetaConfig(this);
     }
 
-    public MetaConfigBuilder setInstanceCheckPolicy(InstanceCheckPolicy instanceCheckPolicy) {
+    MetaConfigBuilder setInstanceCheckPolicy(InstanceCheckPolicy instanceCheckPolicy) {
       this.instanceCheckPolicy = instanceCheckPolicy;
       return this;
     }
 
-    public MetaConfigBuilder setObjectHashCodePolicy(ObjectHashCodePolicy objectHashCodePolicy) {
+    MetaConfigBuilder setObjectHashCodePolicy(ObjectHashCodePolicy objectHashCodePolicy) {
       this.objectHashCodePolicy = objectHashCodePolicy;
       return this;
     }
 
-    public MetaConfigBuilder setObjectToStringPolicy(ObjectToStringPolicy objectToStringPolicy) {
+    MetaConfigBuilder setObjectToStringPolicy(ObjectToStringPolicy objectToStringPolicy) {
       this.objectToStringPolicy = objectToStringPolicy;
       return this;
     }
 
-    public MetaConfigBuilder setEmptyNamePolicy(EmptyNamePolicy emptyNamePolicy) {
+    MetaConfigBuilder setEmptyNamePolicy(EmptyNamePolicy emptyNamePolicy) {
       this.emptyNamePolicy = emptyNamePolicy;
       return this;
     }
 
-    public MetaConfigBuilder setObjectEqualsPolicy(ObjectEqualsPolicy objectEqualsPolicy) {
+    MetaConfigBuilder setObjectEqualsPolicy(ObjectEqualsPolicy objectEqualsPolicy) {
       this.objectEqualsPolicy = objectEqualsPolicy;
       return this;
     }

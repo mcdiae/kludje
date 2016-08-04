@@ -16,7 +16,7 @@ limitations under the License.
 
 package uk.kludje.test;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.kludje.Exceptions;
 
@@ -26,7 +26,7 @@ public class ExceptionsTest {
 
   @Test(expected = IOException.class)
   public void testThrowChecked() {
-    Exceptions.throwChecked(new IOException("expected"));
+    throw Exceptions.throwChecked(new IOException("expected"));
   }
 
   @Test
@@ -40,7 +40,7 @@ public class ExceptionsTest {
     } catch (IOException | ClassNotFoundException e) {
       gotIt = true;
     }
-    Assert.assertTrue(gotIt);
+    assertTrue(gotIt);
   }
 
   @Test
@@ -54,6 +54,25 @@ public class ExceptionsTest {
     } catch (IOException | ClassNotFoundException e) {
       gotIt = true;
     }
-    Assert.assertTrue(gotIt);
+    assertTrue(gotIt);
+  }
+
+  @Test
+  public void testExpectedDoesNothing() {
+    boolean gotIt = false;
+    try {
+      Exceptions
+        .<IOException>expected()
+        .<ClassNotFoundException>expected();
+    } catch (IOException | ClassNotFoundException e) {
+      gotIt = true;
+    }
+    assertFalse(gotIt);
+  }
+
+  @Test
+  public void testLoadMarker() {
+    // really just for coverage's sake
+    assertTrue(Error.class.isAssignableFrom(Exceptions.UncheckedMarker.class));
   }
 }

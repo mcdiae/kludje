@@ -20,13 +20,28 @@ import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.Meta;
 import uk.kludje.MetaConfig;
+import uk.kludje.property.Getter;
+import uk.kludje.property.PropertyType;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class MetaTest {
+
+  @Test(expected = Error.class)
+  public void testNoNullClass() {
+    Meta.meta(null);
+  }
+
+  @Test
+  public void testBasicEquality() {
+    MetaPojo pojo = new MetaPojo();
+    Assert.assertTrue(pojo.equals(pojo));
+    Assert.assertFalse(pojo.equals(null));
+    Assert.assertFalse(pojo.equals(new Object()));
+  }
+
   @Test
   public void basicTest() {
     Assert.assertEquals(new MetaPojo(), new MetaPojo());
@@ -44,7 +59,7 @@ public class MetaTest {
         m -> m.c = -1,
         m -> m.d = -2,
         m -> m.e = 10,
-        m -> m.f = 5l,
+        m -> m.f = 5L,
         m -> m.g = 1.0f,
         m -> m.h = new Object(),
         m -> m.i = "",
@@ -65,6 +80,43 @@ public class MetaTest {
 
     Assert.assertEquals(base, sub);
     Assert.assertEquals(sub, base);
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testBadGetter() {
+    Getter<MetaPojo> badGetter = new Getter<MetaPojo>() {
+      @Override
+      public Object get(MetaPojo metaPojo) {
+        return null;
+      }
+
+      @Override
+      public PropertyType type() {
+        return null;
+      }
+    };
+
+    Meta<MetaPojo> meta = Meta.<MetaPojo>meta()
+      .objects(badGetter);
+
+    meta.toString(new MetaPojo());
+  }
+
+  @Test(expected = Error.class)
+  public void testNullConfig() {
+    Meta.meta(Object.class).configure(null);
+  }
+
+  @Test(expected = Error.class)
+  public void testGuardedAgainstNullGetter() {
+    Meta.meta(MetaPojo.class)
+      .objects(pojo -> pojo.a, null);
+  }
+
+  @Test(expected = Error.class)
+  public void testGuardedAgainstNullName() {
+    Meta.meta(MetaPojo.class)
+      .namedObject(null, pojo -> pojo.a);
   }
 
   private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)

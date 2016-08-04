@@ -85,10 +85,6 @@ public final class Exceptions {
    * @throws T the exception
    */
   public static <T extends Throwable> ExceptionDeclarer expected() throws T {
-    if (LOG.isLoggable(Level.FINEST)) {
-      LOG.finest("expecting exception");
-    }
-
     return ExceptionDeclarer.INSTANCE;
   }
 

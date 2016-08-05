@@ -16,7 +16,7 @@
 
 package uk.kludje.test;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.kludje.Meta;
 import uk.kludje.MetaConfig;
@@ -37,16 +37,16 @@ public class MetaTest {
   @Test
   public void testBasicEquality() {
     MetaPojo pojo = new MetaPojo();
-    Assert.assertTrue(pojo.equals(pojo));
-    Assert.assertFalse(pojo.equals(null));
-    Assert.assertFalse(pojo.equals(new Object()));
+    assertTrue(pojo.equals(pojo));
+    assertFalse(pojo.equals(null));
+    assertFalse(pojo.equals(new Object()));
   }
 
   @Test
   public void basicTest() {
-    Assert.assertEquals(new MetaPojo(), new MetaPojo());
-    Assert.assertEquals(new MetaPojo().hashCode(), new MetaPojo().hashCode());
-    Assert.assertEquals(new MetaPojo().toString(), new MetaPojo().toString());
+    assertEquals(new MetaPojo(), new MetaPojo());
+    assertEquals(new MetaPojo().hashCode(), new MetaPojo().hashCode());
+    assertEquals(new MetaPojo().toString(), new MetaPojo().toString());
   }
 
   @Test
@@ -68,8 +68,8 @@ public class MetaTest {
       MetaPojo pojo = new MetaPojo();
       c.accept(pojo);
 
-      Assert.assertNotEquals("hint=" + count.getAndIncrement(), pojo, new MetaPojo());
-      Assert.assertNotEquals(pojo.toString(), new MetaPojo().toString());
+      assertNotEquals("hint=" + count.getAndIncrement(), pojo, new MetaPojo());
+      assertNotEquals(pojo.toString(), new MetaPojo().toString());
     });
   }
 
@@ -78,8 +78,8 @@ public class MetaTest {
     MetaPojo base = new MetaPojo();
     MetaPojo sub = new MetaPojo() {};
 
-    Assert.assertEquals(base, sub);
-    Assert.assertEquals(sub, base);
+    assertEquals(base, sub);
+    assertEquals(sub, base);
   }
 
   @Test(expected = NullPointerException.class)
@@ -117,6 +117,14 @@ public class MetaTest {
   public void testGuardedAgainstNullName() {
     Meta.meta(MetaPojo.class)
       .namedObject(null, pojo -> pojo.a);
+  }
+
+  @Test
+  public void testGetProperties() {
+    for (int i = 0;  i < META.size(); i++) {
+      assertNotNull(META.nameAt(i));
+      assertNotNull(META.propertyAt(i));
+    }
   }
 
   private static final Meta<MetaPojo> META = Meta.meta(MetaPojo.class)

@@ -28,6 +28,7 @@ import java.util.function.Consumer;
  */
 @Deprecated
 public class DeprecatedMetaTest {
+
   @Test
   public void basicTest() {
     Assert.assertEquals(new MetaPojo(), new MetaPojo());

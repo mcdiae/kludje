@@ -60,36 +60,25 @@ final class MetaPolicy {
     if (o1 == o2) {
       return true;
     }
-    if (o1 == null) {
-      return o2 == null;
-    }
-    if (o2 == null) {
+    if (o1 == null || o2 == null) {
       return false;
     }
 
-    if (o1.getClass().isArray()) {
-      if (o2.getClass().isArray()) {
-        if (o1 instanceof Object[] && o2 instanceof Object[]) {
-          // object array
-          Object[] a1 = (Object[]) o1;
-          Object[] a2 = (Object[]) o2;
-          return Arrays.equals(a1, a2);
-        } else if (o1.getClass() == o2.getClass()) {
-          // primitive array
-          return PRIMITIVE_ARRAY_EQUALS_CHECKS.get(o1.getClass())
-            .test(o1, o2);
-        } else {
-          // arrays of different types
-          return false;
-        }
-      } else {
-        return false;
-      }
+    if (o1 instanceof Object[] && o2 instanceof Object[]) {
+      // object array
+      Object[] a1 = (Object[]) o1;
+      Object[] a2 = (Object[]) o2;
+      return Arrays.equals(a1, a2);
+    } else if (o1.getClass().isArray() && o2.getClass().isArray() && o1.getClass() == o2.getClass()) {
+      // primitive array
+      return PRIMITIVE_ARRAY_EQUALS_CHECKS.get(o1.getClass())
+        .test(o1, o2);
     }
 
     return Objects.equals(o1, o2);
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> BiPredicate<Object, Object> primitiveEqualsCheck(BiPredicate<T, T> predicate) {
     return (BiPredicate<Object, Object>) predicate;
   }
@@ -98,10 +87,10 @@ final class MetaPolicy {
     if (o == null) {
       return 0;
     }
-    if (o.getClass().isArray()) {
-      if (o instanceof Object[]) {
-        return Arrays.hashCode((Object[]) o);
-      }
+
+    if (o instanceof Object[]) {
+      return Arrays.hashCode((Object[]) o);
+    } else if (o.getClass().isArray()) {
       return PRIMITIVE_ARRAY_HASHERS.get(o.getClass())
         .applyAsInt(o);
     }
@@ -109,6 +98,7 @@ final class MetaPolicy {
     return o.hashCode();
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> ToIntFunction<Object> primitiveHashcode(ToIntFunction<T> fn) {
     return (ToIntFunction<Object>) fn;
   }
@@ -129,6 +119,7 @@ final class MetaPolicy {
     return o.toString();
   }
 
+  @SuppressWarnings("unchecked")
   private static <T> Function<Object, String> toStringFunction(Function<T, String> fn) {
     return (Function<Object, String>) fn;
   }

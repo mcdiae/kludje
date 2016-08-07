@@ -17,6 +17,7 @@
 package uk.kludje.testcontract.io;
 
 import uk.kludje.testcontract.ContractViolationException;
+
 import java.io.*;
 
 public final class SerializableContract {

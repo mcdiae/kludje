@@ -18,12 +18,9 @@ package uk.kludje;
 
 import uk.kludje.property.PropertyGetterList;
 import uk.kludje.property.PropertyType;
-import static uk.kludje.property.PropertyType.*;
 import uk.kludje.property.TypedProperty;
 
-import java.util.EnumSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>

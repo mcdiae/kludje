@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 
-
-
-
-
-
-
-
-
-
-
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
@@ -185,6 +175,12 @@ project(':kludje-array') {
 
   dependencies {
     testCompile project(':kludje-testcontract')
+  }
+}
+
+project(':kludje-infer') {
+  dependencies {
+    compile project(':kludje-core')
   }
 }
 

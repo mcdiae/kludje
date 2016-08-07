@@ -16,10 +16,9 @@
 
 package uk.kludje.collect.array;
 
+import uk.kludje.collect.MutableSparseArray;
 import uk.kludje.collect.fixed.FixedList;
 import uk.kludje.collect.fixed.FixedSet;
-import uk.kludje.collect.MutableSparseArray;
-import uk.kludje.collect.SparseArray;
 
 import java.util.*;
 

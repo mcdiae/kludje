@@ -16,9 +16,11 @@
 
 package uk.kludje.testcontract.util.collection;
 
-import static uk.kludje.testcontract.ContractViolationException.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 
-import java.util.*;
+import static uk.kludje.testcontract.ContractViolationException.assertThat;
 
 public class CollectionContainsContract {
 

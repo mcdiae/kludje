@@ -16,7 +16,10 @@
 
 package uk.kludje.collect.array;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Set;
 
 @Deprecated
 final class ArrayBackedMutableComparatorSet<E> extends AbstractArrayCollection<E> implements Set<E> {

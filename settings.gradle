@@ -4,4 +4,5 @@ include 'kludje-testkit'
 include 'kludje-experimental'
 include 'kludje-testcontract'
 include 'kludje-array'
+include 'kludje-infer'
 

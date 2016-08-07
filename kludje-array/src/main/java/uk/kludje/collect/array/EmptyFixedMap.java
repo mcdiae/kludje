@@ -20,7 +20,7 @@ import uk.kludje.collect.fixed.FixedCollection;
 import uk.kludje.collect.fixed.FixedMap;
 import uk.kludje.collect.fixed.FixedSet;
 
-import java.util.*;
+import java.util.AbstractMap;
 
 /**
  * Created by user on 28/12/15.

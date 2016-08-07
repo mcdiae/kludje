@@ -1,6 +1,7 @@
 package uk.kludje.test.sample;
 
 import uk.kludje.Exceptions;
+
 import java.io.IOException;
 
 public class ExceptionPropagator {

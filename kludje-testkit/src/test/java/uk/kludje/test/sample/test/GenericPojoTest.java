@@ -1,8 +1,9 @@
 package uk.kludje.test.sample.test;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import uk.kludje.test.GenericPojo;
+
+import static org.junit.Assert.assertEquals;
 
 public class GenericPojoTest {
 

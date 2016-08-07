@@ -17,7 +17,6 @@
 package uk.kludje.array;
 
 import java.util.Objects;
-import java.util.function.BiPredicate;
 
 /**
  * Linear search algorithms for select types.

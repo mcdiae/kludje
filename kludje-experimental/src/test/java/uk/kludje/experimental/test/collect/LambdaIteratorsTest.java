@@ -18,12 +18,13 @@ package uk.kludje.experimental.test.collect;
 
 import org.junit.Assert;
 import org.junit.Test;
-import static uk.kludje.experimental.collect.LambdaIterators.*;
 
 import java.util.ArrayList;
-import static java.util.Arrays.asList;
 import java.util.Iterator;
 import java.util.List;
+
+import static java.util.Arrays.asList;
+import static uk.kludje.experimental.collect.LambdaIterators.*;
 
 public class LambdaIteratorsTest {
 

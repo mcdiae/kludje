@@ -18,7 +18,7 @@ package uk.kludje.collect.array;
 
 import uk.kludje.collect.fixed.FixedList;
 
-import java.util.*;
+import java.util.AbstractList;
 
 /**
  * Created by user on 15/12/15.

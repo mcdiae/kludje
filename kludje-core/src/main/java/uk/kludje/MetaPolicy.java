@@ -1,16 +1,29 @@
+/*
+Copyright 2016 McDowell
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 package uk.kludje;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
 final class MetaPolicy {
 
-  private static final Map<Class<?>, BiPredicate<Object, Object>> PRIMITIVE_ARRAY_EQUALS_CHECKS = new HashMap<>();
+  private static final Map<Class<?>, BiPredicate<Object, Object>> PRIMITIVE_ARRAY_EQUALS_CHECKS = new IdentityHashMap<>();
   static {
     PRIMITIVE_ARRAY_EQUALS_CHECKS.put(boolean[].class, MetaPolicy.<boolean[]>primitiveEqualsCheck(Arrays::equals));
     PRIMITIVE_ARRAY_EQUALS_CHECKS.put(char[].class, MetaPolicy.<char[]>primitiveEqualsCheck(Arrays::equals));
@@ -22,7 +35,7 @@ final class MetaPolicy {
     PRIMITIVE_ARRAY_EQUALS_CHECKS.put(double[].class, MetaPolicy.<double[]>primitiveEqualsCheck(Arrays::equals));
   }
 
-  private static final Map<Class<?>, ToIntFunction<Object>> PRIMITIVE_ARRAY_HASHERS = new HashMap<>();
+  private static final Map<Class<?>, ToIntFunction<Object>> PRIMITIVE_ARRAY_HASHERS = new  IdentityHashMap<>();
   static {
     PRIMITIVE_ARRAY_HASHERS.put(boolean[].class, MetaPolicy.<boolean[]>primitiveHashcode(Arrays::hashCode));
     PRIMITIVE_ARRAY_HASHERS.put(char[].class, MetaPolicy.<char[]>primitiveHashcode(Arrays::hashCode));
@@ -34,7 +47,7 @@ final class MetaPolicy {
     PRIMITIVE_ARRAY_HASHERS.put(double[].class, MetaPolicy.<double[]>primitiveHashcode(Arrays::hashCode));
   }
 
-  private static final Map<Class<?>, Function<Object, String>> PRIMITIVE_ARRAY_STRINGIFIERS = new HashMap<>();
+  private static final Map<Class<?>, Function<Object, String>> PRIMITIVE_ARRAY_STRINGIFIERS = new  IdentityHashMap<>();
   static {
     PRIMITIVE_ARRAY_STRINGIFIERS.put(boolean[].class, MetaPolicy.<boolean[]>toStringFunction(Arrays::toString));
     PRIMITIVE_ARRAY_STRINGIFIERS.put(char[].class, MetaPolicy.<char[]>toStringFunction(Arrays::toString));
@@ -46,7 +59,7 @@ final class MetaPolicy {
     PRIMITIVE_ARRAY_STRINGIFIERS.put(double[].class, MetaPolicy.<double[]>toStringFunction(Arrays::toString));
   }
 
-  private MetaPolicy() {}
+  private MetaPolicy() { /* never instantiated */ }
 
   public static boolean isSameClassInstance(Class<?> declaredType, Object thatInstance) {
     return declaredType == thatInstance.getClass();

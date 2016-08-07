@@ -16,7 +16,6 @@
 
 package uk.kludje.test;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.kludje.Meta;
 import uk.kludje.MetaConfig;
@@ -26,6 +25,8 @@ import uk.kludje.property.PropertyType;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import static org.junit.Assert.*;
 
 public class MetaTest {
 

@@ -21,12 +21,12 @@ import org.junit.Test;
 import uk.kludje.Meta;
 import uk.kludje.MetaConfig;
 
-import static java.util.Arrays.asList;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
 
 public class MetaNamedTest {
 

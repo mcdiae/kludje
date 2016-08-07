@@ -16,9 +16,10 @@
 
 package uk.kludje.test;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 import uk.kludje.Nullifier;
+
+import static org.junit.Assert.*;
 
 public class NullifierTest {
 

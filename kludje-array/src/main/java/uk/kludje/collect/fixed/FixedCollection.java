@@ -17,7 +17,6 @@
 package uk.kludje.collect.fixed;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**

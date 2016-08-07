@@ -19,7 +19,7 @@ package uk.kludje;
 import java.util.function.Function;
 
 /**
- * Convenience type for asserting conditions.
+ * Provides convenience methods for asserting conditions.
  *
  * Not called {@code Assert} because JUnit etc.
  *
@@ -28,6 +28,7 @@ import java.util.function.Function;
 public final class Ensure {
 
   private Ensure() {
+    // Never instantiated
   }
 
   /**
@@ -44,9 +45,11 @@ public final class Ensure {
   public static <T extends Throwable> void checked(boolean predicate,
                                                    String explanation,
                                                    Function<String, T> exceptionFactory) throws T {
-    assert explanation != null;
+    assert explanation != null: "explanation != null";
+    assert exceptionFactory != null: "exceptionFactory != null";
+
     if (!predicate) {
-      T t = exceptionFactory.apply(explanation);
+      T t = exceptionFactory.apply(explain(explanation));
       throw t;
     }
   }
@@ -58,7 +61,8 @@ public final class Ensure {
    * @param explanation failure reason
    */
   public static void that(boolean predicate, String explanation)  {
-    assert explanation != null;
+    assert explanation != null: "explanation != null";
+
     checked(predicate, explanation, AssertionError::new);
   }
 
@@ -74,10 +78,16 @@ public final class Ensure {
   public static <T extends Throwable> void unchecked(boolean predicate,
                                                 String explanation,
                                                 Function<String, T> exceptionFactory) {
-    assert explanation != null;
+    assert explanation != null: "explanation != null";
+    assert exceptionFactory != null: "exceptionFactory != null";
+
     if (!predicate) {
-      T t = exceptionFactory.apply(explanation);
+      T t = exceptionFactory.apply(explain(explanation));
       Exceptions.throwChecked(t);
     }
+  }
+
+  private static String explain(String explanation) {
+    return "Failed predicate: " + explanation;
   }
 }

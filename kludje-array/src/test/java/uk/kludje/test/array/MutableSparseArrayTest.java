@@ -18,8 +18,8 @@ package uk.kludje.test.array;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.collect.array.ArrayCollections;
 import uk.kludje.collect.MutableSparseArray;
+import uk.kludje.collect.array.ArrayCollections;
 
 import java.util.HashSet;
 import java.util.LinkedList;

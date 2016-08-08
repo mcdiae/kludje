@@ -162,22 +162,6 @@ project(':kludje-experimental') {
   }
 }
 
-project(':kludje-array') {
-  configurations {
-    provided
-  }
-
-  sourceSets {
-    main {
-      compileClasspath += configurations.provided
-    }
-  }
-
-  dependencies {
-    testCompile project(':kludje-testcontract')
-  }
-}
-
 project(':kludje-infer') {
   dependencies {
     compile project(':kludje-core')

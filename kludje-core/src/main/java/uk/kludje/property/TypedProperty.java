@@ -1,7 +1,7 @@
 package uk.kludje.property;
 
 /**
- * 3rd parties need not normally implement this type.
+ * 3rd parties should not implement this type.
  * All instances of this type returned by the {@link PropertyGetterList} type are instances of a getter type.
  *
  * @see Getter

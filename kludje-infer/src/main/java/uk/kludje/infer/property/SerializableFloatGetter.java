@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#floats(SerializableFloatGetter[])
+ * @see NamedGetterList#floats(SerializableFloatGetter[])
  */
 @FunctionalInterface
 public interface SerializableFloatGetter<T> extends FloatGetter<T>, Serializable {

@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#shorts(SerializableShortGetter[])
+ * @see NamedGetterList#shorts(SerializableShortGetter[])
  */
 @FunctionalInterface
 public interface SerializableShortGetter<T> extends ShortGetter<T>, Serializable {

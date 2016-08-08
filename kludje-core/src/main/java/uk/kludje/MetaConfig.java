@@ -37,14 +37,12 @@ public final class MetaConfig {
   private final ObjectEqualsPolicy objectEqualsPolicy;
   private final ObjectHashCodePolicy objectHashCodePolicy;
   private final ObjectToStringPolicy objectToStringPolicy;
-  private final EmptyNamePolicy emptyNamePolicy;
 
   private MetaConfig(MetaConfigBuilder builder) {
     instanceCheckPolicy = builder.instanceCheckPolicy;
     objectEqualsPolicy = builder.objectEqualsPolicy;
     objectHashCodePolicy = builder.objectHashCodePolicy;
     objectToStringPolicy = builder.objectToStringPolicy;
-    emptyNamePolicy = builder.emptyNamePolicy;
   }
 
   /**
@@ -109,18 +107,6 @@ public final class MetaConfig {
    */
   public ObjectToStringPolicy getObjectToStringPolicy() {
     return objectToStringPolicy;
-  }
-
-  /**
-   * Used during creation of a {@link Meta} instance to infer names from {@link TypedProperty} getter instances
-   * when the empty string is provided as the property name.
-   *
-   * The default policy returns the empty string.
-   *
-   * @return the policy
-   */
-  public EmptyNamePolicy getEmptyNamePolicy() {
-    return emptyNamePolicy;
   }
 
   /**
@@ -206,35 +192,18 @@ public final class MetaConfig {
       .build();
   }
 
-  /**
-   * There is no requirement for creators of {@link Meta} instances to name all properties.
-   * This method can be used to infer a name from getter types.
-   *
-   * @param policy a non-null policy
-   * @return the new config
-   */
-  public MetaConfig withEmptyNamePolicy(EmptyNamePolicy policy) {
-    Ensure.that(policy != null, "policy != null");
-
-    return new MetaConfigBuilder(this)
-      .setEmptyNamePolicy(policy)
-      .build();
-  }
-
   private static final class MetaConfigBuilder {
 
     private InstanceCheckPolicy instanceCheckPolicy;
     private ObjectEqualsPolicy objectEqualsPolicy;
     private ObjectHashCodePolicy objectHashCodePolicy;
     private ObjectToStringPolicy objectToStringPolicy;
-    private EmptyNamePolicy emptyNamePolicy;
 
     private MetaConfigBuilder() {
       instanceCheckPolicy = MetaPolicy::isSameClassInstance;
       objectEqualsPolicy = Objects::equals;
       objectHashCodePolicy = Objects::hashCode;
       objectToStringPolicy = Objects::toString;
-      emptyNamePolicy = o -> "";
     }
 
     private MetaConfigBuilder(MetaConfig defaultInstance) {
@@ -242,7 +211,6 @@ public final class MetaConfig {
       objectEqualsPolicy = defaultInstance.objectEqualsPolicy;
       objectHashCodePolicy = defaultInstance.objectHashCodePolicy;
       objectToStringPolicy = defaultInstance.objectToStringPolicy;
-      emptyNamePolicy = defaultInstance.emptyNamePolicy;
     }
 
     MetaConfig build() {
@@ -261,11 +229,6 @@ public final class MetaConfig {
 
     MetaConfigBuilder setObjectToStringPolicy(ObjectToStringPolicy objectToStringPolicy) {
       this.objectToStringPolicy = objectToStringPolicy;
-      return this;
-    }
-
-    MetaConfigBuilder setEmptyNamePolicy(EmptyNamePolicy emptyNamePolicy) {
-      this.emptyNamePolicy = emptyNamePolicy;
       return this;
     }
 
@@ -331,18 +294,5 @@ public final class MetaConfig {
   @FunctionalInterface
   public interface ObjectToStringPolicy {
     String toString(Object o);
-  }
-
-  /**
-   * Allows alternative interpretation of a typed property that has not been formally named.
-   * Instances must be immutable and thread-safe.
-   */
-  @FunctionalInterface
-  public interface EmptyNamePolicy {
-    /**
-     * @param property the getter
-     * @return a String; must not be null
-     */
-    String toName(TypedProperty property);
   }
 }

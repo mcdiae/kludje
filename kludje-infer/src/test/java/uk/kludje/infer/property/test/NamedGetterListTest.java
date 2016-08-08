@@ -3,30 +3,30 @@ package uk.kludje.infer.property.test;
 import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.Meta;
-import uk.kludje.infer.property.InferMeta;
+import uk.kludje.infer.property.NamedGetterList;
 
-public class InferMetaTest {
-
-  private static final Meta<Pojo> META = InferMeta.from(Meta.meta(Pojo.class))
-    .objects(Pojo::getA)
-    .meta();
+public class NamedGetterListTest {
 
   @Test
   public void testEquality() {
     // setup
     Pojo p = new Pojo();
-    p.a = "Hello";
+    p.stringProp = "Hello";
     // invoke
     String pojoDebugString = p.toString();
     // verify
-    Assert.assertEquals("Pojo {a=Hello}", pojoDebugString);
+    Assert.assertEquals("Pojo {stringProp=Hello}", pojoDebugString);
   }
 
   private static class Pojo {
-    Object a;
+    private static final Meta<Pojo> META = NamedGetterList.namer(Meta.meta(Pojo.class))
+      .objects(Pojo::getStringProp)
+      .list();
 
-    Object getA() {
-      return a;
+    Object stringProp;
+
+    Object getStringProp() {
+      return stringProp;
     }
 
     @Override

@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#doubles(SerializableDoubleGetter[])
+ * @see NamedGetterList#doubles(SerializableDoubleGetter[])
  */
 @FunctionalInterface
 public interface SerializableDoubleGetter<T> extends DoubleGetter<T>, Serializable {

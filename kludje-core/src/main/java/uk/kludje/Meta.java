@@ -86,7 +86,6 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   private final MetaConfig.ObjectEqualsPolicy equalsPolicy;
   private final MetaConfig.ObjectHashCodePolicy hashcodePolicy;
   private final MetaConfig.ObjectToStringPolicy toStringPolicy;
-  private final MetaConfig.EmptyNamePolicy emptyNamePolicy;
 
   private Meta(MetaConfig config,
                Class<T> type,
@@ -100,17 +99,12 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
     this.equalsPolicy = config.getObjectEqualsPolicy();
     this.hashcodePolicy = config.getObjectHashCodePolicy();
     this.toStringPolicy = config.getObjectToStringPolicy();
-    this.emptyNamePolicy = config.getEmptyNamePolicy();
   }
 
   @Override
   protected Meta<T> newInstance(Meta<T> old, String name, TypedProperty getter) {
     Ensure.that(getter != null, "getter != null");
     Ensure.that(name != null, "name != null");
-
-    if ("".equals(name)) {
-      name = emptyNamePolicy.toName(getter);
-    }
 
     TypedProperty[] newProps = TYPED_PROPERTY_ARRAYS.concat(old.props, getter);
     String[] newNames = TYPED_STRING_ARRAYS.concat(old.names, name);

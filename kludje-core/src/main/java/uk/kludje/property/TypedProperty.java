@@ -1,19 +1,18 @@
 package uk.kludje.property;
 
-import uk.kludje.Meta;
-
 /**
- * All instances of this type returned by the {@link Meta} type are instances of a getter type.
+ * 3rd parties need not normally implement this type.
+ * All instances of this type returned by the {@link PropertyGetterList} type are instances of a getter type.
  *
- * @see Meta.Getter
- * @see Meta.BooleanGetter
- * @see Meta.CharGetter
- * @see Meta.ByteGetter
- * @see Meta.ShortGetter
- * @see Meta.IntGetter
- * @see Meta.LongGetter
- * @see Meta.FloatGetter
- * @see Meta.DoubleGetter
+ * @see Getter
+ * @see BooleanGetter
+ * @see CharGetter
+ * @see ByteGetter
+ * @see ShortGetter
+ * @see IntGetter
+ * @see LongGetter
+ * @see FloatGetter
+ * @see DoubleGetter
  */
 public interface TypedProperty {
   PropertyType type();

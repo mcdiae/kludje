@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#chars(SerializableCharGetter[])
+ * @see NamedGetterList#chars(SerializableCharGetter[])
  */
 @FunctionalInterface
 public interface SerializableCharGetter<T> extends CharGetter<T>, Serializable {

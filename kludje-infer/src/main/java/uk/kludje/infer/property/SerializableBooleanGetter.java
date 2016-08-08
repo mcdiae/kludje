@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#booleans(SerializableBooleanGetter[])
+ * @see NamedGetterList#booleans(SerializableBooleanGetter[])
  */
 @FunctionalInterface
 public interface SerializableBooleanGetter<T> extends BooleanGetter<T>, Serializable {

@@ -25,7 +25,7 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see InferMeta#longs(SerializableLongGetter[])
+ * @see NamedGetterList#longs(SerializableLongGetter[])
  */
 @FunctionalInterface
 public interface SerializableLongGetter<T> extends LongGetter<T>, Serializable {

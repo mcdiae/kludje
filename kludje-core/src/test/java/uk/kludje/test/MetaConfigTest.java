@@ -36,17 +36,6 @@ public class MetaConfigTest {
     assertTrue(default1 == default2);
   }
 
-  @Test
-  public void testSetEmptyNamePolicy() {
-    // setup
-    MetaConfig.EmptyNamePolicy policy = property -> "burger";
-    // invoke
-    MetaConfig config = MetaConfig.defaultConfig()
-      .withEmptyNamePolicy(policy);
-    // verify
-    assertTrue(policy == config.getEmptyNamePolicy());
-  }
-
   @Test(expected = Error.class)
   public void testInstanceCheckNullHandling() {
     MetaConfig.defaultConfig()
@@ -69,12 +58,6 @@ public class MetaConfigTest {
   public void testObjectToStringNullHandling() {
     MetaConfig.defaultConfig()
       .withObjectToString(null);
-  }
-
-  @Test(expected = Error.class)
-  public void testEmptyNamePolicyNullHandling() {
-    MetaConfig.defaultConfig()
-      .withEmptyNamePolicy(null);
   }
 
   @Test

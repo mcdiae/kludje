@@ -57,6 +57,8 @@ public final class Ensure {
   /**
    * Throws an {@link AssertionError} if predicate is false.
    *
+   * Usage: {@code Ensure.that(foo != null, "foo != null");}
+   *
    * @param predicate the condition
    * @param explanation failure reason
    */

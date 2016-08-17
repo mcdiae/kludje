@@ -1,17 +1,14 @@
 KλudJe
 ======
 
-KλudJe is a Java lambda API.
+KludJe is a Java API that aims to exploit features introduced in Java 8 to reduce verbosity and enhance expressiveness.
 
-License
-=======
+Use it to:
 
-[Apache 2.0](https://github.com/mcdiae/kludje/blob/master/LICENSE)
-
-Stability
-=========
-
-Limited testing; breaking changes possible in future versions.
+ - Implement less verbose equals, hashCode, and toString in your classes
+ - Avoid try/catch blocks in lambdas/method references with a generalized exception throwing/catching mechanism
+   - Add this capability for any functional interface using the Kludje annotation processor
+ - Avoid nested null checks in getter chains with a one-line call
 
 Documentation
 =============
@@ -31,6 +28,17 @@ To build:
 ```
   gradle build
 ```
+
+License
+=======
+
+[Apache 2.0](https://github.com/mcdiae/kludje/blob/master/LICENSE)
+
+Stability
+=========
+
+Limited testing; breaking changes possible in future versions.
+
 
 Release Notes
 =============

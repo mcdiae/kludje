@@ -44,3 +44,4 @@ Release Notes
 =============
 
 version 0.3: breaking API changes in nary package (consumer methods "apply" changed to "accept")
+version 0.7: breaking API changes: Meta interfaces deprecated; will be removed in later releases

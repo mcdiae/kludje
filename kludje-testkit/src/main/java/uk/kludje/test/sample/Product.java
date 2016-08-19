@@ -20,9 +20,9 @@ import uk.kludje.Meta;
 
 public class Product {
   private static final Meta<Product> META = Meta.meta(Product.class)
-      .longs($ -> $.id)
-      .objects($ -> $.description)
-      .ints($ -> $.inventory);
+      .longs(p -> p.id)
+      .objects(p -> p.description)
+      .ints(p -> p.inventory);
 
   private final long id;
   private final String description;

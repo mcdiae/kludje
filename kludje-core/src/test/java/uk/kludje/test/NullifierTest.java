@@ -19,6 +19,8 @@ package uk.kludje.test;
 import org.junit.Test;
 import uk.kludje.Nullifier;
 
+import java.io.IOException;
+
 import static org.junit.Assert.*;
 
 public class NullifierTest {
@@ -37,6 +39,16 @@ public class NullifierTest {
   }
 
   @Test
+  public void testSimpleEval() {
+    // setup
+    A a = null;
+    // invoke
+    B result = Nullifier.eval(a, A::getB);
+    // verify
+    assertEquals(null, result);
+  }
+
+  @Test
   public void testSpan() {
     // setup
     A a = new A();
@@ -47,6 +59,23 @@ public class NullifierTest {
     D d = Nullifier.span(A::getB, B::getC, C::getD).apply(a);
     // verify
     assertEquals(a.b.c.d, d);
+  }
+
+  @Test(expected = IOException.class)
+  public void testExceptionHandling() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    // invoke
+    D d = Nullifier.span(A::getB, B::getC, this::throwACheckedException).apply(a);
+    // verify
+    assertEquals(a.b.c.d, d);
+  }
+
+  private D throwACheckedException(C c) throws IOException {
+    throw new IOException("expected");
   }
 
   @Test
@@ -110,6 +139,24 @@ public class NullifierTest {
     F f = Nullifier.span(A::getB, B::getC, C::getD, D::getE, E::getF).apply(a);
     // verify
     assertEquals(a.b.c.d.e.f, f);
+  }
+
+  @Test
+  public void testSpan6() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    a.b.c.d = new D();
+    a.b.c.d.e = new E();
+    a.b.c.d.e.f = new F();
+    a.b.c.d.e.f.g = new G();
+    // invoke
+    G g = Nullifier.span(A::getB, B::getC, C::getD, D::getE, E::getF)
+      .andThenSpan(F::getG)
+      .apply(a);
+    // verify
+    assertEquals(a.b.c.d.e.f.g, g);
   }
 
   @Test
@@ -319,6 +366,18 @@ public class NullifierTest {
   }
 
   @Test
+  public void testOrElseSpanOk() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    // invoke
+    C c = Nullifier.span(A::getB, B::getC).applyOr(a, new C());
+    // verify
+    assertEquals(a.b.c, c);
+  }
+
+  @Test
   public void testOrElseGetSpan() {
     // setup
     A a = new A();
@@ -326,6 +385,18 @@ public class NullifierTest {
     D d = Nullifier.span(A::getB, B::getC, C::getD).applyOrGet(a, D::new);
     // verify
     assertNotNull(d);
+  }
+
+  @Test
+  public void testOrElseGetSpanOk() {
+    // setup
+    A a = new A();
+    a.b = new B();
+    a.b.c = new C();
+    // invoke
+    C c = Nullifier.span(A::getB, B::getC).applyOrGet(a, C::new);
+    // verify
+    assertEquals(a.b.c, c);
   }
 
   private CharSequence toCharSequence(Object cs) {
@@ -365,5 +436,10 @@ public class NullifierTest {
     F getF() { return f; }
   }
 
-  static class F {}
+  static class F {
+    G g;
+    G getG() { return g; }
+  }
+
+  static class G {}
 }

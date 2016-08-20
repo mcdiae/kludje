@@ -24,7 +24,7 @@ import java.util.Objects;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
- * <p>Example checked builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
+ * <p>Example builds equals, hashCode and toString methods using the "id", "name" and "dateOfBirth" properties:</p>
  * <pre>
  * import uk.kludje.Meta;
  * import java.time.LocalDate;
@@ -32,8 +32,8 @@ import java.util.Objects;
  *
  * public class PersonPojo {
  *   private static final Meta&lt;PersonPojo&gt; META = meta(PersonPojo.class)
- *                              .longs($ -&gt; $.id)
- *                              .objects($ -&gt; $.name, $ -&gt; $.dateOfBirth);
+ *                              .longs(pp -&gt; pp.id)
+ *                              .objects(pp -&gt; pp.name, pp -&gt; pp.dateOfBirth);
  *
  *   private final long id;
  *   private final String name;
@@ -66,8 +66,10 @@ import java.util.Objects;
  *   }
  * }
  * </pre>
- * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
- * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
+ *
+ * <p>Note: arrays are treated as objects by default; see {@link MetaConfig#withShallowArraySupport()}.
+ * If classes can be equal to subtypes use {@link MetaConfig#withInstanceofEqualsTypeCheck()}.</p>
+ *
  * <p>Instances of this type are immutable and thread safe.</p>
  *
  * @param <T> the accessed type

@@ -17,10 +17,11 @@
 
 <html>
 <head>
-    <title>KludJe Java 8 lambda API for checked exception handling</title>
+    <title>KludJe - Java 8 lambda API for checked exception handling</title>
     <meta charset="UTF-8">
     <meta name="description" content="A Java 8 lambda API">
     <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="icon" type="image/png" href="icon.png">
 </head>
 <body>
 
@@ -28,8 +29,8 @@
     <ul>
         <li><a href="#default-view">home</a></li>
         <li><a href="#download">download</a></li>
-        <li><a href="https://github.com/mcdiae/kludje">sources</a></li>
         <li><a href="artefacts/api/0.7/index.html">javadoc</a></li>
+        <li><a href="https://github.com/mcdiae/kludje">code</a></li>
     </ul>
 </nav>
 
@@ -137,22 +138,16 @@ public class LineCounter implements LineCounter {
         <p>This code avoids making explicit null checks in a deep object graph:</p>
 
         <pre><code>
-import uk.kludje.Nullifier;
-
-...
-
+    // import uk.kludje.Nullifier;
     F f = Nullifier.eval(a, A::getB, B::getC, C::getD, D::getE, E::getF);
-
-/*
-Old code:
-
+        </code></pre>
+        <p>This replaces this kind of code:</p>
+        <pre><code>
     if (a != null) {
       B b = a.getB();
       if (b != null) {
         C c = b.getC();
             etc.
-*/
-
         </code></pre>
     </div>
 
@@ -175,6 +170,11 @@ Old code:
     <div id="default-view">
         <h1>KλudJe</h1>
 
+        <blockquote>
+            <strong>kludge</strong> <em>n. Slang</em>
+            <p>A system, especially a computer system, that is constituted of poorly matched elements or of elements originally intended for other applications.</p>
+        </blockquote>
+
         <p>KludJe is a Java <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">lambda</a> API for use with Java 8 and above.</p>
 
         <p>Examples:</p>
@@ -185,10 +185,6 @@ Old code:
             <li><a href="#nulls">Refactor nested getter null checks to a single expression</a></li>
         </ol>
 
-        <blockquote>
-            <strong>kludge</strong> <em>n. Slang</em>
-            <p>A system, especially a computer system, that is constituted of poorly matched elements or of elements originally intended for other applications.</p>
-        </blockquote>
     </div>
 </main>
 

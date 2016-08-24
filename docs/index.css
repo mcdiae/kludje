@@ -5,23 +5,54 @@ body {
   font-family: sans-serif;
   max-width: 60em;
   margin: 0 auto;
+  color: black;
+  background-color:white;
 }
 
 nav {
   text-align: center;
   padding: 0.5em 0;
-  border-bottom: 2px solid;
+  background: #333663
 }
-
-blockquote {
-  padding: 0.5em;
-  border: 2px solid;
+nav a {
+  color: white;
 }
-
 nav li {
   display: inline-block;
   margin: 0 0.5em;
 }
+
+
+code {
+  weight: bold;
+  color: darkslateblue;
+}
+
+
+blockquote {
+  border-left : 2px solid #ccc;
+  float: right;
+  margin: 0px;
+  padding: 10px;
+  color: #ccc;
+  quotes: "\201C" "\201D";
+  max-width: 25%;
+}
+blockquote:before {
+  content: open-quote;
+  font-weight: bold;
+  color: #4751e5;
+  font-size: larger;
+}
+@media all and (max-width: 600px) {
+  blockquote {
+    display:none;
+  }
+}
+
+
+
+
 
 main > * {
     display: none;

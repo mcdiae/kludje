@@ -20,6 +20,21 @@ import java.lang.annotation.*;
 
 /**
  * Annotation for generating functional interfaces that handle checked exceptions.
+ * <p>
+ * Example usage:
+ *
+ * <pre>
+ *   // declared in foo/package-info.java
+ *   {@literal @UncheckedFunctionalInterface(ToLongFunction.class) }
+ *   {@literal @UncheckedFunctionalInterface(UnaryOperator.class) }
+ *   package foo;
+ * </pre>
+ *
+ * When used with {@link uk.kludje.annotation.processor.UncheckedFunctionalInterfaceProcessor} will generated
+ * functional interfaces for use in lambda expressions. These new interfaces throw checked exceptions as
+ * unchecked exceptions.
+ *
+ * @see UncheckedFunctionalInterfaces
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
@@ -31,6 +46,7 @@ public @interface UncheckedFunctionalInterface {
    * Values must be a type that is a functional interface.
    *
    * @return the value type
+   * @see FunctionalInterface
    */
   Class<?> value();
 }

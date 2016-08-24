@@ -44,6 +44,11 @@ import static java.util.Arrays.asList;
  * Annotation processor for {@link uk.kludje.annotation.UncheckedFunctionalInterface}.
  * Generated types will be placed into the annotated package.
  *
+ * Annotation processors are not invoked by default and how they are enabled varies between different
+ * compilers/IDEs/build tools.
+ *
+ * See your tool chain documentation for details on how to activate them.
+ *
  * @see uk.kludje.annotation.UncheckedFunctionalInterface
  */
 public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {

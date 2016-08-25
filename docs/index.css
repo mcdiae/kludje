@@ -9,10 +9,12 @@ body {
   background-color:white;
 }
 
+
 nav {
   text-align: center;
   padding: 0.5em 0;
-  background: #333663
+  background: #333663;
+  color: gray;
 }
 nav a {
   color: white;
@@ -51,28 +53,25 @@ blockquote:before {
 }
 
 
-
-
-
 main > * {
-    display: none;
+  display: none;
 }
 
 main > *:last-child {
-    display: block;
+  display: block;
 }
 
 @keyframes pulse {
-    0% { transform: scale(1) }
-    50% { transform: scale(1.05) }
-    100% { transform: scale(1) }
+  0% { transform: scale(1) }
+  50% { transform: scale(1.05) }
+  100% { transform: scale(1) }
 }
 
 main > *:target {
-    display: block;
-    animation: pulse 0.5s linear 1;
+  display: block;
+  animation: pulse 0.5s linear 1;
 }
 
 main > *:target ~ * {
-    display: none;
+  display: none;
 }

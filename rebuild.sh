@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 which gradle || (echo 'gradle not found' && exit 1)
 which grep || (echo 'grep not found' && exit 1)
@@ -13,17 +14,21 @@ echo "CODE VERSION = $BLDVER"
 
 gradle -version > $HERE/lastbuild_info.txt
 
-gradle clean build jacoco
+gradle clean build check jacoco
+
+function copyDocs() {
+  if [ -d "$DOCDIR/$2" ]; then rm -Rf "$DOCDIR/$2"; fi
+  mkdir -p "$DOCDIR/$2"
+  cp -a "$HERE/$1/build/docs/javadoc/." "$DOCDIR/$2"
+}
 
 if [[ $BLDVER == *"SNAPSHOT"* ]]; then
-  echo "Skipping documentation for SNAPSHOT build"
+  echo "Skipping documentation assembly for SNAPSHOT build"
 else
   echo "Documenting latest API in $DOCDIR"
-  if [ -d "$DOCDIR" ]; then
-    rm -Rf "$DOCDIR"
-  fi
-  mkdir "$DOCDIR"
-  cp -r kludje-core/build/docs/javadoc/* "$DOCDIR"
+  copyDocs kludje-core core
+  copyDocs kludje-annotation annotation
+  copyDocs kludje-infer infer
 fi
 
 cd $THERE

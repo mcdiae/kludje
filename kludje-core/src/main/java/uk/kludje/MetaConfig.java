@@ -17,7 +17,6 @@ limitations under the License.
 package uk.kludje;
 
 import uk.kludje.property.Getter;
-import uk.kludje.property.TypedProperty;
 
 import java.util.Objects;
 

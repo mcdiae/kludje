@@ -6,13 +6,13 @@ which grep || (echo 'grep not found' && exit 1)
 
 THERE="$(pwd)"
 HERE=$( dirname "${BASH_SOURCE[0]}" )
-cd $HERE
+cd ${HERE}
 BLDVER=="$(grep -F -m 1 'version = ' build.gradle)"; BLDVER="${BLDVER#*\'}"; BLDVER="${BLDVER%\'*}"
 DOCDIR="$HERE/docs/artefacts/api/$BLDVER"
 
 echo "CODE VERSION = $BLDVER"
 
-gradle -version > $HERE/lastbuild_info.txt
+gradle -version > ${HERE}/lastbuild_info.txt
 
 gradle clean build check jacoco
 
@@ -22,7 +22,7 @@ function copyDocs() {
   cp -a "$HERE/$1/build/docs/javadoc/." "$DOCDIR/$2"
 }
 
-if [[ $BLDVER == *"SNAPSHOT"* ]]; then
+if [[ ${BLDVER} == *"SNAPSHOT"* ]]; then
   echo "Skipping documentation assembly for SNAPSHOT build"
 else
   echo "Documenting latest API in $DOCDIR"
@@ -31,4 +31,4 @@ else
   copyDocs kludje-infer infer
 fi
 
-cd $THERE
+cd ${THERE}

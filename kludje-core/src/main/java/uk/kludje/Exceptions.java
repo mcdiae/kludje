@@ -19,6 +19,8 @@ package uk.kludje;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Methods for translating checked exceptions to unchecked exceptions and back.
  */
@@ -46,8 +48,7 @@ public final class Exceptions {
    * @return an unchecked throwable type for syntax reasons
    */
   public static UncheckedMarker throwChecked(Throwable t) {
-    Objects.requireNonNull(t, "throwable");
-    Exceptions.<RuntimeException>throwIt(t);
+    Exceptions.<RuntimeException>throwIt(requireNonNull(t, "throwable"));
     return UncheckedMarker.INSTANCE;
   }
 

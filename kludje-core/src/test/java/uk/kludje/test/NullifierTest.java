@@ -45,7 +45,7 @@ public class NullifierTest {
     // invoke
     B result = Nullifier.eval(a, A::getB);
     // verify
-    assertEquals(null, result);
+    assertNull(result);
   }
 
   @Test

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ExceptionPropagator {
   public static void throwIOException() {
-    Exceptions.throwChecked(new IOException());
+    throw Exceptions.throwChecked(new IOException());
   }
 
   public static void main(String[] args) {

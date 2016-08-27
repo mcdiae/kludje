@@ -7,6 +7,7 @@ package uk.kludje.property;
  * @param <T> the class type that possesses the properties
  * @param <PGL> this type
  */
+@SuppressWarnings("unchecked")
 public abstract class PropertyGetterList<T, PGL extends PropertyGetterList<T, PGL>> {
 
   protected abstract PGL newInstance(PGL old, String name, TypedProperty getter);

@@ -35,10 +35,11 @@ public class ExceptionsTest {
   public void testCatch() {
     boolean gotIt = false;
     try {
-      Exceptions.throwChecked(new IOException("expected"));
       Exceptions
-          .<IOException>expected()
-          .<ClassNotFoundException>expected();
+        .<IOException>expected()
+        .<ClassNotFoundException>expected();
+
+      throw Exceptions.throwChecked(new IOException("expected"));
     } catch (IOException | ClassNotFoundException e) {
       gotIt = true;
     }
@@ -49,10 +50,11 @@ public class ExceptionsTest {
   public void testCatch2() {
     boolean gotIt = false;
     try {
-      Exceptions.throwChecked(new ClassNotFoundException("expected"));
       Exceptions
-          .<IOException>expected()
-          .<ClassNotFoundException>expected();
+        .<IOException>expected()
+        .<ClassNotFoundException>expected();
+
+      throw Exceptions.throwChecked(new ClassNotFoundException("expected"));
     } catch (IOException | ClassNotFoundException e) {
       gotIt = true;
     }

@@ -66,48 +66,6 @@ allprojects {
     sign configurations.archives
   }
 
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: sonatypeUsername, password: sonatypePassword)
-        }
-
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: sonatypeUsername, password: sonatypePassword)
-        }
-
-        pom.project {
-          packaging 'jar'
-          url 'http://kludje.uk'
-
-          scm {
-            url 'git@github.com:mcdiae/kludje.git'
-            connection 'git@github.com:mcdiae/kludje.git'
-            developerConnection 'git@github.com:mcdiae/kludje.git'
-          }
-
-          licenses {
-            license {
-              name 'The Apache Software License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-              distribution 'repo'
-            }
-          }
-
-          developers {
-            developer {
-              id 'mcdiae'
-              name 'McDowell'
-            }
-          }
-        }
-      }
-    }
-  }
-
   findbugs {
     //toolVersion = "2.0.1"
     //sourceSets = [sourceSets.main]
@@ -119,6 +77,64 @@ allprojects {
     //omitVisitors = ["FindNonShortCircuit"]
     //includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
     excludeFilter = file("$rootProject.projectDir/findbugs/falsepositives.xml")
+  }
+
+  if (project.hasProperty('release')) {
+    uploadArchives {
+      repositories {
+        mavenDeployer {
+          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+          repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
+          }
+
+          snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
+          }
+
+          pom.project {
+            packaging 'jar'
+            url 'http://kludje.uk'
+
+            scm {
+              url 'git@github.com:mcdiae/kludje.git'
+              connection 'git@github.com:mcdiae/kludje.git'
+              developerConnection 'git@github.com:mcdiae/kludje.git'
+            }
+
+            licenses {
+              license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+              }
+            }
+
+            developers {
+              developer {
+                id 'mcdiae'
+                name 'McDowell'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+if (project.hasProperty('release')) {
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        pom.project {
+          name 'kludje'
+          packaging 'pom'
+          description 'Java 8 lambda API'
+        }
+      }
+    }
   }
 }
 
@@ -168,15 +184,4 @@ project(':kludje-infer') {
   }
 }
 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      pom.project {
-        name 'kludje'
-        packaging 'pom'
-        description 'Java 8 lambda API'
-      }
-    }
-  }
-}
 

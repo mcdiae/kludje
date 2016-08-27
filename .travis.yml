@@ -1,4 +1,7 @@
+
 language: java
+
+script: bundle exec gradle clean build jacoco
 
 jdk:
   - oraclejdk8

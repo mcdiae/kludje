@@ -17,9 +17,9 @@
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
-  apply plugin: 'signing'
   apply plugin: 'findbugs'
   apply plugin: 'jacoco'
+  apply plugin: 'signing'
 
   jacoco {
     toolVersion = "0.7.6.201602180812"
@@ -62,10 +62,6 @@ allprojects {
     archives sourcesJar
   }
 
-  signing {
-    sign configurations.archives
-  }
-
   findbugs {
     //toolVersion = "2.0.1"
     //sourceSets = [sourceSets.main]
@@ -80,6 +76,11 @@ allprojects {
   }
 
   if (project.hasProperty('release')) {
+
+    signing {
+      sign configurations.archives
+    }
+
     uploadArchives {
       repositories {
         mavenDeployer {

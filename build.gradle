@@ -17,9 +17,11 @@
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
-  apply plugin: 'findbugs'
   apply plugin: 'jacoco'
   apply plugin: 'signing'
+  if (project.hasProperty('release')) {
+    apply plugin: 'findbugs'
+  }
 
   jacoco {
     toolVersion = "0.7.6.201602180812"
@@ -62,20 +64,20 @@ allprojects {
     archives sourcesJar
   }
 
-  findbugs {
-    //toolVersion = "2.0.1"
-    //sourceSets = [sourceSets.main]
-    //ignoreFailures = true
-    //reportsDir = file("$project.buildDir/findbugsReports")
-    //effort = "max"
-    //reportLevel = "high"
-    //visitors = ["FindSqlInjection", "SwitchFallthrough"]
-    //omitVisitors = ["FindNonShortCircuit"]
-    //includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
-    excludeFilter = file("$rootProject.projectDir/findbugs/falsepositives.xml")
-  }
-
   if (project.hasProperty('release')) {
+
+    findbugs {
+      //toolVersion = "2.0.1"
+      //sourceSets = [sourceSets.main]
+      //ignoreFailures = true
+      //reportsDir = file("$project.buildDir/findbugsReports")
+      //effort = "max"
+      //reportLevel = "high"
+      //visitors = ["FindSqlInjection", "SwitchFallthrough"]
+      //omitVisitors = ["FindNonShortCircuit"]
+      //includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
+      excludeFilter = file("$rootProject.projectDir/findbugs/falsepositives.xml")
+    }
 
     signing {
       sign configurations.archives

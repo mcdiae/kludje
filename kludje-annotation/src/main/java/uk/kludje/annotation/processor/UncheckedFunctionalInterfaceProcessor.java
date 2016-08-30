@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.*;
 
 /**
  * Annotation processor for {@link uk.kludje.annotation.UncheckedFunctionalInterface}.
@@ -78,7 +79,7 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
     for (Element target : roundEnv.getElementsAnnotatedWith(UncheckedFunctionalInterface.class)) {
       for (AnnotationMirror mirror : target.getAnnotationMirrors()) {
         if (is(mirror, UncheckedFunctionalInterface.class)) {
-          Collection<AnnotationMirror> coll = asList(mirror);
+          Collection<AnnotationMirror> coll = singletonList(mirror);
           processPackage((PackageElement) target, coll);
           break;
         }
@@ -181,7 +182,15 @@ public class UncheckedFunctionalInterfaceProcessor extends AbstractProcessor {
       }
       result += buf.toString();
     }
-    return result + ")";
+    result += ")";
+
+    if (method.isVarArgs()) {
+      // some older versions of JDK8 don't match [] with ... on overridden methods
+      int index = result.lastIndexOf("[]");
+      result = result.substring(0, index) + "..." + result.substring(index + 2);
+    }
+
+    return result;
   }
 
   private ExecutableType resolveGenerics(TypeElement type, ExecutableElement method) {

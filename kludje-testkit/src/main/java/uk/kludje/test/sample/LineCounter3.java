@@ -7,10 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toConcurrentMap;
 
 /**
  * Line counter - stream approach with checked exception handling.
@@ -21,7 +21,7 @@ public class LineCounter3 implements LineCounter {
   public Map<Path, Long> countLines(Collection<? extends Path> paths) throws IOException {
     return paths.stream()
         .parallel()
-        .collect(toConcurrentMap(p -> p, (UFunction<Path, Long>) this::linesIn));
+        .collect(Collectors.<Path, Path, Long>toConcurrentMap(p -> p, (UFunction<Path, Long>) this::linesIn));
   }
 
   private long linesIn(Path path) throws IOException {

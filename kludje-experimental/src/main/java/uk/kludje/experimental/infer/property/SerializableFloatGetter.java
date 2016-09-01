@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.infer.property;
+package uk.kludje.experimental.infer.property;
 
-import uk.kludje.property.IntGetter;
+import uk.kludje.property.FloatGetter;
 
 import java.io.Serializable;
 
@@ -25,8 +25,8 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see NamedGetterList#ints(SerializableIntGetter[])
+ * @see NamedGetterList#floats(SerializableFloatGetter[])
  */
 @FunctionalInterface
-public interface SerializableIntGetter<T> extends IntGetter<T>, Serializable {
+public interface SerializableFloatGetter<T> extends FloatGetter<T>, Serializable {
 }

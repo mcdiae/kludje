@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.infer.property;
+package uk.kludje.experimental.infer.property;
 
-import uk.kludje.property.CharGetter;
+import uk.kludje.property.BooleanGetter;
 
 import java.io.Serializable;
 
@@ -25,8 +25,8 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see NamedGetterList#chars(SerializableCharGetter[])
+ * @see NamedGetterList#booleans(SerializableBooleanGetter[])
  */
 @FunctionalInterface
-public interface SerializableCharGetter<T> extends CharGetter<T>, Serializable {
+public interface SerializableBooleanGetter<T> extends BooleanGetter<T>, Serializable {
 }

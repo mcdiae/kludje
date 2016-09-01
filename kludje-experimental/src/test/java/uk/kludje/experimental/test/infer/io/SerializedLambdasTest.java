@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.infer.io.test;
+package uk.kludje.experimental.test.infer.io;
 
 import org.junit.Assert;
 import org.junit.Test;
-import uk.kludje.infer.io.SerializedLambdas;
+import uk.kludje.experimental.infer.io.SerializedLambdas;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;

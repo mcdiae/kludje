@@ -181,10 +181,5 @@ project(':kludje-experimental') {
   }
 }
 
-project(':kludje-infer') {
-  dependencies {
-    compile project(':kludje-core')
-  }
-}
 
 

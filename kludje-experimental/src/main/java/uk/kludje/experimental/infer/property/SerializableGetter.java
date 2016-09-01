@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.infer.property;
+package uk.kludje.experimental.infer.property;
 
-import uk.kludje.property.DoubleGetter;
+import uk.kludje.property.Getter;
 
 import java.io.Serializable;
 
@@ -25,8 +25,8 @@ import java.io.Serializable;
  * {@code Pojo::getFoo}.
  *
  * @param <T> the property source
- * @see NamedGetterList#doubles(SerializableDoubleGetter[])
+ * @see NamedGetterList#objects(SerializableGetter[])
  */
 @FunctionalInterface
-public interface SerializableDoubleGetter<T> extends DoubleGetter<T>, Serializable {
+public interface SerializableGetter<T> extends Getter<T>, Serializable {
 }

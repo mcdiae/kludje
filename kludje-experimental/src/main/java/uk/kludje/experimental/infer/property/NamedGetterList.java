@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package uk.kludje.infer.property;
+package uk.kludje.experimental.infer.property;
 
 import uk.kludje.Ensure;
 import uk.kludje.Meta;
+import uk.kludje.experimental.infer.io.SerializedLambdas;
 import uk.kludje.fn.nary.TriFunction;
-import uk.kludje.infer.io.SerializedLambdas;
 import uk.kludje.property.Getter;
 import uk.kludje.property.PropertyGetterList;
 

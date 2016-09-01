@@ -1,9 +1,9 @@
-package uk.kludje.infer.property.test;
+package uk.kludje.experimental.test.infer.property;
 
 import org.junit.Assert;
 import org.junit.Test;
 import uk.kludje.Meta;
-import uk.kludje.infer.property.NamedGetterList;
+import uk.kludje.experimental.infer.property.NamedGetterList;
 
 public class NamedGetterListTest {
 

@@ -23,6 +23,12 @@ nav li {
   display: inline-block;
   margin: 0 0.5em;
 }
+nav a:before {
+  content: 'kludje::';
+}
+.javadoc:before {
+  content: 'javadoc::';
+}
 
 
 code {

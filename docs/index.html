@@ -17,7 +17,7 @@
 
 <html>
 <head>
-    <title>KludJe - Java 8 lambda API for checked exception handling</title>
+    <title>KλudJe - Java 8 lambda API for checked exception handling</title>
     <meta charset="UTF-8">
     <meta name="description" content="A Java 8 lambda API">
     <link rel="stylesheet" type="text/css" href="index.css">
@@ -29,12 +29,9 @@
     <ul>
         <li><a href="#default-view">home</a></li>
         <li><a href="#download">download</a></li>
-        <li><a href="https://github.com/mcdiae/kludje">source code</a></li>
-        <li>javadoc:
-            <a href="artefacts/api/0.8/core/index.html">core</a>
-            <a href="artefacts/api/0.8/annotation/index.html">annotation</a>
-            <a href="artefacts/api/0.8/infer/index.html">infer</a>
-        </li>
+        <li><a href="https://github.com/mcdiae/kludje">code</a></li>
+        <li><a class="javadoc" href="artefacts/api/0.8/core/index.html">core</a></li>
+        <li><a class="javadoc" href="artefacts/api/0.8/annotation/index.html">annotation</a></li>
     </ul>
 </nav>
 
@@ -46,10 +43,6 @@
         <p>Define significant properties a single time:</p>
 
 <pre><code>
-import uk.kludje.Meta;
-
-public class Product {
-
   private static final Meta&lt;Product> META = Meta.meta(Product.class)
       .longs(p -> p.id)
       .objects(p -> p.description)
@@ -69,8 +62,21 @@ public class Product {
   public String toString() {
     return META.toString(this);
   }
+ </code></pre>
+        <p><a href="#meta-expanded">Expand example</a></p>
+    </div>
 
-  // usual POJO code starts here
+    <div id="meta-expanded">
+        <h1>KλudJe: easy equals, hashCode and toString</h1>
+
+        <pre><code>
+import uk.kludje.Meta;
+
+public class Product {
+  private static final Meta&lt;Product> META = Meta.meta(Product.class)
+      .longs(p -> p.id)
+      .objects(p -> p.description)
+      .ints(p -> p.inventory);
 
   private final long id;
   private final String description;
@@ -92,6 +98,21 @@ public class Product {
 
   public int getInventory() {
     return inventory;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return META.equals(this, obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return META.hashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return META.toString(this);
   }
 }
  </code></pre>

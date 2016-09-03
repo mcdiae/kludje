@@ -33,6 +33,10 @@ allprojects {
     }
   }
 
+  test {
+    maxParallelForks = 10
+  }
+
   task allDocs(type: Javadoc) {
     source = sourceSets.main.allJava
     source(fileTree(dir: 'build/classes/main', exclude: '**/*.class'))

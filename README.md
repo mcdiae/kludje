@@ -18,11 +18,12 @@ See [kludje.uk](http://kludje.uk) or [underlying documentation](http://mcdiae.gi
 Build Environment
 =================
 
-Software:
+Build tools:
 
- - [JDK 8](https://jdk8.java.net/)
- - [Gradle](http://www.gradle.org/)
- - See lastbuild_info.txt for most recent tool stack
+ - [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+ - [Gradle](https://gradle.org/gradle-download/)
+
+Versions used: [lastbuild_info.txt](/mcdiae/kludje/blob/master/lastbuild_info.txt)
 
 To build:
 
@@ -50,5 +51,6 @@ Release Notes
 =============
 
  - version 0.3: breaking API changes in nary package (consumer methods "apply" changed to "accept")
- - version 0.7: breaking API changes: Meta.XGetter interfaces deprecated; will be removed in future release; recompile lambdas to fix
+ - version 0.7: undocumented release code; do not use
+ - version 0.8: breaking API changes: Meta.XGetter interfaces deprecated; will be removed in future release; recompile lambdas to fix
  - version 0.8: from 0.8 onwards master branch is last release

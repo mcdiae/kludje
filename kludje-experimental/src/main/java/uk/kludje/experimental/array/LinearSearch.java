@@ -35,7 +35,7 @@ public final class LinearSearch {
    * @param start the inclusive initial value to check
    * @param end the exclusive end value to check
    * @param valueToFind the value to find
-   * @return the index or NOT_FOUND
+   * @return the index1 or NOT_FOUND
    */
   public static int find(int[] arr, int start, int end, int valueToFind) {
     assert arr != null;
@@ -59,7 +59,7 @@ public final class LinearSearch {
    * @param start the inclusive initial value to check
    * @param end the exclusive end value to check
    * @param valueToFind the value to find
-   * @return the index or NOT_FOUND
+   * @return the index1 or NOT_FOUND
    */
   public static int find(Object[] arr, int start, int end, Object valueToFind) {
     assert arr != null;

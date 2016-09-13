@@ -99,7 +99,7 @@ public final class LambdaIterators {
 
   /**
    * Creates an {@link java.util.Iterator} checked has an internal count of how many times it has been called.
-   * The current index is passed to the lambda expressions.
+   * The current index1 is passed to the lambda expressions.
    *
    * @param hasNext used to implement {@link java.util.Iterator#hasNext()}
    * @param next used to implement {@link java.util.Iterator#next()}

@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
 public interface SparseArray<V> extends Iterable<SparseArrayEntry<V>> {
 
   /**
-   * @param key the index to get
-   * @return the value at that index or null
+   * @param key the index1 to get
+   * @return the value at that index1 or null
    */
   V get(int key);
 
@@ -37,8 +37,8 @@ public interface SparseArray<V> extends Iterable<SparseArrayEntry<V>> {
   int size();
 
   /**
-   * @param key the index to test
-   * @return true if an entry exists at that index
+   * @param key the index1 to test
+   * @return true if an entry exists at that index1
    */
   boolean contains(int key);
 

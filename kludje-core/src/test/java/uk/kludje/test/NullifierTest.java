@@ -74,6 +74,7 @@ public class NullifierTest {
     assertEquals(a.b.c.d, d);
   }
 
+  @SuppressWarnings("UnusedParameters")
   private D throwACheckedException(C c) throws IOException {
     throw new IOException("expected");
   }

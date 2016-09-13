@@ -16,21 +16,13 @@
 
 package uk.kludje.test.sample;
 
-import uk.kludje.Meta;
-
-import static uk.kludje.Meta.meta;
-
-public class Product {
-  private static final Meta<Product> META = meta(Product.class)
-      .longs(p -> p.id)
-      .objects(p -> p.description)
-      .ints(p -> p.inventory);
+public class ProductVerbose {
 
   private final long id;
   private final String description;
   private final int inventory;
 
-  public Product(long id, String description, int inventory) {
+  public ProductVerbose(long id, String description, int inventory) {
     this.id = id;
     this.description = description;
     this.inventory = inventory;
@@ -49,17 +41,34 @@ public class Product {
   }
 
   @Override
-  public boolean equals(Object obj) {
-    return META.equals(this, obj);
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    ProductVerbose that = (ProductVerbose) o;
+
+    if (id != that.id) return false;
+    if (inventory != that.inventory) return false;
+    return description != null ? description.equals(that.description) : that.description == null;
+
   }
 
   @Override
   public int hashCode() {
-    return META.hashCode(this);
+    int result = (int) (id ^ (id >>> 32));
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + inventory;
+    return result;
   }
 
   @Override
   public String toString() {
-    return META.toString(this);
+    return "ProductVerbose {" +
+      id
+      + ", "
+      + description
+      + ", "
+      + inventory
+      + '}';
   }
 }

@@ -38,7 +38,9 @@ public class MetaTest {
   @Test
   public void testBasicEquality() {
     MetaPojo pojo = new MetaPojo();
+    //noinspection EqualsWithItself
     assertTrue(pojo.equals(pojo));
+    //noinspection ObjectEqualsNull
     assertFalse(pojo.equals(null));
     assertFalse(pojo.equals(new Object()));
   }
@@ -100,6 +102,7 @@ public class MetaTest {
     Meta<MetaPojo> meta = Meta.<MetaPojo>meta()
       .objects(badGetter);
 
+    //noinspection ResultOfMethodCallIgnored
     meta.toString(new MetaPojo());
   }
 

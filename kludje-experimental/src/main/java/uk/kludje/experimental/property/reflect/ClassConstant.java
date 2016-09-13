@@ -1,7 +1,21 @@
 package uk.kludje.experimental.property.reflect;
 
-interface ClassConstant {
+import java.io.DataOutput;
+import java.io.IOException;
 
+abstract class ClassConstant implements DataWriter {
 
-  ClassConstantType type();
+  public final ClassConstantType type;
+
+  protected ClassConstant(ClassConstantType type) {
+    this.type = type;
+  }
+
+  @Override
+  public final void writeTo(DataOutput output) throws IOException {
+    type.writeTo(output);
+    writeInternal(output);
+  }
+
+  abstract void writeInternal(DataOutput output) throws IOException;
 }

@@ -30,6 +30,7 @@ public final class EqualsContract {
   }
 
   public static void assertReflexive(Object x) {
+    //noinspection EqualsWithItself
     assertThat(x.equals(x), "assertReflexive: " + x.getClass());
   }
 

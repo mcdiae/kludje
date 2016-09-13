@@ -24,7 +24,7 @@ import java.util.Iterator;
 public interface MutableSparseArray<V> extends SparseArray<V> {
 
   /**
-   * Puts a value at the given key/index.
+   * Puts a value at the given key/index1.
    *
    * @param key the key
    * @param value the value

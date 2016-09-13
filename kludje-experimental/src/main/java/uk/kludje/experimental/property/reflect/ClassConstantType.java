@@ -1,7 +1,10 @@
 package uk.kludje.experimental.property.reflect;
 
-enum ClassConstantType {
-  CLASS(7),
+import java.io.DataOutput;
+import java.io.IOException;
+
+enum ClassConstantType implements DataWriter {
+  CLASS(7) ,
   FIELDREF(9),
   METHODREF(10),
   INTERFACEMETHODREF(11),
@@ -12,13 +15,27 @@ enum ClassConstantType {
   DOUBLE(6),
   NAMEANDTYPE(12),
   UTF8(1),
-  METHODHANLDE(15),
+  METHODHANDLE(15),
   METHODTYPE(16),
   INVOKEDYNAMIC(18);
 
-  public final byte val;
+  public final int tag;
 
   ClassConstantType(int val) {
-    this.val = (byte) val;
+    this.tag = val;
+  }
+
+  @Override
+  public void writeTo(DataOutput output) throws IOException {
+    output.writeByte(tag);
+  }
+
+  public static ClassConstantType fromTag(int tag) {
+    for (ClassConstantType type : values()) {
+      if (type.tag == tag) {
+        return type;
+      }
+    }
+    throw new IllegalArgumentException("Unknown constant tag: " + tag);
   }
 }

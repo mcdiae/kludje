@@ -16,7 +16,6 @@ limitations under the License.
 
 package uk.kludje;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static java.util.Objects.requireNonNull;
@@ -29,12 +28,13 @@ public final class Exceptions {
   private static final Logger LOG = Logger.getLogger(Exceptions.class.getName());
 
   private Exceptions() {
+    throw new UnsupportedOperationException();
   }
 
   /**
    * <p>Throws any type of {@link java.lang.Throwable} as an unchecked type.</p>
    * Usage:
-   * <pre>
+   * <pre><code>
    *   void foo(Closeable c) {
    *     try {
    *       c.close();
@@ -42,7 +42,7 @@ public final class Exceptions {
    *       throw Exceptions.throwChecked(e);
    *     }
    *   }
-   * </pre>
+   * </code></pre>
    *
    * @param t the (non-null) type to throw
    * @return an unchecked throwable type for syntax reasons
@@ -63,7 +63,7 @@ public final class Exceptions {
    * <p>
    * Usage:
    * </p>
-   * <pre>
+   * <pre><code>
    *   abstract void bar();
    *
    *   void foo() {
@@ -78,7 +78,7 @@ public final class Exceptions {
    *        // handle error
    *      }
    *   }
-   * </pre>
+   * </code></pre>
    *
    * @param <T> the type of exception expected
    * @return a fluent instance

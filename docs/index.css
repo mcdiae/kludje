@@ -29,7 +29,9 @@ nav a:before {
 .javadoc:before {
   content: 'javadoc::';
 }
-
+.github:before {
+  content: 'github::';
+}
 
 code {
   weight: bold;
@@ -54,7 +56,7 @@ blockquote:before {
 }
 @media all and (max-width: 600px) {
   blockquote {
-    display:none;
+    display: none;
   }
 }
 

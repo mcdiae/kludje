@@ -12,12 +12,8 @@ import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/**
- * Line counter - stream approach.
- */
-public class LineCounter2 implements LineCounter {
+public class LineCounterVerbose {
 
-  @Override
   public Map<Path, Long> countLines(Collection<? extends Path> paths) throws IOException {
     try {
       ConcurrentMap<Path, Long> result = paths.stream()

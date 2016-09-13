@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 /**
- * <p>N-ary functional interfaces.</p>
+ * <p>N-ary functional interfaces.
+ * That is, function and consumer implementations that take up to 7 arguments.</p>
  *
  * <table summary="n-ary functional interfaces">
  *   <tr>

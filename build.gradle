@@ -60,7 +60,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.8-SNAPSHOT'
+  version = '0.8'
 
   artifacts {
     archives jar

@@ -17,6 +17,7 @@ gradle -version > ${HERE}/lastbuild_info.txt
 gradle clean build check jacoco
 
 function copyDocs() {
+  echo "copying docs from $HERE/$1/build/docs/javadoc/. to $DOCDIR/$2"
   if [ -d "$DOCDIR/$2" ]; then rm -Rf "$DOCDIR/$2"; fi
   mkdir -p "$DOCDIR/$2"
   cp -a "$HERE/$1/build/docs/javadoc/." "$DOCDIR/$2"
@@ -28,7 +29,6 @@ else
   echo "Documenting latest API in $DOCDIR"
   copyDocs kludje-core core
   copyDocs kludje-annotation annotation
-  copyDocs kludje-infer infer
 fi
 
 cd ${THERE}

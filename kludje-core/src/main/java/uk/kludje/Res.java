@@ -67,12 +67,17 @@ public class Res<R> implements CloseableResource {
   }
 
   /**
+   * Functional interface for closing a resource.
+   *
    * @param <R> the resource type
+   * @see Res#res(CloseFunction, Object)
    */
   @FunctionalInterface
   public interface CloseFunction<R> {
 
     /**
+     * Releases the resource argument.
+     *
      * @param resource the resource to close
      * @throws Exception on error
      */

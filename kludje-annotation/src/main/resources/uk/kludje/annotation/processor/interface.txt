@@ -2,7 +2,7 @@
 package ${pack};
 
 /**
- * TLDR; IMPLEMENT {@code ${functionSignature} throws Throwable} USING A LAMBDA; INVOKE {@code ${parentSig}}.
+ * <strong>TLDR; IMPLEMENT {@code ${functionSignature} throws Throwable} USING A LAMBDA; INVOKE {@code ${parentSig}}.</strong>
  * <p>
  * A functional interface for handling checked exceptions.
  * See parent type for interface intent.

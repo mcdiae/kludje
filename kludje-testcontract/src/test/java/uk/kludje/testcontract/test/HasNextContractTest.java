@@ -20,13 +20,14 @@ import org.junit.Test;
 import uk.kludje.testcontract.iterator.HasNextContract;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class HasNextContractTest {
 
   @Test
   public void testDrainAndAssertElementsNotNull() {
-    List<String> str = Arrays.asList("foo");
+    List<String> str = Collections.singletonList("foo");
     HasNextContract.drainAndAssertElementsNotNull(str.iterator());
   }
 

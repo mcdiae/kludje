@@ -1,9 +1,0 @@
-body {
-    font-size: 1em;
-    padding-right: 10%;
-    padding-left: 10%;
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-}
-header { color: gray; font-size: 0.5em; }
-blockquote { background: lightgray; color: black; width: 80%; padding: 20px; }
-a { color:  #77f; text-decoration: none; }

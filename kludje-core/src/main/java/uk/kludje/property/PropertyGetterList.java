@@ -1,5 +1,13 @@
 package uk.kludje.property;
 
+/**
+ * Abstract base type for {@link uk.kludje.Meta}.
+ * Exposed for custom implementations.
+ *
+ * @param <T> the class type that possesses the properties
+ * @param <PGL> this type
+ */
+@SuppressWarnings("unchecked")
 public abstract class PropertyGetterList<T, PGL extends PropertyGetterList<T, PGL>> {
 
   protected abstract PGL newInstance(PGL old, String name, TypedProperty getter);

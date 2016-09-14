@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<!--
+  ~ Copyright 2016 McDowell
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<html>
+<head>
+    <title>KλudJe - Java 8 lambda API</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="A Java 8 lambda API">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+
+<nav role="navigation">
+    <ul>
+        <li><a href="#default-view">home</a></li>
+        <li><a href="#download">download</a></li>
+        <li><a class="github" href="https://github.com/mcdiae/kludje">code</a></li>
+        <li><a class="javadoc" href="artefacts/api/0.8/core/index.html">core</a></li>
+        <li><a class="javadoc" href="artefacts/api/0.8/annotation/index.html">annotation</a></li>
+    </ul>
+</nav>
+
+<main role="main">
+
+    <div id="try">
+        <h1>KludJe: make any type auto-closeable</h1>
+
+        <p>Not all resources implement <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html">AutoCloseable</a>.
+            The KludJe <code>Res</code> type enables <a href="https://en.wikipedia.org/wiki/Resource_Acquisition_Is_Initialization">RAII</a> for any type.
+            Use method references to define the release method:</p>
+
+        <pre><code>  public void consumeEvents(Source source, Result result, UnaryOperator&lt;XMLEvent> eventProcessor) {
+
+    try (Res&lt;XMLEventReader> reader = res(XMLEventReader::close, inputFactory.createXMLEventReader(source));
+         Res&lt;XMLEventWriter> writer = res(XMLEventWriter::close, outputFactory.createXMLEventWriter(result))) {
+
+      while (reader.unwrap().hasNext()) {
+        XMLEvent event = reader.unwrap().nextEvent();
+        event = eventProcessor.apply(event);
+        writer.unwrap().add(event);
+      }
+    } catch (XMLStreamException e) {
+      throw new UncheckedXMLStreamException(e);
+    }
+  }
+ </code></pre>
+        <p><a href="#try-expanded">Expand example</a></p>
+    </div>
+
+    <div id="try-expanded">
+        <h1>KludJe: make any type auto-closeable</h1>
+
+        <pre><code>import uk.kludje.Res;
+
+import javax.xml.stream.*;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.util.function.UnaryOperator;
+
+import static uk.kludje.Res.res;
+
+public class XmlEventProcessor {
+
+  private final XMLInputFactory inputFactory;
+  private final XMLOutputFactory outputFactory;
+
+  public XmlEventProcessor(XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
+    this.inputFactory = inputFactory;
+    this.outputFactory = outputFactory;
+  }
+
+  public void consumeEvents(Source source, Result result, UnaryOperator&lt;XMLEvent> eventProcessor) {
+    try (Res&lt;XMLEventReader> reader = res(XMLEventReader::close, inputFactory.createXMLEventReader(source));
+         Res&lt;XMLEventWriter> writer = res(XMLEventWriter::close, outputFactory.createXMLEventWriter(result))) {
+
+      while (reader.unwrap().hasNext()) {
+        XMLEvent event = reader.unwrap().nextEvent();
+        event = eventProcessor.apply(event);
+        writer.unwrap().add(event);
+      }
+    } catch (XMLStreamException e) {
+      throw new UncheckedXMLStreamException(e);
+    }
+  }
+
+  public static class UncheckedXMLStreamException extends RuntimeException {
+    public UncheckedXMLStreamException(XMLStreamException e) {
+      super(e);
+    }
+  }
+}</code></pre>
+
+        <p>Before:</p>
+
+        <pre><code>import javax.xml.stream.*;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import java.util.function.UnaryOperator;
+
+public class XmlEventProcessorVerbose {
+
+  private final XMLInputFactory inputFactory;
+  private final XMLOutputFactory outputFactory;
+
+  public XmlEventProcessorVerbose(XMLInputFactory inputFactory, XMLOutputFactory outputFactory) {
+    this.inputFactory = inputFactory;
+    this.outputFactory = outputFactory;
+  }
+
+  public void consumeEvents(Source source, Result result, UnaryOperator&lt;XMLEvent> consumer) {
+    try {
+      XMLEventReader reader = inputFactory.createXMLEventReader(source);
+      try {
+        XMLEventWriter writer = outputFactory.createXMLEventWriter(result);
+        try {
+
+          while (reader.hasNext()) {
+            XMLEvent event = reader.nextEvent();
+            event = consumer.apply(event);
+            writer.add(event);
+          }
+        } finally {
+          writer.close();
+        }
+      } finally {
+        reader.close();
+      }
+    } catch (XMLStreamException e) {
+      throw new UncheckedXMLStreamException(e);
+    }
+  }
+
+  public static class UncheckedXMLStreamException extends RuntimeException {
+    public UncheckedXMLStreamException(XMLStreamException e) {
+      super(e);
+    }
+  }
+}</code></pre>
+    </div>
+
+    <div id="meta">
+        <h1>KludJe: easy equals, hashCode and toString</h1>
+
+        <p>Define significant properties a single time:</p>
+
+<pre><code>  private static final Meta&lt;Product> META = Meta.meta(Product.class)
+      .longs(p -> p.id)
+      .objects(p -> p.description)
+      .ints(p -> p.inventory);
+
+  @Override
+  public boolean equals(Object obj) {
+    return META.equals(this, obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return META.hashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return META.toString(this);
+  }
+ </code></pre>
+        <p><a href="#meta-expanded">Expand example</a></p>
+    </div>
+
+    <div id="meta-expanded">
+        <h1>KludJe: easy equals, hashCode and toString</h1>
+
+        <pre><code>import uk.kludje.Meta;
+
+import static uk.kludje.Meta.meta;
+
+public class Product {
+  private static final Meta&lt;Product> META = meta(Product.class)
+      .longs(p -> p.id)
+      .objects(p -> p.description)
+      .ints(p -> p.inventory);
+
+  private final long id;
+  private final String description;
+  private final int inventory;
+
+  public Product(long id, String description, int inventory) {
+    this.id = id;
+    this.description = description;
+    this.inventory = inventory;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public int getInventory() {
+    return inventory;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return META.equals(this, obj);
+  }
+
+  @Override
+  public int hashCode() {
+    return META.hashCode(this);
+  }
+
+  @Override
+  public String toString() {
+    return META.toString(this);
+  }
+}</code></pre>
+
+        <p>Before:</p>
+
+        <pre><code>public class ProductVerbose {
+
+  private final long id;
+  private final String description;
+  private final int inventory;
+
+  public ProductVerbose(long id, String description, int inventory) {
+    this.id = id;
+    this.description = description;
+    this.inventory = inventory;
+  }
+
+  public long getId() {
+    return id;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public int getInventory() {
+    return inventory;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    ProductVerbose that = (ProductVerbose) o;
+
+    if (id != that.id) return false;
+    if (inventory != that.inventory) return false;
+    return description != null ? description.equals(that.description) : that.description == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    int result = (int) (id ^ (id >>> 32));
+    result = 31 * result + (description != null ? description.hashCode() : 0);
+    result = 31 * result + inventory;
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "ProductVerbose {" +
+      id
+      + ", "
+      + description
+      + ", "
+      + inventory
+      + '}';
+  }
+}</code></pre>
+    </div>
+
+    <div id="unchecked">
+        <h1>KludJe: checked exceptions as unchecked</h1>
+
+        <p>The <code>linesIn</code> method declares that it throws <code>IOException</code> which usually requires
+            it to be handled in a catch block.
+            The <code>UFunction</code> interface allows passing exceptions up through the lambda code without <code>catch</code> blocks:</p>
+
+        <pre><code>  public Map&lt;Path, Long> countLines(Collection&lt;? extends Path> paths) throws IOException {
+    return paths.stream()
+        .parallel()
+        .collect(toConcurrentMap(p -> p, asUFunction(this::linesIn)));
+  }
+
+  private long linesIn(Path path) throws IOException {
+    try (Stream&lt;String> lines = Files.lines(path, UTF_8)) {
+      return lines.count();
+    }
+  }</code></pre>
+
+        <p>As well as providing unchecked implementations standard library functional interfaces KludJe provides
+        an annotation processor for generating your own types.</p>
+
+        <p><a href="#unchecked-expanded">Expand example</a></p>
+    </div>
+
+    <div id="unchecked-expanded">
+        <h1>KludJe: checked exceptions as unchecked</h1>
+
+        <pre><code>import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static uk.kludje.fn.function.UFunction.asUFunction;
+
+/**
+ * Line counter - stream approach with checked exception handling.
+ */
+public class LineCounter {
+
+  public Map&lt;Path, Long> countLines(Collection&lt;? extends Path> paths) throws IOException {
+    return paths.stream()
+        .parallel()
+        .collect(Collectors.&lt;Path, Path, Long>toConcurrentMap(p -> p, asUFunction(this::linesIn)));
+  }
+
+  private long linesIn(Path path) throws IOException {
+    try (Stream&lt;String> lines = Files.lines(path, UTF_8)) {
+      return lines.count();
+    }
+  }
+}</code></pre>
+
+        <p>Before:</p>
+
+<pre><code>import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+public class LineCounterVerbose {
+
+  public Map&lt;Path, Long> countLines(Collection<? extends Path> paths) throws IOException {
+    try {
+      ConcurrentMap&lt;Path, Long> result = paths.stream()
+          .parallel()
+          .collect(Collectors.&lt;Path, Path, Long>toConcurrentMap(p -> p, this::linesIn));
+      return result;
+    } catch (UncheckedIOException e) {
+      throw e.getCause();
+    }
+  }
+
+  private Long linesIn(Path path) {
+    try (Stream&lt;String> lines = Files.lines(path, UTF_8)) {
+      return lines.count();
+    } catch (IOException e) {
+      throw new UncheckedIOException(e);
+    }
+  }
+}</code></pre>
+    </div>
+
+    <div id="nulls">
+        <h1>KludJe: reduce null check verbosity</h1>
+
+        <p>This code avoids making explicit null checks in a deep object graph:</p>
+
+        <pre><code>
+    // import uk.kludje.Nullifier;
+    F f = Nullifier.eval(a, A::getB, B::getC, C::getD, D::getE, E::getF);
+        </code></pre>
+        <p>This replaces this kind of code:</p>
+        <pre><code>
+    if (a != null) {
+      B b = a.getB();
+      if (b != null) {
+        C c = b.getC();
+            etc.
+        </code></pre>
+    </div>
+
+    <div id="download">
+        <h1>KludJe: Download</h1>
+
+        <p>Binaries are available from <a href="http://search.maven.org/#search%7Cga%7C1%7Cuk.kludje">Maven central</a>:</p>
+
+<pre class="brush:xml"><code>
+    &lt;dependency>
+        &lt;groupId>uk.kludje&lt;/groupId>
+        &lt;artifactId>kludje-core&lt;/artifactId>
+        &lt;version>0.8&lt;/version>
+    &lt;/dependency>
+</code></pre>
+
+        <p>Sources (<a href="https://github.com/mcdiae/kludje/blob/master/LICENSE">Apache 2.0 license</a>) are available <a href="https://github.com/mcdiae/kludje">on GitHub</a>.</p>
+    </div>
+
+    <div id="default-view">
+        <h1>KludJe</h1>
+
+        <blockquote>
+            <strong>kludge</strong> <em>n. Slang</em>
+            <p>A system, especially a computer system, that is constituted of poorly matched elements or of elements originally intended for other applications.</p>
+        </blockquote>
+
+        <p>KludJe is a Java <a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">lambda</a> API for use with Java 8 and above.</p>
+
+        <p>Examples:</p>
+
+        <ol>
+            <li><a href="#meta">Reduce equals/hashCode/toString verbosity</a></li>
+            <li><a href="#unchecked">Reduce checked exception clutter</a></li>
+            <li><a href="#nulls">Refactor nested getter null checks to a single expression</a></li>
+            <li><a href="#try">Make any type auto-closeable and eliminate nested try blocks</a></li>
+        </ol>
+
+    </div>
+</main>
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+</body>

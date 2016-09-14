@@ -1,4 +1,4 @@
-KλudJe
+KludJe
 ======
 
 KludJe is a Java API that aims to exploit features introduced in Java 8 to reduce verbosity and enhance expressiveness.
@@ -13,20 +13,28 @@ Use it to:
 Documentation
 =============
 
-See the [documentation](http://mcdiae.github.io/kludje/) for binary downloads and usage information.
+See [kludje.uk](http://kludje.uk) or [underlying documentation](http://mcdiae.github.io/kludje/) for binary downloads and usage information.
 
 Build Environment
 =================
 
-Software:
+Build tools:
 
- - [JDK 8](https://jdk8.java.net/)
- - [Gradle](http://www.gradle.org/) (2.1 used)
+ - [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+ - [Gradle](https://gradle.org/gradle-download/)
+
+Versions used: [lastbuild_info.txt](/mcdiae/kludje/blob/master/lastbuild_info.txt)
 
 To build:
 
 ```
   gradle build
+```
+
+To build with test coverage reports:
+
+```
+  gradle clean build jacoco
 ```
 
 License
@@ -39,9 +47,9 @@ Stability
 
 Limited testing; breaking changes possible in future versions.
 
-
 Release Notes
 =============
-
-version 0.3: breaking API changes in nary package (consumer methods "apply" changed to "accept")
-version 0.7: no compatibility will be maintained with this release; use 0.6 until further notice
+ - version 0.3: breaking API changes in nary package (consumer methods "apply" changed to "accept")
+ - version 0.7: undocumented release code; do not use
+ - version 0.8: breaking API changes: Meta.XGetter interfaces deprecated; will be removed in future release; recompile lambdas to fix
+ - version 0.8: from 0.8 onwards master branch is last release

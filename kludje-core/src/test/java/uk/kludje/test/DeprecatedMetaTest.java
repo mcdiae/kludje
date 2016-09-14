@@ -44,7 +44,7 @@ public class DeprecatedMetaTest {
         m -> m.c = -1,
         m -> m.d = -2,
         m -> m.e = 10,
-        m -> m.f = 5l,
+        m -> m.f = 5L,
         m -> m.g = 1.0f,
         m -> m.h = new Object(),
         m -> m.i = "",

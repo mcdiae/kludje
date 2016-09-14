@@ -2,12 +2,50 @@
 package ${pack};
 
 /**
+ * <strong>TLDR; IMPLEMENT {@code ${functionSignature} throws Throwable} USING A LAMBDA; INVOKE {@code ${parentSig}}.</strong>
+ * <p>
  * A functional interface for handling checked exceptions.
- * See parent type for intent.
- *
+ * See parent type for interface intent.
+ * <p>
  * {@code ${parentSig}} invokes {@code ${functionSignature}}
  * and throws anything thrown by {@code ${functionSignature}}.
+ * <p>
+ * General example using {@code java.lang.Runnable} that reduces 11 lines to a single line.
+ * Call {@code someMethodThatThrowsException} in {@code throwsNothing}:
+ * <pre>
+ * public void someMethodThatThrowsException() throws IOException {
+ *   // I/O functionality
+ * }
  *
+ * public void throwsNothing(Runnable r) {
+ *   r.run();
+ * }
+ * </pre>
+ * <p>
+ * Before:
+ * <pre>
+ * public void yourMethod() throws IOException {
+ *   try {
+ *     throwsNothing(() -> {
+ *       try {
+ *         someMethodThatThrowsException();
+ *       } catch (IOException e) {
+ *         throw new SomeWrapperException(e);
+ *       }
+ *     });
+ *   } catch(SomeWrapperException w) {
+ *     throw (IOException) w.getCause();
+ *   }
+ * }
+ * </pre>
+ * <p>
+ * After:
+ * <pre>
+ * public void yourMethod() throws IOException {
+ *   throwsNothing((URunnable) this::someMethodThatThrowsException);
+ * }
+ * </pre>
+ * <p>
  * Method {@code public static ${generics} ${simpleName}${parentGenerics} as${simpleName}(${simpleName}${parentGenerics} t)}
  * provides a convenience method for manufacturing types as an alternative to casting.
  */

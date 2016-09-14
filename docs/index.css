@@ -1,0 +1,85 @@
+
+
+body {
+  font-size: calc(0.6em + 0.6vw);
+  font-family: sans-serif;
+  max-width: 60em;
+  margin: 0 auto;
+  color: black;
+  background-color:white;
+}
+
+
+nav {
+  text-align: center;
+  padding: 0.5em 0;
+  background: #333663;
+  color: gray;
+}
+nav a {
+  color: white;
+}
+nav li {
+  display: inline-block;
+  margin: 0 0.5em;
+}
+nav a:before {
+  content: 'kludje::';
+}
+.javadoc:before {
+  content: 'javadoc::';
+}
+.github:before {
+  content: 'github::';
+}
+
+code {
+  weight: bold;
+  color: darkslateblue;
+}
+
+
+blockquote {
+  border-left : 2px solid #ccc;
+  float: right;
+  margin: 0px;
+  padding: 10px;
+  color: #ccc;
+  quotes: "\201C" "\201D";
+  max-width: 25%;
+}
+blockquote:before {
+  content: open-quote;
+  font-weight: bold;
+  color: #4751e5;
+  font-size: larger;
+}
+@media all and (max-width: 600px) {
+  blockquote {
+    display: none;
+  }
+}
+
+
+main > * {
+  display: none;
+}
+
+main > *:last-child {
+  display: block;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1) }
+  50% { transform: scale(1.05) }
+  100% { transform: scale(1) }
+}
+
+main > *:target {
+  display: block;
+  animation: pulse 0.5s linear 1;
+}
+
+main > *:target ~ * {
+  display: none;
+}

@@ -32,7 +32,7 @@ import java.util.function.Function;
  * @param <T> the type of the underlying value
  */
 public final class Mutator<T> {
-  private T t;
+  private final T t;
 
   private Mutator(T t) {
     this.t = t;

@@ -15,6 +15,7 @@
   ~ limitations under the License.
   -->
 
+<!--suppress XmlUnboundNsPrefix -->
 <FindBugsFilter>
     <Match>
         <Class name="uk.kludje.test.sample.LineCounter1" />

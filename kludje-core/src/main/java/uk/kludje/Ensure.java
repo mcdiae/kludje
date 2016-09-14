@@ -49,8 +49,7 @@ public final class Ensure {
     assert exceptionFactory != null: "exceptionFactory != null";
 
     if (!predicate) {
-      T t = exceptionFactory.apply(explain(explanation));
-      throw t;
+      throw exceptionFactory.apply(explain(explanation));
     }
   }
 
@@ -85,7 +84,7 @@ public final class Ensure {
 
     if (!predicate) {
       T t = exceptionFactory.apply(explain(explanation));
-      Exceptions.throwChecked(t);
+      throw Exceptions.throwChecked(t);
     }
   }
 

@@ -41,8 +41,8 @@ final class Exceptions {
     return ThrowsImpl.INSTANCE;
   }
 
-  public static interface Throws {
-    public <T extends Throwable> Throws expected() throws T;
+  public interface Throws {
+    <T extends Throwable> Throws expected() throws T;
   }
 
   private static class ThrowsImpl implements Throws {

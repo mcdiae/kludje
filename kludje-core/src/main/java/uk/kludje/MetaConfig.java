@@ -17,7 +17,6 @@ limitations under the License.
 package uk.kludje;
 
 import uk.kludje.property.Getter;
-import uk.kludje.property.TypedProperty;
 
 import java.util.Objects;
 
@@ -159,7 +158,7 @@ public final class MetaConfig {
 
   /**
    * Allows consumers to set special handling for {@link Getter#get(Object)} responses for
-   * {@link Meta#equals(Object, Object)}, {@link Meta#hashCode(Object).
+   * {@link Meta#equals(Object, Object)}, {@link Meta#hashCode(Object)}.
    *
    * @param equalsPolicy a non-null equals policy
    * @param hashCodePolicy a non-null hash policy

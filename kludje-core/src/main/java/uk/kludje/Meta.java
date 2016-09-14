@@ -24,16 +24,16 @@ import java.util.Objects;
 
 /**
  * <p>Provides a basic meta-method builder for common {@code Object} method implementations.</p>
- * <p>Example checked builds equals, hashCode and toString methods using the id, name and dateOfBirth properties:</p>
- * <pre>
+ * <p>Example builds equals, hashCode and toString methods using the "id", "name" and "dateOfBirth" properties:</p>
+ * <pre><code>
  * import uk.kludje.Meta;
  * import java.time.LocalDate;
  * import static uk.kludje.Meta.meta;
  *
  * public class PersonPojo {
  *   private static final Meta&lt;PersonPojo&gt; META = meta(PersonPojo.class)
- *                              .longs($ -&gt; $.id)
- *                              .objects($ -&gt; $.name, $ -&gt; $.dateOfBirth);
+ *                              .longs(pp -&gt; pp.id)
+ *                              .objects(pp -&gt; pp.name, pp -&gt; pp.dateOfBirth);
  *
  *   private final long id;
  *   private final String name;
@@ -65,9 +65,11 @@ import java.util.Objects;
  *     return META.toString(this);
  *   }
  * }
- * </pre>
- * <p>Note: arrays are treated as objects; use a decorator to provide alternative equals/hashCode/toString behaviour.
- * For example, Google Guava's {@code Bytes.asList(byte...)}.</p>
+ * </code></pre>
+ * <p>
+ * <p>Note: arrays are treated as objects by default; see {@link MetaConfig#withShallowArraySupport()}.
+ * If classes can be equal to subtypes use {@link MetaConfig#withInstanceofEqualsTypeCheck()}.</p>
+ * <p>
  * <p>Instances of this type are immutable and thread safe.</p>
  *
  * @param <T> the accessed type
@@ -114,7 +116,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
   /**
    * @param type the class of type T
-   * @param <T> the type
+   * @param <T>  the type
    * @return a new instance with no properties
    */
   public static <T> Meta<T> meta(Class<T> type) {
@@ -136,7 +138,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   /**
    * Some aspects of the provided methods are caller-configurable.
    * Use this method to alter these aspects of the configuration.
-   *
+   * <p>
    * If {@link #meta()} was used to instantiate the instance any changes to {@link MetaConfig.ObjectEqualsPolicy}
    * will result in an error. Use {@link #meta(Class)} instead.
    *
@@ -146,6 +148,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   public Meta<T> configure(MetaConfig config) {
     Ensure.that(config != null, "config != null");
 
+    //noinspection ConstantConditions
     if (type == null && (config.getInstanceCheckPolicy() != MetaConfig.defaultConfig().getInstanceCheckPolicy())) {
       String message = "Not enough type information to guarantee equals contract. Use Meta.meta(Class) to construct this type instead.";
       throw new AssertionError(message);
@@ -416,49 +419,76 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
     return names[index];
   }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface Getter<T> extends uk.kludje.property.Getter<T> {}
+  public interface Getter<T> extends uk.kludje.property.Getter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface BooleanGetter<T> extends uk.kludje.property.BooleanGetter<T> {}
+  public interface BooleanGetter<T> extends uk.kludje.property.BooleanGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface CharGetter<T> extends uk.kludje.property.CharGetter<T> {}
+  public interface CharGetter<T> extends uk.kludje.property.CharGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface ByteGetter<T> extends uk.kludje.property.ByteGetter<T> {}
+  public interface ByteGetter<T> extends uk.kludje.property.ByteGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface ShortGetter<T> extends uk.kludje.property.ShortGetter<T> {}
+  public interface ShortGetter<T> extends uk.kludje.property.ShortGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface IntGetter<T> extends uk.kludje.property.IntGetter<T> {}
+  public interface IntGetter<T> extends uk.kludje.property.IntGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface LongGetter<T> extends uk.kludje.property.LongGetter<T> {}
+  public interface LongGetter<T> extends uk.kludje.property.LongGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface FloatGetter<T> extends uk.kludje.property.FloatGetter<T> {}
+  public interface FloatGetter<T> extends uk.kludje.property.FloatGetter<T> {
+  }
 
-  /** @deprecated this type will be deleted in favour of the uk.kludje.property version */
+  /**
+   * @deprecated this type will be deleted in favour of the uk.kludje.property version
+   */
   @Deprecated
   @FunctionalInterface
-  public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {}
+  public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {
+  }
 
 }

@@ -35,14 +35,29 @@ public final class Unsupported {
     throw new UnsupportedOperationException(MESSAGE);
   }
 
+  /**
+   * @param <R> the generic return type
+   * @return never returns
+   * @throws UnsupportedOperationException always
+   */
   public static <R, A> R exception(A a) {
     throw new UnsupportedOperationException(MESSAGE);
   }
 
+  /**
+   * @param <R> the generic return type
+   * @return never returns
+   * @throws UnsupportedOperationException always
+   */
   public static <R, A, B> R exception(A a, B b) {
     throw new UnsupportedOperationException(MESSAGE);
   }
 
+  /**
+   * @param <R> the generic return type
+   * @return never returns
+   * @throws UnsupportedOperationException always
+   */
   public static <R, A, B, C> R exception(A a, B b, C c) {
     throw new UnsupportedOperationException(MESSAGE);
   }

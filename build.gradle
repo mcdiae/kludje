@@ -17,9 +17,11 @@
 allprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
-  apply plugin: 'signing'
-  apply plugin: 'findbugs'
   apply plugin: 'jacoco'
+  apply plugin: 'signing'
+  if (project.hasProperty('release')) {
+    apply plugin: 'findbugs'
+  }
 
   jacoco {
     toolVersion = "0.7.6.201602180812"
@@ -29,6 +31,10 @@ allprojects {
     tasks.withType(JavaCompile) {
       options.compilerArgs << "-Xlint:all"
     }
+  }
+
+  test {
+    maxParallelForks = 10
   }
 
   task allDocs(type: Javadoc) {
@@ -54,7 +60,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.7'
+  version = '0.8'
 
   artifacts {
     archives jar
@@ -62,63 +68,80 @@ allprojects {
     archives sourcesJar
   }
 
-  signing {
-    sign configurations.archives
-  }
+  if (project.hasProperty('release')) {
 
-  uploadArchives {
-    repositories {
-      mavenDeployer {
-        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    findbugs {
+      //toolVersion = "2.0.1"
+      //sourceSets = [sourceSets.main]
+      //ignoreFailures = true
+      //reportsDir = file("$project.buildDir/findbugsReports")
+      //effort = "max"
+      //reportLevel = "high"
+      //visitors = ["FindSqlInjection", "SwitchFallthrough"]
+      //omitVisitors = ["FindNonShortCircuit"]
+      //includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
+      excludeFilter = file("$rootProject.projectDir/findbugs/falsepositives.xml")
+    }
 
-        repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-          authentication(userName: sonatypeUsername, password: sonatypePassword)
-        }
+    signing {
+      sign configurations.archives
+    }
 
-        snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-          authentication(userName: sonatypeUsername, password: sonatypePassword)
-        }
+    uploadArchives {
+      repositories {
+        mavenDeployer {
+          beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-        pom.project {
-          packaging 'jar'
-          url 'http://kludje.uk'
-
-          scm {
-            url 'git@github.com:mcdiae/kludje.git'
-            connection 'git@github.com:mcdiae/kludje.git'
-            developerConnection 'git@github.com:mcdiae/kludje.git'
+          repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
           }
 
-          licenses {
-            license {
-              name 'The Apache Software License, Version 2.0'
-              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-              distribution 'repo'
+          snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
+          }
+
+          pom.project {
+            packaging 'jar'
+            url 'http://kludje.uk'
+
+            scm {
+              url 'git@github.com:mcdiae/kludje.git'
+              connection 'git@github.com:mcdiae/kludje.git'
+              developerConnection 'git@github.com:mcdiae/kludje.git'
             }
-          }
 
-          developers {
-            developer {
-              id 'mcdiae'
-              name 'McDowell'
+            licenses {
+              license {
+                name 'The Apache Software License, Version 2.0'
+                url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution 'repo'
+              }
+            }
+
+            developers {
+              developer {
+                id 'mcdiae'
+                name 'McDowell'
+              }
             }
           }
         }
       }
     }
   }
+}
 
-  findbugs {
-    //toolVersion = "2.0.1"
-    //sourceSets = [sourceSets.main]
-    //ignoreFailures = true
-    //reportsDir = file("$project.buildDir/findbugsReports")
-    //effort = "max"
-    //reportLevel = "high"
-    //visitors = ["FindSqlInjection", "SwitchFallthrough"]
-    //omitVisitors = ["FindNonShortCircuit"]
-    //includeFilter = file("$rootProject.projectDir/config/findbugs/includeFilter.xml")
-    excludeFilter = file("$rootProject.projectDir/findbugs/falsepositives.xml")
+if (project.hasProperty('release')) {
+  uploadArchives {
+    repositories {
+      mavenDeployer {
+        pom.project {
+          name 'kludje'
+          packaging 'pom'
+          description 'Java 8 lambda API'
+        }
+      }
+    }
   }
 }
 
@@ -162,21 +185,5 @@ project(':kludje-experimental') {
   }
 }
 
-project(':kludje-infer') {
-  dependencies {
-    compile project(':kludje-core')
-  }
-}
 
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      pom.project {
-        name 'kludje'
-        packaging 'pom'
-        description 'Java 8 lambda API'
-      }
-    }
-  }
-}
 

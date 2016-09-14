@@ -18,8 +18,10 @@ package uk.kludje.test.sample;
 
 import uk.kludje.Meta;
 
+import static uk.kludje.Meta.meta;
+
 public class Product {
-  private static final Meta<Product> META = Meta.meta(Product.class)
+  private static final Meta<Product> META = meta(Product.class)
       .longs(p -> p.id)
       .objects(p -> p.description)
       .ints(p -> p.inventory);

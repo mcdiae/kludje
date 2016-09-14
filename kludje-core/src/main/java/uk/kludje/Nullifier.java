@@ -53,6 +53,17 @@ import java.util.function.Supplier;
 public interface Nullifier<T, R> {
 
   /**
+   * Implement this method with a lambda expression/method reference.
+   * <p>
+   * Consumers should invoke {@link #apply(Object)} and NOT call this method directly.
+   *
+   * @param t the argument; not null if invoked by default {@link #apply(Object)}
+   * @return the result
+   * @throws Exception on error
+   */
+  R $apply(T t) throws Exception;
+
+  /**
    * Creates a null-safe chain of calls spanning possibly null call sites.
    * <p>
    * The functions may not be null, but the inputs and outputs may be.
@@ -237,17 +248,6 @@ public interface Nullifier<T, R> {
       throw Exceptions.throwChecked(e);
     }
   }
-
-  /**
-   * Implement this method with a lambda expression/method reference.
-   * <p>
-   * Consumers should invoke {@link #apply(Object)} and NOT call this method directly.
-   *
-   * @param t the argument; not null if invoked by default {@link #apply(Object)}
-   * @return the result
-   * @throws Exception on error
-   */
-  R $apply(T t) throws Exception;
 
   /**
    * Chains two instances together.

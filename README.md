@@ -13,7 +13,7 @@ Use it to:
 Documentation
 =============
 
-See [kludje.uk](http://kludje.uk) or [underlying documentation](http://mcdiae.github.io/kludje/) for binary downloads and usage information.
+See [kludje.uk](http://kludje.uk) for binary downloads and usage information.
 
 Build Environment
 =================

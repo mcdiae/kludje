@@ -24,13 +24,13 @@ nav li {
   margin: 0 0.5em;
 }
 nav a:before {
-  content: 'kludje::';
+  content: 'KludJe::';
 }
 .javadoc:before {
-  content: 'javadoc::';
+  content: 'Javadoc::';
 }
 .github:before {
-  content: 'github::';
+  content: 'GitHub::';
 }
 
 code {

@@ -149,7 +149,7 @@ public final class MetaConfig {
    * @see #withInstanceofEqualsTypeCheck()
    */
   public MetaConfig withInstanceCheck(InstanceCheckPolicy policy) {
-    Ensure.that(policy != null, "policy != null");
+    Fatal.when(policy == null, "policy == null");
 
     return new MetaConfigBuilder(this)
       .setInstanceCheckPolicy(policy)
@@ -166,8 +166,8 @@ public final class MetaConfig {
    * @see #withShallowArraySupport()
    */
   public MetaConfig withObjectEqualsChecks(ObjectEqualsPolicy equalsPolicy, ObjectHashCodePolicy hashCodePolicy) {
-    Ensure.that(equalsPolicy != null, "equalsPolicy != null");
-    Ensure.that(hashCodePolicy != null, "hashCodePolicy != null");
+    Fatal.when(equalsPolicy == null, "equalsPolicy == null");
+    Fatal.when(hashCodePolicy == null, "hashCodePolicy == null");
 
     return new MetaConfigBuilder(this)
       .setObjectEqualsPolicy(equalsPolicy)
@@ -184,7 +184,7 @@ public final class MetaConfig {
    * @see #withShallowArraySupport()
    */
   public MetaConfig withObjectToString(ObjectToStringPolicy stringPolicy) {
-    Ensure.that(stringPolicy != null, "stringPolicy != null");
+    Fatal.when(stringPolicy == null, "stringPolicy == null");
 
     return new MetaConfigBuilder(this)
       .setObjectToStringPolicy(stringPolicy)

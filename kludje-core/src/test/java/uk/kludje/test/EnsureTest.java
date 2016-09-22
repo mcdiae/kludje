@@ -19,6 +19,7 @@ package uk.kludje.test;
 import org.junit.Test;
 import uk.kludje.Ensure;
 
+@Deprecated
 public class EnsureTest {
 
   @Test

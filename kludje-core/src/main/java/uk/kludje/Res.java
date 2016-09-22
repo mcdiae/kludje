@@ -1,3 +1,19 @@
+/*
+ * Copyright 2016 McDowell
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.kludje;
 
 /**
@@ -19,8 +35,8 @@ public class Res<R> implements CloseableResource {
   private final R resource;
 
   private Res(CloseFunction<R> closeFunction, R resource) {
-    Fatal.when(closeFunction == null, "closeFunction == null");
-    Fatal.when(resource == null, "resource == null");
+    Fatal.whenNull(closeFunction, "closeFunction");
+    Fatal.whenNull(resource, "resource");
 
     this.closeFunction = closeFunction;
     this.resource = resource;
@@ -45,7 +61,7 @@ public class Res<R> implements CloseableResource {
     try {
       closeFunction.close(resource);
     } catch (Exception e) {
-      Exceptions.throwChecked(e);
+      throw Exceptions.throwChecked(e);
     }
   }
 
@@ -55,7 +71,7 @@ public class Res<R> implements CloseableResource {
    * @param closeFunction the function for releasing the resource
    * @param resource the resource instance
    * @param <R> the resource type
-   * @return
+   * @return a new instance
    */
   public static <R> Res<R> res(CloseFunction<R> closeFunction, R resource) {
     return new Res<>(closeFunction, resource);

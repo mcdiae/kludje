@@ -16,9 +16,7 @@
 
 package uk.kludje;
 
-import uk.kludje.property.PropertyGetterList;
-import uk.kludje.property.PropertyType;
-import uk.kludje.property.TypedProperty;
+import uk.kludje.property.*;
 
 import java.util.Objects;
 
@@ -105,8 +103,8 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
   @Override
   protected Meta<T> newInstance(Meta<T> old, String name, TypedProperty getter) {
-    Ensure.that(getter != null, "getter != null");
-    Ensure.that(name != null, "name != null");
+    Fatal.when(getter == null, "getter == null");
+    Fatal.when(name == null, "name == null");
 
     TypedProperty[] newProps = TYPED_PROPERTY_ARRAYS.concat(old.props, getter);
     String[] newNames = TYPED_STRING_ARRAYS.concat(old.names, name);
@@ -120,7 +118,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
    * @return a new instance with no properties
    */
   public static <T> Meta<T> meta(Class<T> type) {
-    Ensure.that(type != null, "type != null");
+    Fatal.when(type == null, "type == null");
 
     return new Meta<>(MetaConfig.defaultConfig(), type, TYPED_PROPERTY_ARRAYS.empty(), TYPED_STRING_ARRAYS.empty());
   }
@@ -146,7 +144,7 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
    * @return a new instance with the new configuration
    */
   public Meta<T> configure(MetaConfig config) {
-    Ensure.that(config != null, "config != null");
+    Fatal.when(config == null, "config == null");
 
     //noinspection ConstantConditions
     if (type == null && (config.getInstanceCheckPolicy() != MetaConfig.defaultConfig().getInstanceCheckPolicy())) {
@@ -184,13 +182,13 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
       switch (type) {
         case INT:
-          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
+          IntGetter<T> ig = (IntGetter<T>) p;
           if (ig.getInt(t) != ig.getInt(other)) {
             return false;
           }
           break;
         case OBJECT:
-          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
+          Getter<T> g = (Getter<T>) p;
           Object o1 = g.get(t);
           Object o2 = g.get(other);
           if (!equalsPolicy.areEqual(o1, o2)) {
@@ -198,43 +196,43 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
           }
           break;
         case BOOLEAN:
-          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
           if (bg.getBoolean(t) != bg.getBoolean(other)) {
             return false;
           }
           break;
         case LONG:
-          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
+          LongGetter<T> lg = (LongGetter<T>) p;
           if (lg.getLong(t) != lg.getLong(other)) {
             return false;
           }
           break;
         case CHAR:
-          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
+          CharGetter<T> cg = (CharGetter<T>) p;
           if (cg.getChar(t) != cg.getChar(other)) {
             return false;
           }
           break;
         case DOUBLE:
-          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
           if (dg.getDouble(t) != dg.getDouble(other)) {
             return false;
           }
           break;
         case FLOAT:
-          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
+          FloatGetter<T> fg = (FloatGetter<T>) p;
           if (fg.getFloat(t) != fg.getFloat(other)) {
             return false;
           }
           break;
         case SHORT:
-          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
+          ShortGetter<T> sg = (ShortGetter<T>) p;
           if (sg.getShort(t) != sg.getShort(other)) {
             return false;
           }
           break;
         case BYTE:
-          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
+          ByteGetter<T> byg = (ByteGetter<T>) p;
           if (byg.getByte(t) != byg.getByte(other)) {
             return false;
           }
@@ -267,39 +265,39 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
 
       switch (type) {
         case INT:
-          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
+          IntGetter<T> ig = (IntGetter<T>) p;
           result += ig.getInt(t);
           break;
         case OBJECT:
-          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
+          Getter<T> g = (Getter<T>) p;
           result += hashcodePolicy.toHashcode(g.get(t));
           break;
         case BOOLEAN:
-          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
           result += bg.getBoolean(t) ? 1 : 0;
           break;
         case LONG:
-          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
+          LongGetter<T> lg = (LongGetter<T>) p;
           result += Long.hashCode(lg.getLong(t));
           break;
         case CHAR:
-          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
+          CharGetter<T> cg = (CharGetter<T>) p;
           result += cg.getChar(t);
           break;
         case DOUBLE:
-          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
           result += Double.hashCode(dg.getDouble(t));
           break;
         case FLOAT:
-          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
+          FloatGetter<T> fg = (FloatGetter<T>) p;
           result += Float.hashCode(fg.getFloat(t));
           break;
         case SHORT:
-          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
+          ShortGetter<T> sg = (ShortGetter<T>) p;
           result += sg.getShort(t);
           break;
         case BYTE:
-          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
+          ByteGetter<T> byg = (ByteGetter<T>) p;
           result += byg.getByte(t);
           break;
         default:
@@ -342,40 +340,40 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
       PropertyType type = p.type();
       switch (type) {
         case INT:
-          uk.kludje.property.IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
+          IntGetter<T> ig = (uk.kludje.property.IntGetter<T>) p;
           buf.append(ig.getInt(t));
           break;
         case OBJECT:
-          uk.kludje.property.Getter<T> g = (uk.kludje.property.Getter<T>) p;
+          uk.kludje.property.Getter<T> g = (Getter<T>) p;
           String str = this.toStringPolicy.toString(g.apply(t));
           buf.append(str);
           break;
         case BOOLEAN:
-          uk.kludje.property.BooleanGetter<T> bg = (uk.kludje.property.BooleanGetter<T>) p;
+          BooleanGetter<T> bg = (BooleanGetter<T>) p;
           buf.append(bg.getBoolean(t));
           break;
         case LONG:
-          uk.kludje.property.LongGetter<T> lg = (uk.kludje.property.LongGetter<T>) p;
+          LongGetter<T> lg = (LongGetter<T>) p;
           buf.append(lg.getLong(t));
           break;
         case CHAR:
-          uk.kludje.property.CharGetter<T> cg = (uk.kludje.property.CharGetter<T>) p;
+          CharGetter<T> cg = (CharGetter<T>) p;
           buf.append(cg.getChar(t));
           break;
         case DOUBLE:
-          uk.kludje.property.DoubleGetter<T> dg = (uk.kludje.property.DoubleGetter<T>) p;
+          DoubleGetter<T> dg = (DoubleGetter<T>) p;
           buf.append(dg.getDouble(t));
           break;
         case FLOAT:
-          uk.kludje.property.FloatGetter<T> fg = (uk.kludje.property.FloatGetter<T>) p;
+          FloatGetter<T> fg = (FloatGetter<T>) p;
           buf.append(fg.getFloat(t));
           break;
         case SHORT:
-          uk.kludje.property.ShortGetter<T> sg = (uk.kludje.property.ShortGetter<T>) p;
+          ShortGetter<T> sg = (ShortGetter<T>) p;
           buf.append(sg.getShort(t));
           break;
         case BYTE:
-          uk.kludje.property.ByteGetter<T> byg = (uk.kludje.property.ByteGetter<T>) p;
+          ByteGetter<T> byg = (ByteGetter<T>) p;
           buf.append(byg.getByte(t));
           break;
         default:
@@ -418,77 +416,4 @@ public final class Meta<T> extends PropertyGetterList<T, Meta<T>> {
   public String nameAt(int index) {
     return names[index];
   }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface Getter<T> extends uk.kludje.property.Getter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface BooleanGetter<T> extends uk.kludje.property.BooleanGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface CharGetter<T> extends uk.kludje.property.CharGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface ByteGetter<T> extends uk.kludje.property.ByteGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface ShortGetter<T> extends uk.kludje.property.ShortGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface IntGetter<T> extends uk.kludje.property.IntGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface LongGetter<T> extends uk.kludje.property.LongGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface FloatGetter<T> extends uk.kludje.property.FloatGetter<T> {
-  }
-
-  /**
-   * @deprecated this type will be deleted in favour of the uk.kludje.property version
-   */
-  @Deprecated
-  @FunctionalInterface
-  public interface DoubleGetter<T> extends uk.kludje.property.DoubleGetter<T> {
-  }
-
 }

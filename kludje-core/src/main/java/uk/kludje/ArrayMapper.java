@@ -18,7 +18,7 @@ final class ArrayMapper<T> {
 
   @SuppressWarnings("unchecked")
   private ArrayMapper(Class<T> type) {
-    Ensure.that(type != null, "type != null");
+    Fatal.when(type == null, "type == null");
 
     this.type = type;
     this.empty = (T[]) Array.newInstance(type, 0);

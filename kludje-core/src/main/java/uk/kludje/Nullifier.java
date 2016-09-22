@@ -257,7 +257,7 @@ public interface Nullifier<T, R> {
    * @return a new nullifier
    */
   default <V> Nullifier<T, V> andThenSpan(Nullifier<? super R, ? extends V> after) {
-    Objects.requireNonNull(after);
+    Fatal.whenNull(after, "after");
     return (T t) -> after.apply(apply(t));
   }
 

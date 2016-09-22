@@ -24,7 +24,10 @@ import java.util.function.Function;
  * Not called {@code Assert} because JUnit etc.
  *
  * If in doubt, use {@link #that(boolean, String)}.
+ *
+ * @deprecated will be removed in future version; use {@link Fatal} instead to provide more direct error information
  */
+@Deprecated
 public final class Ensure {
 
   private Ensure() {

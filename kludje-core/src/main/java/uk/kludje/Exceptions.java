@@ -48,6 +48,7 @@ public final class Exceptions {
    * @return an unchecked throwable type for syntax reasons
    */
   public static UncheckedMarker throwChecked(Throwable t) {
+    //noinspection RedundantTypeArguments
     Exceptions.<RuntimeException>throwIt(requireNonNull(t, "throwable"));
     return UncheckedMarker.INSTANCE;
   }
@@ -122,6 +123,7 @@ public final class Exceptions {
    */
   @SuppressWarnings("serial")
   public static final class UncheckedMarker extends Error {
+    @SuppressWarnings("ThrowableInstanceNeverThrown")
     private static final UncheckedMarker INSTANCE = new UncheckedMarker();
 
     private UncheckedMarker() {

@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 /**
  * Will be removed; checks deprecated meta() method
  */
-@Deprecated
 public class DeprecatedMetaTest {
 
   @Test

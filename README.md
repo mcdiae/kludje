@@ -4,11 +4,10 @@ KludJe
 KludJe is a Java API that aims to exploit features introduced in Java 8 to reduce verbosity and enhance expressiveness.
 
 Use it to:
-
- - Implement less verbose equals, hashCode, and toString in your classes
- - Avoid try/catch blocks in lambdas/method references with a generalized exception throwing/catching mechanism
-   - Add this capability for any functional interface using the Kludje annotation processor
- - Avoid nested null checks in getter chains with a one-line call
+- Implement less verbose equals, hashCode, and toString in your classes
+- Avoid try/catch blocks in lambdas/method references with a generalized exception throwing/catching mechanism
+ - Add this capability for any functional interface using the Kludje annotation processor
+- Avoid nested null checks in getter chains with a one-line call
 
 Documentation
 =============

@@ -17,9 +17,16 @@ limitations under the License.
 package uk.kludje;
 
 /**
- * An {@link java.lang.AutoCloseable} type without a throws declaration.
- * <p>
- * For use in try-with-resources blocks.
+ * <p>An {@link java.lang.AutoCloseable} type without a throws declaration.</p>
+ *
+ * <p>For use in try-with-resources blocks. Example usage:</p>
+ *
+ * <pre><code>
+ *  SomeResource r = new SomeResource();
+ *  try (CloseableResource closeable = r::release) {
+ *    // use r here
+ *  }
+ * </code></pre>
  */
 @FunctionalInterface
 public interface CloseableResource extends AutoCloseable {

@@ -1,6 +1,8 @@
 KludJe
 ======
 
+[![Build Status](https://travis-ci.org/mcdiae/kludje.svg?branch=master)](https://travis-ci.org/mcdiae/kludje)
+
 KludJe is a Java API that aims to exploit features introduced in Java 8 to reduce verbosity and enhance expressiveness.
 
 Use it to:

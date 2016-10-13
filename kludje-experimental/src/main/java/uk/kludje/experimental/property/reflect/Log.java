@@ -5,20 +5,22 @@ import java.util.logging.Logger;
 
 class Log {
 
+  private final boolean on;
   private final Logger log;
 
   private Log(Logger log) {
+    this.on = log.isLoggable(Level.FINE);
     this.log = log;
   }
 
   public void debug(String fmt, Object arg) {
-    if (log.isLoggable(Level.FINE)) {
+    if (on) {
       debugIt(fmt, arg);
     }
   }
 
   public void debug(String fmt, Object arg1, Object arg2) {
-    if (log.isLoggable(Level.FINE)) {
+    if (on) {
       debugIt(fmt, arg1, arg2);
     }
   }

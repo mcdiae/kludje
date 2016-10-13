@@ -10,6 +10,7 @@ Use it to:
 - Avoid try/catch blocks in lambdas/method references with a generalized exception throwing/catching mechanism
  - Add this capability for any functional interface using the Kludje annotation processor
 - Avoid nested null checks in getter chains with a one-line call
+- Make any resource [AutoCloseable](https://docs.oracle.com/javase/8/docs/api/java/lang/AutoCloseable.html)
 
 Documentation
 =============

@@ -24,7 +24,7 @@ Build tools:
  - [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
  - [Gradle](https://gradle.org/gradle-download/)
 
-Versions used: [lastbuild_info.txt](/mcdiae/kludje/blob/master/lastbuild_info.txt)
+Versions used: [lastbuild_info.txt](https://github.com/mcdiae/kludje/blob/master/lastbuild_info.txt)
 
 To build:
 

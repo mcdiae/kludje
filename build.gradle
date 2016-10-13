@@ -60,7 +60,7 @@ allprojects {
     targetCompatibility = 1.8
   }
   group = 'uk.kludje'
-  version = '0.8'
+  version = '0.9-SNAPSHOT'
 
   artifacts {
     archives jar
@@ -151,7 +151,7 @@ subprojects {
   }
   dependencies {
     testCompile 'junit:junit:4.12'
-    testCompile 'com.google.jimfs:jimfs:1.0-rc3'
+    testCompile 'com.google.jimfs:jimfs:1.1'
   }
 }
 
